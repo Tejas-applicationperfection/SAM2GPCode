@@ -1,0 +1,794 @@
+<apex:page controller="ObjectDescriptions" sidebar="false" showHeader="false" docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true">
+    <apex:includeLightning />
+   
+    <apex:stylesheet value="/slds/assets/styles/salesforce-lightning-design-system.min.css"/>
+    
+    <head>
+        <title>Object Description</title>
+        <meta charset="utf-8" />
+        <!-- <link href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" rel="stylesheet"/> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+        <apex:slds />
+        
+        <style type="text/css">
+            /* LWC-style CSS improvements */
+            .lwc-container {
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 1rem;
+                font-family: 'Salesforce Sans', Arial, sans-serif;
+            }
+            
+            .lwc-card {
+                background: white;
+                border-radius: 0.25rem;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+                border: 1px solid #dddbda;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-card-header {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #dddbda;
+                background-color: #f3f2f2;
+            }
+            
+            .lwc-card-body {
+                padding: 1rem;
+            }
+            
+            .lwc-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .lwc-header-title {
+                font-size: 1.125rem;
+                font-weight: bold;
+                color: #080707;
+                margin: 0;
+            }
+            
+            .lwc-button-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .lwc-button {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                color: #0070d2;
+                cursor: pointer;
+                display: inline-block;
+                font-size: 0.75rem;
+                font-weight: 400;
+                line-height: 1.875rem;
+                padding: 0 1rem;
+                text-decoration: none;
+                transition: border 0.15s linear;
+                position: relative;
+                text-align: center;
+                vertical-align: middle;
+                white-space: normal;
+            }
+            
+            .lwc-button:hover {
+                background-color: #f4f6f9;
+                color: #005fb2;
+            }
+            
+            .lwc-button_brand {
+                background-color: #0070d2;
+                border: 1px solid #0070d2;
+                color: #fff;
+            }
+            
+            .lwc-button_brand:hover {
+                background-color: #005fb2;
+                border-color: #005fb2;
+                color: #fff;
+            }
+            
+            .lwc-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-form-element {
+                margin-bottom: 0.75rem;
+            }
+            
+            .lwc-form-element__label {
+                display: block;
+                font-size: 0.75rem;
+                color: #3e3e3c;
+                margin-bottom: 0.25rem;
+                font-weight: 400;
+            }
+            
+            .lwc-select {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                height: 32px;
+                padding: 0 1rem 0 0.5rem;
+                font-size: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-combobox {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .lwc-combobox__form-element {
+                position: relative;
+                flex: 1 1 auto;
+            }
+            
+            .lwc-input {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                padding: 0 1rem 0 0.75rem;
+                font-size: 0.75rem;
+                color: #080707;
+                height: 32px;
+            }
+            
+            .lwc-input:focus {
+                outline: 0;
+                border-color: #1589ee;
+                background-color: #fff;
+                box-shadow: 0 0 3px #0070D2;
+            }
+            
+            .lwc-section {
+                margin: 1rem 0;
+            }
+            
+            .lwc-section__title {
+                font-size: 1rem;
+                font-weight: 700; /* slightly bolder for better contrast */
+                margin-bottom: 0.9rem; /* add a little extra space below headings */
+                color: #0b0b0b; /* a bit darker */
+            }
+            
+            .lwc-progress-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            /* Grouped boxes in a single row */
+            .lwc-group-row {
+                display: flex;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            .lwc-group-box {
+                flex: 1;
+                /* Lightest blue background inside the group boxes */
+                background: #f4f8ff; /* very light blue (accessible, subtle) */
+                border: 1px solid #d8e6ff;
+                border-radius: 0.25rem;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+                padding: 1rem;
+            }
+            
+            .lwc-progress-card {
+                flex: 1;
+                min-width: 180px;
+                background: white;
+                border-radius: 0.25rem;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+                border: 1px solid #dddbda;
+                padding: 1rem;
+                text-align: center;
+            }
+            
+            .lwc-progress-value {
+                font-size: 1.5rem;
+                font-weight: 300;
+                margin: 0.5rem 0;
+            }
+            
+            .lwc-progress-label {
+                font-size: 0.75rem;
+                color: #3e3e3c;
+            }
+
+            /* Small explanatory text under each stat card */
+            .lwc-progress-help {
+                margin-top: 0.25rem;
+                font-size: 0.72rem;
+                color: #6b778c; /* subtle gray for helper text */
+                line-height: 1.2;
+            }
+            
+            .lwc-table-container {
+                overflow-x: auto;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+            }
+            
+            .lwc-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+            
+            .lwc-table th {
+                background-color: #f3f2f2;
+                border-top: 1px solid #dddbda;
+                border-bottom: 1px solid #dddbda;
+                font-weight: 600;
+                text-align: left;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+                color: #3e3e3c;
+            }
+            
+            .lwc-table td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid #dddbda;
+                font-size: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-table tr:last-child td {
+                border-bottom: none;
+            }
+            
+            .lwc-table tr:hover td {
+                background-color: #f3f2f2;
+            }
+            
+            .lwc-textarea {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+                color: #080707;
+                min-height: 60px;
+                resize: vertical;
+            }
+            
+            .lwc-checkbox {
+                display: flex;
+                align-items: center;
+            }
+            
+            .lwc-checkbox input[type="checkbox"] {
+                margin-right: 0.5rem;
+            }
+            
+            .lwc-footer {
+                text-align: center;
+                font-size: 0.6875rem;
+                color: #706e6b;
+                margin-top: 2rem;
+            }
+            
+            .lwc-spinner-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+            }
+            
+            .lwc-spinner {
+                display: inline-block;
+                position: relative;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .lwc-spinner div {
+                box-sizing: border-box;
+                display: block;
+                position: absolute;
+                width: 44px;
+                height: 44px;
+                margin: 3px;
+                border: 3px solid #0070d2;
+                border-radius: 50%;
+                animation: lwc-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                border-color: #0070d2 transparent transparent transparent;
+            }
+            
+            .lwc-spinner div:nth-child(1) {
+                animation-delay: -0.45s;
+            }
+            
+            .lwc-spinner div:nth-child(2) {
+                animation-delay: -0.3s;
+            }
+            
+            .lwc-spinner div:nth-child(3) {
+                animation-delay: -0.15s;
+            }
+            
+            @keyframes lwc-spinner {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            
+            .lwc-alert {
+                padding: 0.5rem;
+                border-radius: 0.25rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-alert_error {
+                background-color: #feded9;
+                border: 1px solid #c23934;
+                color: #c23934;
+            }
+            
+            .lwc-alert_success {
+                background-color: #cdefc4;
+                border: 1px solid #4bca81;
+                color: #04844b;
+            }
+            
+            /* Modern multiselect styles */
+            .lwc-multiselect-container {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+            
+            .lwc-multiselect-header {
+                font-size: 0.75rem;
+                color: #3e3e3c;
+                font-weight: 400;
+                margin-bottom: 0.25rem;
+            }
+            
+            .lwc-multiselect-body {
+                display: flex;
+                gap: 0.5rem;
+                align-items: stretch;
+                min-height: 250px;
+            }
+            
+            .lwc-multiselect-select {
+                flex: 1;
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                min-height: 200px;
+                padding: 0.25rem;
+                font-size: 0.75rem;
+                width: 100%;
+            }
+            
+            .lwc-multiselect-select:focus {
+                outline: 0;
+                border-color: #1589ee;
+                background-color: #fff;
+                box-shadow: 0 0 3px #0070D2;
+            }
+            
+            .lwc-multiselect-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+                justify-content: center;
+                align-items: center;
+                padding: 0.5rem;
+            }
+            
+            .lwc-multiselect-button {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                color: #0070d2;
+                cursor: pointer;
+                display: inline-block;
+                font-size: 0.75rem;
+                font-weight: 400;
+                line-height: 1.5rem;
+                padding: 0 0.5rem;
+                text-decoration: none;
+                transition: border 0.15s linear;
+                position: relative;
+                text-align: center;
+                vertical-align: middle;
+                white-space: normal;
+                min-width: 2rem;
+                min-height: 2rem;
+            }
+            
+            .lwc-multiselect-button:hover {
+                background-color: #f4f6f9;
+                color: #005fb2;
+            }
+            
+            .lwc-multiselect-button:disabled {
+                background-color: #f3f2f2;
+                color: #dddbda;
+                cursor: not-allowed;
+            }
+            
+            .lwc-multiselect-button-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .lwc-controls-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-search-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1rem;
+                gap: 0.5rem;
+            }
+            
+            .lwc-search-input {
+                flex: 1;
+            }
+            
+            /* Original scrollbar styles preserved */
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+            html {
+                scrollbar-width: thin;
+                scrollbar-color: #888 #f1f1f1;
+            }
+            
+            .slds-scope p {
+                padding: 2px;
+            }
+            
+            .loading-spinner {
+                text-align: center;
+                margin-top: 20px;
+            }
+            
+            .loading-spinner img {
+                width: 50px;  
+            }
+            
+            div[style*="overflow-y: scroll"]::-webkit-scrollbar {
+                display: none;
+            }
+
+            div[style*="overflow-y: scroll"] {
+                scrollbar-width: none;
+            }
+
+            div[style*="overflow-y: scroll"] {
+                -ms-overflow-style: none;
+            }
+
+            #compliancePL::-webkit-scrollbar {
+                width: 6px; 
+            }
+
+            #compliancePL::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            #compliancePL::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+            }
+
+            #compliancePL::-webkit-scrollbar-thumb:hover {
+                background: #555; 
+            }
+
+            #compliancePL {
+                scrollbar-width: thin; 
+                scrollbar-color: #888 #f1f1f1; 
+            }
+            
+            .green-selected option:checked {
+                background-color: green;
+                color: white;
+            }
+            
+            /* Responsive adjustments */
+            @media (max-width: 1200px) {
+                .lwc-controls-grid {
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                }
+            }
+            
+            @media (max-width: 992px) {
+                .lwc-controls-grid {
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .lwc-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .lwc-header {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                
+                .lwc-button-group {
+                    justify-content: center;
+                }
+                
+                .lwc-multiselect-body {
+                    flex-direction: column;
+                }
+                
+                .lwc-multiselect-actions {
+                    flex-direction: row;
+                    justify-content: center;
+                    padding: 0.5rem 0;
+                }
+                
+                .lwc-controls-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .lwc-multiselect-button {
+                    min-width: 1.5rem;
+                    min-height: 1.5rem;
+                    padding: 0 0.25rem;
+                    font-size: 0.625rem;
+                }
+                
+                .lwc-multiselect-button-icon {
+                    font-size: 0.75rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <apex:form id="theForm">
+            <div class="slds-scope lwc-container">
+                <div class="lwc-card">
+                    <div class="lwc-card-header">
+                        <div class="lwc-header">
+                            <div style="display: flex; align-items: center;">
+                                <img src="{!$Resource.samBgcRemoved}" alt="SAM Logo" style="height: 40px; margin-right: 10px;" />
+                                <div>
+                                    <h1 class="lwc-header-title">Object Descriptions</h1>
+                                    <p style="margin: 0; font-size: 12px; color: #666;">Manage and edit object descriptions for your Salesforce org</p>
+                                </div>
+                            </div>
+                            <div class="lwc-button-group">
+                                <apex:commandButton value="Refresh" action="{!fetchObjectDescriptions}" styleClass="lwc-button" reRender="theForm" />
+                                <apex:commandButton value="Help" onclick="window.open('https://help.salesforce.com', '_blank'); return false;" styleClass="lwc-button" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lwc-card-body">
+
+   <apex:actionStatus id="tableStatus" layout="block">
+                <apex:facet name="start">
+                    <p >
+                        <div class="slds-spinner_container slds-is-fixed">
+                            <div role="status" class="slds-spinner slds-spinner_large">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                    </div>
+                </p>
+            </apex:facet>
+            <apex:facet name="stop"></apex:facet>
+        </apex:actionStatus>
+            <table class="slds-table slds-table_bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <!-- Logo Column -->
+                                    <th style="text-align: left; background-color: transparent; width: 15%;">
+                                        <div class="slds-truncate" title="Application Perfection">
+                                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Description Column -->
+                                    <th style="background-color: transparent; text-align: left;">
+                                        <div class="slds-truncate">
+                                            <h2>
+                                                Review and edit custom object metadata to create or update a complete custom object dictionary.  
+                                            </h2>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Button Group Column -->
+                                    <th style="background-color: transparent; width: 35%;">
+                                        <div style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px;">
+                                            <apex:commandLink value="Help/Training" action="{!openHelpTraining}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="FAQ's" action="{!openFAQ}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Release Notes" action="{!openReleaseNotes}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Security Logo -->
+                                    <th style="text-align: right; width: 10%; background-color: transparent;">
+                                        <div class="slds-truncate" title="Security &amp; Access Manager">
+                                            <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+            
+            <!-- Object Statistics (grouped display in a single row) -->
+            <div class="lwc-section">
+                <div class="lwc-group-row">
+                    <!-- Group 1: High level object statistics -->
+                    <div class="lwc-group-box">
+                        <h3 class="lwc-section__title">High level object statistics</h3>
+                        <div class="lwc-progress-container">
+                            <div class="lwc-progress-card">
+                                <div class="lwc-progress-value">{!totalObjectCount}</div>
+                                <div class="lwc-progress-label">Total Objects</div>
+                                <div class="lwc-progress-help">All standard and custom objects in the org.</div>
+                            </div>
+                            <div class="lwc-progress-card">
+                                <div class="lwc-progress-value">{!descriptionsPopulatedCount}</div>
+                                <div class="lwc-progress-label">Objects with description populated</div>
+                                <div class="lwc-progress-help">Objects whose “Description” field contains text.</div>
+                            </div>
+                            <div class="lwc-progress-card">
+                                <div class="lwc-progress-value">{!totalObjectCount - descriptionsPopulatedCount}</div>
+                                <div class="lwc-progress-label">Objects with description not populated</div>
+                                <div class="lwc-progress-help">Objects whose “Description” field is blank.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 2: Action - Object Descriptions that can be updated -->
+                    <div class="lwc-group-box">
+                        <h3 class="lwc-section__title">Action - Object Descriptions that can be updated</h3>
+                        <div class="lwc-progress-container">
+                            <div class="lwc-progress-card">
+                                <div class="lwc-progress-value">{!editableObjectCount}</div>
+                                <div class="lwc-progress-label">Objects with Editable Description</div>
+                                <div class="lwc-progress-help">Custom, non‑managed objects whose Description can be updated here.</div>
+                            </div>
+                            <div class="lwc-progress-card">
+                                <div class="lwc-progress-value">
+                                    <apex:outputText value="{!editableObjectCount - editableObjectCount}" rendered="{!editableObjectCount <= descriptionsPopulatedCount}"/>
+                                    <apex:outputText value="{!editableObjectCount - descriptionsPopulatedCount}" rendered="{!editableObjectCount > descriptionsPopulatedCount}"/>
+                                </div>
+                                <div class="lwc-progress-label">Objects with Blank Editable Description</div>
+                                <div class="lwc-progress-help">Editable objects where the “Description” field is blank.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Group 3: No Action - Object Descriptions that cant be updated -->
+                    <div class="lwc-group-box">
+                        <h3 class="lwc-section__title">No Action - Object Descriptions that cant be updated</h3>
+                        <div class="lwc-progress-container">
+                            <div class="lwc-progress-card">
+                                <div class="lwc-progress-value">
+                                    <apex:outputText value="{!totalObjectCount - editableObjectCount - (descriptionsPopulatedCount - editableObjectCount)}" rendered="{!editableObjectCount <= descriptionsPopulatedCount}"/>
+                                    <apex:outputText value="{!totalObjectCount - editableObjectCount}" rendered="{!editableObjectCount > descriptionsPopulatedCount}"/>
+                                </div>
+                                <div class="lwc-progress-label">Objects with uneditable description blank</div>
+                                <div class="lwc-progress-help">Non‑editable objects where the “Description” field is blank.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lwc-section">
+                <h2 class="lwc-section__title">Object Selection &amp; Actions</h2>
+                <div class="lwc-controls-grid">
+                    <div class="lwc-form-element">
+                        <label class="lwc-form-element__label">Select Objects</label>
+                        <div class="lwc-multiselect-container">
+                            <c:multiselectpicklistobjdesc id="multiselectComponents"
+                                                          leftLabel="Available Custom Objects"
+                                                          leftOption="{!objectsList}"
+                                                          leftOption1=""
+                                                          rightLabel="Selected Custom Objects"
+                                                          rightOption="{!selectedObjectsList}"
+                                                          size="8"
+                                                          width="180px"/>
+                        </div>
+                    </div>
+                    
+                    <div class="lwc-form-element">
+                        <label class="lwc-form-element__label">Actions</label>
+                        <div class="lwc-button-group" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
+                            <apex:commandButton value="Fetch Descriptions" action="{!fetchObjectDescriptions}" styleClass="lwc-button lwc-button_brand" reRender="descriptionsPanel" status="tableStatus" />
+                            <apex:commandButton value="Edit" action="{!toggleEdit}" styleClass="lwc-button" reRender="descriptionsPanel" />
+                            <apex:commandButton value="Save Changes" action="{!SaveDescriptionMap}" styleClass="lwc-button lwc-button_brand" reRender="descriptionsPanel" />
+                            <apex:commandButton value="Export To Excel" action="{!ExportToExcel}" styleClass="lwc-button" rendered="{!!isEdit}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+    <apex:outputPanel id="descriptionsPanel">
+        <div class="lwc-section">
+            <h2 class="lwc-section__title">Object Descriptions</h2>
+            <apex:pageMessages id="messagesPanel"/>
+            <div class="lwc-table-container">
+                <apex:pageBlock >
+                    <apex:pageBlockTable value="{!objectDescriptionsWrapper}" var="objDescWrapper" styleClass="lwc-table">
+                        <apex:column headerValue="Sr. No.">
+                            <apex:outputText value="{!objDescWrapper.serialNumber}"/>
+                        </apex:column>
+                        <apex:column headerValue="Object Name">
+                            <apex:outputText value="{!objDescWrapper.objectName}"/>
+                        </apex:column>
+                        <apex:column headerValue="Description">
+                            <apex:outputText rendered="{!NOT(isEdit)}" value="{!objDescWrapper.description}"/>
+                            <apex:inputTextarea rendered="{!isEdit}" 
+                value="{!objDescWrapper.description}" 
+                styleClass="lwc-textarea" 
+                rows="3"
+                disabled="{!objDescWrapper.isManaged}"
+            />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlock>
+            </div>
+        </div>
+     </apex:outputPanel>
+                    </div>
+                </div>
+                
+                <div class="lwc-footer">
+                    <p>© 2024 Salesforce Application Management. All rights reserved.</p>
+                </div>
+            </div>
+        </apex:form>
+    </body>
+</apex:page>

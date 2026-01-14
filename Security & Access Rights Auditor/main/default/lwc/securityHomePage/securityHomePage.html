@@ -1,0 +1,438 @@
+<template>
+    <div class="main-container">
+        <!-- Header Section -->
+        <!--<div class="header-container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src={samBgcRemovedUrl} alt="Security + Access Manager Logo" class="header-logo-image"/>
+                </div>
+                <div class="nav-links">
+                    <a href="javascript:void(0);" class="nav-link" onclick={handleNavLinkClick}>Features</a>
+                    <a href="javascript:void(0);" class="nav-link" onclick={handleNavLinkClick}>Security Modules</a>
+                    <a href="javascript:void(0);" class="nav-link" onclick={handleNavLinkClick}>Testimonials</a>
+                    <a href="javascript:void(0);" class="nav-link" onclick={handleNavLinkClick}>Pricing</a>
+                </div>
+                <div class="action-buttons">
+                    <button class="sign-in-button" onclick={handleSignIn}>Sign In</button>
+                    <button class="get-started-button" onclick={handleGetStarted}>Get Started</button>
+                </div> 
+            </div>
+        </div>-->
+        
+        <!-- Hero Section -->
+        <div class="hero-section">
+               <img src={samBgcRemovedUrl} alt="Security + Access Manager Logo" class="header-logo-image"/>
+           
+        </div>
+        
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <!-- Row 1 -->
+            <div class="feature-row">
+                <!-- Object Level Security -->
+                <div class="feature-card" data-feature="objectSecurity" onclick={navigateToFeature} data-licensed={objectSecurityLicensed}>
+                    <template if:true={objectSecurityLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={objectSecurityLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:shield" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Object Access</h2>
+                    <p> Object Level Security, View, update, export, log changes, revert to previous logs</p>
+                </div>
+                
+                <!-- Field Level Security -->
+                <div class="feature-card" data-feature="fieldSecurity" onclick={navigateToFeature} data-licensed={fieldSecurityLicensed}>
+                    <template if:true={fieldSecurityLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={fieldSecurityLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:database" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Object & Field Access</h2>
+                    <p>Field Level Security, View, update, export, log changes, revert to previous logs</p>
+                </div>
+                
+                <!-- Record Access -->
+                <div class="feature-card" data-feature="recordAccess" onclick={navigateToFeature} data-licensed={recordAccessLicensed}>
+                    <template if:true={recordAccessLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={recordAccessLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:search" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Record Access</h2>
+                    <p>Query/troubleshoot why a user can access a record in seconds</p>
+                </div>
+
+                <!-- Intel Tab -->
+                <div class="feature-card" data-feature="intelTab" onclick={navigateToFeature} data-licensed={intelTabLicensed}>
+                    <template if:true={intelTabLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={intelTabLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:chart" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Intel Tab</h2>
+                    <p>All reports needed to run a comprehensive permissions audit in one place</p>
+                </div>
+                
+                
+            </div>
+            
+            <!-- Row 2 -->
+            <div class="feature-row">
+                <!-- Data Dictionary Builder -->
+                <div class="feature-card" data-feature="dataDescriptionEditor" onclick={navigateToFeature} data-licensed={dataDescriptionEditorLicensed}>
+                    <template if:true={dataDescriptionEditorLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={dataDescriptionEditorLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:database" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Data Dictionary Builder</h2>
+                    <p>Create field descriptions, help text, and compliance documentation</p>
+                </div>
+                
+                <!-- System Permissions -->
+                <div class="feature-card" data-feature="System_Permissions" onclick={navigateToFeature} data-licensed={systemPermissionsLicensed}>
+                    <template if:true={systemPermissionsLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={systemPermissionsLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:settings" size="medium"></lightning-icon>
+                    </div>
+                    <h2>System Permissions</h2>
+                    <p>Review system permissions across multiple profiles</p>
+                </div>
+                
+                <!-- Audit-->
+                <div class="feature-card" data-feature="permissionAudit" onclick={navigateToFeature} data-licensed={permissionAuditLicensed}>
+                    <template if:true={permissionAuditLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={permissionAuditLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:list" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Audit</h2>
+                    <p>Create and manage org audits</p>
+                </div>
+                
+                <!-- Report Manager Pro -->
+                <div class="feature-card" data-feature="reportManager" onclick={navigateToFeature} data-licensed={reportManagerLicensed}>
+                    <template if:true={reportManagerLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={reportManagerLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:chart" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Report Manager Pro</h2>
+                    <p>Report and dashboard intel, clean up and maintenance</p>
+                </div>
+            </div>
+            
+            <!-- Row 3 -->
+            <div class="feature-row">
+                <!-- Bulk Exporter -->
+                <div class="feature-card" data-feature="bulkExporter" onclick={navigateToFeature} data-licensed={bulkExporterLicensed}>
+                    <template if:true={bulkExporterLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={bulkExporterLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:download" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Bulk Exporter</h2>
+                    <p>Export permissions data in bulk for analysis and reporting</p>
+                </div>
+                
+                <!-- Lightning Intel -->
+                <div class="feature-card" data-feature="lightningIntel" onclick={navigateToFeature} data-licensed={lightningIntelLicensed}>
+                    <template if:true={lightningIntelLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={lightningIntelLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:lightning_inspector" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Lightning Intel</h2>
+                    <p>Advanced analytics and insights for Lightning platform security</p>
+                </div>
+                
+                <!-- User Access Manager -->
+                <div class="feature-card" data-feature="userAccessManager" onclick={navigateToFeature} data-licensed={userAccessManagerLicensed}>
+                    <template if:true={userAccessManagerLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={userAccessManagerLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:user" size="medium"></lightning-icon>
+                    </div>
+                    <h2>User Access Manager</h2>
+                    <p>Comprehensive user access management and monitoring tools</p>
+                </div>
+                
+                <!-- Cloner App -->
+                <div class="feature-card" data-feature="clonerApp" onclick={navigateToFeature} data-licensed={clonerAppLicensed}>
+                    <template if:true={clonerAppLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={clonerAppLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:copy" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Cloner App</h2>
+                    <p>Streamlined permission cloning and management tools</p>
+                </div>
+            </div>
+            
+            <!-- Row 4 - New Features -->
+            <div class="feature-row">
+                <!-- Privileged Permissions -->
+                <div class="feature-card" data-feature="privilegedPermissions" onclick={navigateToFeature} data-licensed={privilegedPermissionsLicensed}>
+                    <template if:true={privilegedPermissionsLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={privilegedPermissionsLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:shield" size="medium"></lightning-icon>
+                    </div>
+                    <h2>Privileged Permissions</h2>
+                    <p>Manage and monitor high-risk privileged system permissions</p>
+                </div>
+                
+                <!-- User Data Dictionary -->
+                <div class="feature-card" data-feature="userDataDictionary" onclick={navigateToFeature} data-licensed={userDataDictionaryLicensed}>
+                    <template if:true={userDataDictionaryLicensed}>
+                        <span class="license-badge licensed">Licensed</span>
+                    </template>
+                    <template if:false={userDataDictionaryLicensed}>
+                        <span class="license-badge unlicensed">Unlicensed</span>
+                    </template>
+                    <div class="feature-icon">
+                        <lightning-icon icon-name="utility:user" size="medium"></lightning-icon>
+                    </div>
+                    <h2>User Data Dictionary</h2>
+                    <p>Role-specific data dictionaries for end users and teams</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Call to Action Section -->
+        <div class="cta-section">
+            <p>Looking for more info? <a href="https://applicationperfection.com/" class="cta-link" onclick={handleNavLinkClick}>Click below to view more</a></p>
+            <button class="explore-button" onclick={handleExploreAll}>
+                Explore All Features
+                <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+            </button>
+        </div>
+        
+        <!-- Footer with Additional Apps -->
+        <div class="footer-section">
+            <div class="footer-title">
+                <h2>Our Complete Suite of Products</h2>
+                <p>Powerful tools to manage your Salesforce security and governance</p>
+            </div>
+            
+            <div class="app-grid">
+                <!-- Row 1 -->
+                <div class="app-row">
+                    <!-- Permissions Manager Pro -->
+                    <div class="app-card" data-app="permissionsManager" > <!--onclick={handleAppNavigation}-->
+                        <div class="app-logo">
+                            <img src={permissionsManagerLogoManagerUrl} alt="Ultimate User Manager Logo" class="user-logo-image"/>
+                        </div>
+                        <div class="app-info">
+                            <h3>Permissions Manager <span class="pro-tag">Pro</span></h3>
+                            <div class="app-features">
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Gain full control over permissions access</p>
+                                </div>
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Mass audit, update and maintain</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ultimate User Manager -->
+                    <div class="app-card" data-app="ultimateUser" > <!--onclick={handleAppNavigation}-->
+                        <div class="app-logo">
+                            <img src={userLogoManagerUrl} alt="Ultimate User Manager Logo" class="user-logo-image"/>
+                        </div>
+                        <div class="app-info">
+                            <h3>Ultimate User <span class="manager-tag">Manager</span></h3>
+                            <div class="app-features">
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Optimal control over user management</p>
+                                </div>
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Identify critical user access risks, mitigate and revoke</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 2 -->
+                <div class="app-row">
+                    <!-- Instant Permissions Cloner -->
+                    <div class="app-card" data-app="instantCloner" > <!--onclick={handleAppNavigation}-->
+                        <div class="app-logo">
+                            <img src={instantClonerLogoManagerUrl} alt="Ultimate User Manager Logo" class="user-logo-image"/>
+                        </div>
+                        <div class="app-info">
+                            <h3>Instant Permissions <span class="cloner-tag">Cloner</span></h3>
+                            <div class="app-features">
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Migrate profiles to permission sets in 3 clicks</p>
+                                </div>
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Clone users and their related permissions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Permissions Audit Planner Pro -->
+                    <div class="app-card" data-app="auditPlanner" > <!--onclick={handleAppNavigation}-->
+                        <div class="app-logo">
+                            <img src={auditPlannerLogoManagerUrl} alt="Ultimate User Manager Logo" class="user-logo-image"/>
+                        </div>
+                        <div class="app-info">
+                            <h3>Permissions Audit Planner <span class="pro-tag">Pro</span></h3>
+                            <div class="app-features">
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Streamline your audit process from start to finish</p>
+                                </div>
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Plan, track, document and maintain compliance</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 3 -->
+                <div class="app-row">
+                    <!-- Report Manager Pro -->
+                    <div class="app-card" data-app="reportManager" > <!--onclick={handleAppNavigation}-->
+                        <div class="app-logo">
+                            <img src={reportManagerLogoManagerUrl} alt="Ultimate User Manager Logo" class="user-logo-image"/>
+                        </div>
+                        <div class="app-info">
+                            <h3>Report <span class="manager-tag">Manager</span> <span class="pro-tag">Pro</span></h3>
+                            <div class="app-features">
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Effortless cleanup and optimization of reports</p>
+                                </div>
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Mass organize, archive, move or delete</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Dictionary Builder -->
+                    <div class="app-card" data-app="dataDictionary" > <!--onclick={handleAppNavigation}-->
+                        <div class="app-logo">
+                            <img src={dataDictionaryLogoManagerUrl} alt="Ultimate User Manager Logo" class="user-logo-image"/>
+                        </div>
+                        <div class="app-info">
+                            <h3>Data Dictionary <span class="builder-tag">Builder</span></h3>
+                            <div class="app-features">
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Maintain data clarity and governance</p>
+                                </div>
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Document critical data fields, objects and permissions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 4 -->
+                <div class="app-row">
+                    <!-- Data Dictionary User -->
+                    <div class="app-card center-card" data-app="dataDictionaryUser" > <!--onclick={handleAppNavigation}-->
+                        <div class="app-logo">
+                            <img src={dataDictionaryUserLogoManagerUrl} alt="Ultimate User Manager Logo" class="user-logo-image"/>
+                        </div>
+                        <div class="app-info">
+                            <h3>Data Dictionary <span class="user-tag">User</span></h3>
+                            <div class="app-features">
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Empower end users with role specific data dictionaries</p>
+                                </div>
+                                <div class="feature-point">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    <p>Ensure every user understands the data they work with</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="https://applicationperfection.com/security-access-manager-help-training/" onclick={handleFooterLinkClick}>About Us</a>
+                    <a href="https://applicationperfection.com/contact_us/" onclick={handleFooterLinkClick}>Contact</a>
+                    <a href="https://applicationperfection.com/privacy-policy/" onclick={handleFooterLinkClick}>Privacy Policy</a>
+                    <a href="https://applicationperfection.com/services/" onclick={handleFooterLinkClick}>Services</a>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2025 Security & Access Manager. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

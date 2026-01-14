@@ -1,0 +1,1759 @@
+/* Root variables for consistent theming */
+:host {
+    --brand-primary: #0070d2;
+    --brand-primary-hover: #005fb2;
+    --brand-secondary: #f7faff;
+    --text-color: #16325c;
+    --text-color-light: #54698d;
+    --border-radius: 8px;
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition-standard: all 0.2s ease-in-out;
+}
+
+.item-list-container {
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    border-radius: var(--border-radius);
+    background-color: #ffffff;
+    box-shadow: var(--shadow-soft);
+}
+
+.selectable-item {
+    cursor: pointer;
+    border-radius: 6px;
+    transition: var(--transition-standard);
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 0.25rem;
+    border-left: 3px solid transparent;
+}
+
+.selectable-item:hover {
+    background-color: var(--brand-secondary);
+    transform: translateX(2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.selectable-item.selected {
+    background-color: #eef4ff;
+    border-left: 3px solid var(--brand-primary);
+}
+
+.slds-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    border: none;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+}
+
+.slds-card__header {
+    background-color: #f7f9fc;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    padding: 1rem;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.slds-card__body {
+    flex: 1;
+    overflow: hidden;
+    padding: 1rem 0.5rem;
+}
+
+/* Template Manager Styling */
+.template-manager-container {
+    margin-top: 0;
+    animation: fadeInUp 0.5s ease-out;
+    background-color: #fff;
+    transition: var(--transition-standard);
+    box-shadow: var(--shadow-medium);
+    border-radius: var(--border-radius);
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+}
+
+.template-manager-hiding {
+    animation: fadeOutDown 0.3s ease-out forwards;
+}
+
+.template-create-section,
+.template-export-section {
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    background-color: #fafbfd;
+    transition: var(--transition-standard);
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.template-create-section:hover,
+.template-export-section:hover {
+    background-color: var(--brand-secondary);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Animation for template manager */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.analysis-panel {
+    animation: slideIn 0.4s ease-in-out;
+    box-shadow: var(--shadow-medium);
+    border-radius: var(--border-radius);
+    border: none;
+    overflow: hidden;
+}
+
+/* Table styles */
+.slds-table {
+    font-size: 0.85rem;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+.slds-table th {
+    background-color: #f5f7fa;
+    color: var(--text-color);
+    font-weight: 600;
+    padding: 0.75rem 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.slds-table td {
+    padding: 0.75rem 0.5rem;
+    vertical-align: middle;
+}
+
+.slds-table tr:hover td {
+    background-color: var(--brand-secondary);
+}
+
+/* Badge styling */
+.slds-badge {
+    font-size: 0.7rem;
+    margin: 0.1rem;
+    white-space: nowrap;
+    border-radius: 12px;
+    padding: 0.25rem 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Privileged permission badge styling */
+.slds-badge_inverse.slds-theme_error {
+    background-color: #c23934;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(194, 57, 52, 0.25);
+}
+
+/* Privileged permission icon styling */
+.slds-icon-text-error {
+    fill: #c23934;
+}
+
+/* Privileged permission item styling */
+.selectable-item.privileged-permission {
+    border-left-color: #c23934;
+}
+
+.selectable-item.privileged-permission:hover {
+    background-color: #fef5f5;
+}
+
+/* Legend box styling */
+.slds-box_x-small.slds-theme_shade {
+    padding: 0.5rem;
+    border-radius: 6px;
+    background-color: #f7f9fc;
+    border: 1px solid #e8ecf3;
+}
+
+/* Button styles */
+.slds-button {
+    padding: 0 1rem;
+    height: 2.25rem;
+    transition: var(--transition-standard);
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.slds-button_brand {
+    background-color: var(--brand-primary);
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 112, 210, 0.2);
+}
+
+.slds-button_brand:hover {
+    background-color: var(--brand-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 112, 210, 0.3);
+}
+
+.slds-button_neutral {
+    background-color: #ffffff;
+    border: 1px solid #d8dde6;
+}
+
+.slds-button_neutral:hover {
+    background-color: #f7f9fc;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+}
+
+/* Custom scrollbar styles */
+.item-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.item-list-container::-webkit-scrollbar-track {
+    background: #f5f7fa;
+    border-radius: 3px;
+}
+
+.item-list-container::-webkit-scrollbar-thumb {
+    background: #d8dde6;
+    border-radius: 3px;
+}
+
+.item-list-container::-webkit-scrollbar-thumb:hover {
+    background: #b3b7c1;
+}
+
+/* Style user-added permissions */
+.slds-badge.slds-badge_lightest {
+    border-radius: 1rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    background-color: #f2f6fc;
+    color: #054ada;
+    border: 1px solid #d8e2f7;
+}
+
+/* Permission source styling by type */
+.source-badge[data-source-type="Profile"] {
+    background-color: #fff3dd;
+    color: #6f4800;
+    border: 1px solid #f5d088;
+    display: inline-flex;
+    align-items: center;
+}
+
+.source-badge[data-source-type="Permission Set"] {
+    background-color: #eef4ff;
+    color: #014486;
+    border: 1px solid #90cbf8;
+    display: inline-flex;
+    align-items: center;
+}
+
+.source-badge[data-source-type="Permission Set Group"] {
+    background-color: #f1f9ea;
+    color: #2e661a;
+    border: 1px solid #b8e397;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Modified badge style for permission sources */
+.permission-set-badge.source-badge {
+    margin: 0.125rem;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    letter-spacing: 0.3px;
+}
+
+.permission-set-badge.source-badge lightning-icon {
+    margin-right: 0.25rem;
+}
+
+/* Badge styling within permission set groups */
+:host .slds-badge {
+    font-size: 0.7rem;
+    margin: 0.1rem;
+    white-space: nowrap;
+    border-radius: 12px;
+    padding: 0.25rem 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Apply specific styling to badges in the Permission Set Groups tab */
+[data-value="permissionSetGroups"] .slds-badge,
+lightning-tab[value="permissionSetGroups"] .slds-badge {
+    background-color: #eef4ff;
+    color: #014486;
+    border: 1px solid #90cbf8;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    margin: 0.125rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    border-radius: 10px;
+}
+
+/* Force styling for tab containers */
+:host lightning-tab {
+    --lwc-tabsetPadding: 0;
+}
+
+/* Force analysis panel styling */
+:host .analysis-panel .slds-table {
+    font-size: 0.85rem;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+/* Improved empty state styling with !important to pierce Shadow DOM */
+.empty-state {
+    margin: 2rem auto !important;
+    max-width: 400px !important;
+    padding: 2.5rem 1.5rem !important;
+    text-align: center !important;
+    background-color: #fafbfd !important;
+    border-radius: 12px !important;
+    border: 1px dashed #e1e5ee !important;
+}
+
+.empty-state lightning-icon {
+    --sds-c-icon-color-foreground-default: #b0bac9 !important;
+    --sds-c-icon-color-background: #f1f4f9 !important;
+}
+
+.empty-state h3 {
+    margin-top: 1rem !important;
+    font-size: 1rem !important;
+    color: #677285 !important;
+}
+
+/* Ensure all tab content gets correct styling */
+:host [role="tabpanel"] {
+    background-color: white;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+/* Input field styling */
+.slds-input {
+    border-radius: 6px;
+    border: 1px solid #d8dde6;
+    padding: 0px;
+    transition: var(--transition-standard);
+}
+
+.slds-input:focus {
+    border-color: #1589ee;
+    box-shadow: 0 0 5px rgba(21, 137, 238, 0.3);
+    outline: none;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Custom form styling */
+.slds-box.slds-theme_shade {
+    border-radius: var(--border-radius);
+    background-color: #f7f9fc;
+    border: 1px solid #eef1f6;
+    box-shadow: var(--shadow-soft);
+}
+
+/* Modal styling */
+.slds-modal__container {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    /* Override SLDS default modal width for field selector */
+    width: 80% !important;
+    max-width: 90rem !important;
+    min-width: 60rem !important;
+}
+
+/* Responsive modal sizing */
+@media (max-width: 1200px) {
+    .slds-modal__container {
+        width: 90% !important;
+        min-width: 50rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .slds-modal__container {
+        width: 95% !important;
+        min-width: 20rem !important;
+        max-width: none !important;
+    }
+}
+
+.slds-modal__header {
+    background-color: #f7f9fc;
+    border-bottom: 1px solid #eef1f6;
+}
+
+.slds-modal__content {
+    padding: 1.5rem;
+}
+
+/* Progress bar styling */
+.slds-progress-bar {
+    background-color: #f2f2f2;
+    border-radius: 100px;
+    height: 0.75rem;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.slds-progress-bar__value {
+    background: linear-gradient(90deg, #0070d2, #1589ee);
+    display: block;
+    height: 100%;
+    position: relative;
+    border-radius: 100px;
+    box-shadow: 0 1px 3px rgba(0, 112, 210, 0.3);
+}
+
+.progress-bar-smooth {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Tab styling */
+.slds-tabs_default__nav,
+.slds-tabs_scoped__nav {
+    background-color: #f7f9fc;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.slds-tabs_default__item,
+.slds-tabs_scoped__item {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    margin-bottom: -2px;
+    transition: var(--transition-standard);
+}
+
+.slds-tabs_default__item.slds-is-active::after,
+.slds-tabs_scoped__item.slds-is-active::after {
+    height: 3px;
+    background-color: var(--brand-primary);
+}
+
+.slds-tabs_default__item:hover,
+.slds-tabs_scoped__item:hover {
+    color: var(--brand-primary);
+}
+
+/* Additional styling for lightning-tabset */
+:host lightning-tabset {
+    --sds-c-tabs-scoped-color-border: #eef1f6;
+    --sds-c-tabs-scoped-color-background: #f7f9fc;
+    --sds-c-tabs-scoped-color-background-active: #ffffff;
+    --sds-c-tabs-scoped-color-text-active: var(--brand-primary);
+    --sds-c-tabs-scoped-color-border-active: var(--brand-primary);
+}
+
+/* Tab content container styling */
+:host .slds-tabs_scoped__content,
+:host .slds-tabs_default__content {
+    background-color: white;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    border: 1px solid #eef1f6;
+    border-top: none;
+}
+
+/* Status badges */
+.slds-badge_success {
+    background-color: #f1f9ea;
+    color: #2e7d32;
+    border: 1px solid #b8e897;
+}
+
+.slds-badge_error {
+    background-color: #fff1f1;
+    color: #c62828;
+    border: 1px solid #f5c6c6;
+}
+
+/* Make text styles more modern */
+.slds-text-heading_small {
+    font-weight: 600;
+    color: var(--text-color);
+    letter-spacing: 0.25px;
+}
+
+.slds-text-body_small {
+    color: var(--text-color-light);
+    line-height: 1.5;
+}
+
+/* Improve the look of the permission list items */
+.slds-item {
+    border-bottom: 1px solid #f2f2f2 !important;
+    
+}
+
+.slds-has-dividers_bottom-space > .slds-item:last-child {
+    border-bottom: none !important;
+}
+
+/* Expandable Card Styling */
+.expandable-card {
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+    background-color: #fff;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid #eaedf2;
+    overflow: visible;
+    transition: var(--transition-standard);
+    position: relative;
+    z-index: 1;
+}
+
+.expandable-card:hover {
+    box-shadow: var(--shadow-medium);
+}
+
+.expandable-card__header {
+    padding: 0.75rem 1rem;
+    background-color: #f7f9fc;
+    cursor: pointer;
+    transition: var(--transition-standard);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+}
+
+.expandable-card__header:hover {
+    background-color: #eef4ff;
+}
+
+.expandable-card__content {
+    padding: 1.5rem;
+    border-top: 1px solid #eaedf2;
+    background-color: #fafbfd;
+    overflow: visible;
+    max-height: 0;
+    opacity: 0;
+    transition: var(--transition-standard);
+    position: relative;
+    z-index: 10;
+}
+
+.expandable-card__content.expanded {
+    max-height: 2000px; /* Large enough to fit content */
+    opacity: 1;
+    padding: 1.5rem;
+}
+
+.expandable-icon {
+    transition: transform 0.3s ease;
+}
+
+.expandable-icon.expanded {
+    transform: rotate(90deg);
+}
+
+/* Card style improvements */
+.slds-card__body_inner {
+    padding: 1rem;
+}
+
+.slds-card__header-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* TEMPLATE DETAILS SECTION - CONSOLIDATED STYLES 
+   These styles use !important flags to ensure they aren't overridden 
+   by other CSS */
+
+/* Overall container styling */
+.template-details {
+    background-color: #ffffff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.2s ease-in-out !important;
+    overflow: visible !important;
+}
+
+.template-details:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Header styling */
+.template-details .slds-card__header {
+    background-color: #f8fafd !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid #f0f2f5 !important;
+}
+
+.template-details .slds-card__header-title {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: #16325c !important;
+}
+
+.template-details .slds-card__header-link {
+    text-decoration: none !important;
+    color: #16325c !important;
+}
+
+.template-details .slds-badge_success {
+    background-color: #f1f9ea !important;
+    color: #2e7d32 !important;
+    border: 1px solid #b8e897 !important;
+    font-size: 0.75rem !important;
+}
+
+.template-details .slds-media__figure {
+    margin-right: 0.75rem !important;
+}
+
+/* Stats tiles styling */
+.template-details .slds-card__tile {
+    border-radius: 8px !important;
+    padding: 1rem !important;
+    background-color: #f8fafd !important;
+    transition: all 0.2s ease-in-out !important;
+    height: 100% !important;
+    border: 1px solid #eef1f6 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.template-details .slds-card__tile:hover {
+    background-color: #eef4ff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.template-details .slds-card__tile .slds-media__body {
+    flex-grow: 1 !important;
+}
+
+.template-details .slds-card__tile .slds-tile__detail {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+}
+
+.template-details .slds-text-heading_large {
+    font-size: 2.25rem !important;
+    font-weight: 300 !important;
+    color: #0070d2 !important;
+    margin: 0.5rem 0 0 0 !important;
+    line-height: 1.1 !important;
+}
+
+.template-details .slds-text-title_caps {
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px !important;
+    color: #54698d !important;
+}
+
+/* Detail boxes for permission lists */
+.detail-box {
+    background-color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 1rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #eef1f6 !important;
+    height: auto !important;
+    min-height: 300px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+}
+
+.detail-box-header {
+    display: flex !important;
+    align-items: center !important;
+    padding-bottom: 0.75rem !important;
+    border-bottom: 1px solid #f0f2f5 !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.detail-box-header h3 {
+    margin: 0 0.5rem !important;
+    font-weight: 600 !important;
+    color: #0070d2 !important;
+    flex-grow: 1 !important;
+    font-size: 1rem !important;
+}
+
+/* Scrollable containers for lists */
+.detail-scrollable {
+    max-height: 400px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 0.5rem !important;
+    margin-top: 0.75rem !important;
+    flex-grow: 1 !important;
+    display: block !important;
+    position: relative !important;
+    scrollbar-width: thin !important; /* Firefox */
+    scrollbar-color: #d8dde6 #f5f7fa !important; /* Firefox */
+    -webkit-overflow-scrolling: touch !important; /* iOS smooth scrolling */
+}
+
+/* Custom scrollbar styling with high specificity */
+:host .detail-scrollable::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+    display: block !important;
+}
+
+:host .detail-scrollable::-webkit-scrollbar-track {
+    background: #f5f7fa !important;
+    border-radius: 8px !important;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+:host .detail-scrollable::-webkit-scrollbar-thumb {
+    background: #d8dde6 !important;
+    border-radius: 8px !important;
+    border: none !important;
+}
+
+:host .detail-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #b3b7c1 !important;
+    cursor: pointer !important;
+}
+
+/* List styling */
+.template-details .slds-list_vertical,
+.detail-scrollable .slds-list_vertical {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.template-details .slds-item,
+.detail-scrollable .slds-item {
+    padding: 0.5rem !important;
+    border-bottom: 1px solid #f7f9fc !important;
+    margin-bottom: 0 !important;
+    transition: background-color 0.2s ease !important;
+    border-radius: 4px !important;
+}
+
+.template-details .slds-item:last-child,
+.detail-scrollable .slds-item:last-child {
+    border-bottom: none !important;
+}
+
+.template-details .slds-item:hover,
+.detail-scrollable .slds-item:hover {
+    background-color: #f7faff !important;
+}
+
+.template-details .slds-item span,
+.detail-scrollable .slds-item span {
+    color: #16325c !important;
+    font-size: 0.875rem !important;
+    font-weight: 400 !important;
+}
+
+.detail-scrollable .slds-icon-text-success {
+    --slds-c-icon-color-foreground-default: #04844b !important;
+}
+
+/* Empty state styling */
+.template-details .empty-state {
+    color: #54698d !important;
+    font-style: italic !important;
+    text-align: center !important;
+    padding: 1.5rem 1rem !important;
+    background-color: #f7f9fc !important;
+    border-radius: 6px !important;
+    border: 1px dashed #d8dde6 !important;
+    margin: 0.75rem 0 !important;
+    font-size: 0.875rem !important;
+}
+
+/* Layout fixes */
+.template-details .slds-grid {
+    height: auto !important;
+}
+
+.template-details .slds-gutters {
+    margin: 0 !important;
+}
+
+/* END TEMPLATE DETAILS SECTION */
+
+/* Elevation classes for dynamic shadow effects */
+.elevation-1 {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.elevation-2 {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.elevation-3 {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Analysis panel tab styling with LWC/Shadow DOM compatibility */
+:host {
+    /* LWC-compatible CSS custom property declarations */
+    --sds-c-tabs-scoped-color-background: #f8fafd;
+    --sds-c-tabs-scoped-color-background-active: white;
+    --sds-c-tabs-scoped-color-border-active: var(--brand-primary);
+    --sds-c-tabs-scoped-text-color: var(--text-color);
+    --sds-c-tabs-scoped-text-color-active: var(--brand-primary);
+    --sds-c-tabs-font-weight: 600;
+    --sds-c-tabs-scoped-spacing-inline-start: 1.25rem;
+    --sds-c-tabs-scoped-spacing-inline-end: 1.25rem;
+    --sds-c-tabs-list-spacing-block-start: 0.5rem;
+    --sds-c-tabs-list-spacing-inline: 0.5rem 0.5rem 0 0.5rem;
+    
+    /* Fix for tab content to ensure tables show properly */
+    --lwc-tabsetPadding: 0;
+    --lwc-borderWidthThin: 1px;
+    --lwc-borderRadiusMedium: var(--border-radius);
+    --lwc-colorBackgroundPathActive: var(--brand-primary);
+    --lwc-colorBackgroundPathActiveHover: var(--brand-primary-hover);
+}
+
+/* Override Lightning styling directly */
+.analysis-tabset {
+    /* Direct manipulation of tab component through Shadow DOM piercing */
+    --slds-c-tabs-list-color-border: #eef1f6;
+    --slds-c-tabs-item-color-border-active: transparent;
+    --slds-c-tabs-item-text-color-active: var(--brand-primary);
+    --slds-c-tabs-item-color-background-active: white;
+}
+
+/* Fix for tables in tab panels */
+.table-container {
+    border-radius: var(--border-radius);
+    overflow: auto;
+    max-height: 500px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1rem;
+}
+
+/* Fix for tab active indicators */
+.slds-tabs_scoped__item.slds-is-active::after,
+.slds-tabs_scoped__item.slds-is-active::before {
+    background-color: var(--brand-primary);
+    background-image: linear-gradient(90deg, #0070d2, #1589ee);
+    height: 3px;
+    bottom: -1px;
+}
+
+/* Override element styling directly to ensure it applies in shadow DOM */
+.slds-tabs_scoped__nav {
+    background-color: #f8fafd !important;
+    border-bottom: 0 !important;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    overflow: hidden !important;
+    padding: 0.5rem 0.5rem 0 0.5rem !important;
+    gap: 0.25rem !important;
+    border: 1px solid #eef1f6 !important;
+    border-bottom: none !important;
+}
+
+.slds-tabs_scoped__item {
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    margin-right: 0.25rem !important;
+    border: none !important;
+    position: relative !important;
+    padding: 0.75rem 1.25rem !important;
+    transition: all 0.2s ease !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+    background-color: rgba(247, 249, 252, 0.6) !important;
+}
+
+.slds-tabs_scoped__item:hover {
+    background-color: rgba(238, 244, 255, 0.6) !important;
+}
+
+.slds-tabs_scoped__item.slds-is-active {
+    background-color: white !important;
+    color: var(--brand-primary) !important;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03) !important;
+    z-index: 1 !important;
+}
+
+.slds-tabs_scoped__content {
+    background-color: white !important;
+    border: 1px solid #eef1f6 !important;
+    border-top: none !important;
+    border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
+    padding: 0 !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Ensure table headers have proper styling */
+.slds-table th {
+    background-color: #f8fafd !important;
+    color: var(--text-color) !important;
+    font-weight: 600 !important;
+    padding: 0.85rem 0.75rem !important;
+    text-transform: uppercase !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 2px solid #eef1f6 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+}
+
+.slds-table {
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Close button styling */
+.close-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-standard);
+}
+
+.close-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.close-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--brand-primary);
+}
+
+/* Customization for badges in template panels */
+.detail-scrollable .slds-badge,
+.detail-box .slds-badge {
+    margin: 0 0.125rem;
+}
+
+.permission-set-badge {
+    background-color: #eef4ff;
+    color: #014486;
+    border: 1px solid #90cbf8;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    margin: 0.125rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Table container styling */
+.table-container {
+    border-radius: var(--border-radius);
+    overflow: auto;
+    max-height: 500px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 1rem;
+}
+
+.table-container .slds-table {
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 0;
+}
+
+.table-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f5f7fa;
+    border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #d8dde6;
+    border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #b3b7c1;
+}
+
+/* Ensure all tabs have consistent spacing */
+:host .analysis-tabset [role="tabpanel"] {
+    padding: 0;
+}
+
+:host .analysis-tabset .slds-p-around_medium {
+    padding: 1.5rem;
+}
+
+/* Badge specific styling for LWC components */
+span.permission-set-badge {
+    background-color: #eef4ff !important;
+    color: #014486 !important;
+    border: 1px solid #90cbf8 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0.25rem 0.5rem !important;
+    margin: 0.125rem !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Force container styling */
+.badge-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.25rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Direct styling to pierce Lightning Web Component's Shadow DOM */
+:host .lightning-tabset {
+    border-radius: var(--border-radius) !important;
+    overflow: hidden !important;
+}
+
+.active-tab-indicator {
+    display: block !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #0070d2, #1589ee) !important;
+    border-radius: 3px 3px 0 0 !important;
+}
+
+/* Set variables for inner tabs content via BEM-style naming */
+[data-element-id^="lightning-tab"] {
+    --slds-c-tabs-item-text-color-active: var(--brand-primary);
+    --slds-c-tabs-item-color-border-hover: transparent;
+}
+
+/* Ensure styling for tab content and active tab indicator */
+.slds-tabs_scoped__content {
+    padding: 0 !important;
+}
+
+/* Scoped element selector targeting */
+:host .slds-tabs_scoped__nav .slds-tabs_scoped__item.slds-is-active:after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #0070d2, #1589ee) !important;
+    border-radius: 3px 3px 0 0 !important;
+}
+
+/* Pagination styling */
+.pagination-controls {
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+    border-top: 1px solid #f0f2f5;
+    border-bottom: 1px solid #f0f2f5;
+    background-color: #fafbfd;
+    border-radius: 0.5rem;
+}
+
+.pagination-controls .slds-button-group {
+    display: inline-flex;
+    align-items: center;
+}
+
+.pagination-controls .slds-badge {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    background-color: #ffffff;
+    color: var(--text-color);
+    border: 1px solid #d8dde6;
+    box-shadow: var(--shadow-soft);
+}
+
+.pagination-controls .slds-button {
+    font-size: 0.8rem;
+    height: 2.7em;
+    padding: 0.5rem 0.75rem;
+    border-radius: 13px;
+    margin: 0 0.125rem;
+    white-space: nowrap;
+}
+
+.pagination-controls .slds-button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-indicator {
+    margin: 0 0.5rem !important;
+    min-width: 100px !important;
+}
+
+/* Standout analyze button styling */
+.analyze-button {
+    background: linear-gradient(45deg, #0070d2, #1589ee) !important;
+    box-shadow: 0 4px 10px rgba(0, 112, 210, 0.3) !important;
+    border: none !important;
+    font-weight: 600 !important;
+    transform: scale(1.05) !important;
+    letter-spacing: 0.3px !important;
+    transition: all 0.2s ease-in-out !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.analyze-button::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    left: -50% !important;
+    width: 200% !important;
+    height: 200% !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: rotate(45deg) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s !important;
+}
+
+.analyze-button:hover {
+    transform: scale(1.1) translateY(-2px) !important;
+    box-shadow: 0 6px 14px rgba(0, 112, 210, 0.4) !important;
+}
+
+.analyze-button:hover::before {
+    animation: shine 1.5s !important;
+}
+
+@keyframes shine {
+    0% {
+        opacity: 0;
+        left: -50%;
+    }
+    25% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        left: 150%;
+    }
+}
+
+.analyze-button-disabled {
+    background: #f3f3f3 !important;
+    color: #969696 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    cursor: not-allowed !important;
+}
+
+.search-icon {
+    --sds-c-icon-color-foreground-default: #747474;
+}
+
+.slds-combobox__form-element {
+    border-radius: 4px;
+}
+
+.slds-input__icon {
+    margin-top: -8px;
+}
+
+.slds-combobox_container {
+    width: 100%;
+}
+
+.slds-combobox__input {
+    padding-left: 2rem;
+    height: 32px;
+}
+
+.slds-icon_container {
+    line-height: 1;
+}
+
+/* Export container for HTML tables */
+.export-container {
+    position: absolute;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+/* Ensure tables in the export container don't affect layout but are still parseable */
+.export-container table {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+/* Progress bar animation */
+@keyframes progressBarAnimation {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.progress-bar-smooth {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Expandable rows styling */
+.expandable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.expandable-row:hover {
+    background-color: #f7f9fc;
+}
+
+.expand-button {
+    opacity: 0.7;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.expandable-row:hover .expand-button {
+    opacity: 1;
+}
+
+.detail-row {
+    background-color: #fafbfd;
+    border-top: 1px solid #e0e5ee;
+}
+
+.detail-content {
+    border-radius: 6px;
+    background-color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.detail-tabset {
+    --slds-c-tabs-color-border: #e0e5ee;
+    --slds-c-tabs-sizing-border: 1px;
+}
+
+.detail-tabset .slds-tabs_scoped__nav {
+    background-color: #f7f9fc;
+    border-radius: 6px 6px 0 0;
+}
+
+.detail-tabset .slds-tabs_scoped__content {
+    background-color: #ffffff;
+    border-radius: 0 0 6px 6px;
+    min-height: 200px;
+}
+
+.detail-tabset .slds-table {
+    font-size: 0.8rem;
+}
+
+.detail-tabset .slds-table th {
+    background-color: #f5f7fa;
+    font-size: 0.7rem;
+    padding: 0.5rem;
+}
+
+.detail-tabset .slds-table td {
+    padding: 0.5rem;
+}
+
+.detail-tabset .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #54698d;
+}
+
+.detail-tabset .empty-state lightning-icon {
+    margin-bottom: 0.5rem;
+}
+
+/* Animation for expanding rows */
+.detail-row {
+    animation: expandRow 0.3s ease-out;
+}
+
+@keyframes expandRow {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dynamic Fields Table Styling */
+.dynamic-table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 1200px; /* Ensure minimum width for proper column display */
+}
+
+.dynamic-table th,
+.dynamic-table td {
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.75rem 0.5rem;
+    vertical-align: middle;
+}
+
+/* Core field columns - fixed widths */
+.dynamic-table th:nth-child(1),
+.dynamic-table td:nth-child(1) {
+    width: 150px; /* Name column */
+    min-width: 150px;
+}
+
+.dynamic-table th:nth-child(2),
+.dynamic-table td:nth-child(2) {
+    width: 180px; /* Username column */
+    min-width: 180px;
+}
+
+/* Dynamic field columns - flexible width */
+.dynamic-table th:nth-child(n+3):nth-last-child(n+3),
+.dynamic-table td:nth-child(n+3):nth-last-child(n+3) {
+    width: 120px;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+/* Permission Sources column - wider */
+.dynamic-table th:nth-last-child(2),
+.dynamic-table td:nth-last-child(2) {
+    width: 250px;
+    min-width: 200px;
+    white-space: normal; /* Allow wrapping for badges */
+}
+
+/* Status column - narrow */
+.dynamic-table th:nth-last-child(1),
+.dynamic-table td:nth-last-child(1) {
+    width: 80px;
+    min-width: 80px;
+    text-align: center;
+}
+
+/* Boolean field icon styling */
+.dynamic-table .boolean-field-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Custom field indicator styling */
+.custom-field-indicator {
+    margin-left: 0.25rem;
+    opacity: 0.7;
+}
+
+/* Responsive table container */
+.dynamic-table-container {
+    overflow-x: auto;
+    overflow-y: visible;
+    width: 100%;
+    border-radius: 6px;
+    box-shadow: var(--shadow-soft);
+    background-color: #ffffff;
+}
+
+.dynamic-table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.dynamic-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.dynamic-table-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.dynamic-table-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* User Pagination Styles */
+.user-pagination-container {
+    background-color: #f7f9fc;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+    border: 1px solid #e0e5ee;
+}
+
+.user-pagination-container .slds-button-group {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.user-pagination-container .slds-button_small {
+    height: 2rem;
+    min-width: 2rem;
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.user-pagination-container .page-indicator {
+    background-color: #0070d2;
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.user-pagination-container .slds-text-body_small {
+    font-size: 0.8rem;
+    color: #54698d;
+    font-weight: 500;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+    .user-pagination-container .slds-grid {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .user-pagination-container .slds-col {
+        text-align: center !important;
+    }
+}
+
+/* Minimized Export Widget - Chat Icon Style */
+.minimized-export-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    z-index: 9999;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0070d2, #005fb2);
+    animation: slideInUp 0.3s ease-out;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid white;
+}
+
+.minimized-export-widget:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.minimized-export-widget.expanded {
+    width: 320px;
+    height: auto;
+    border-radius: 12px;
+    background: white;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    border: 1px solid #e5e5e5;
+}
+
+.minimized-export-widget .chat-icon {
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.minimized-export-widget.expanded .chat-icon {
+    display: none;
+}
+
+.minimized-export-widget .progress-ring {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #00d084 0%, #00d084 var(--progress-angle, 0%), transparent var(--progress-angle, 0%));
+    padding: 3px;
+    animation: rotate 2s linear infinite;
+}
+
+.minimized-export-widget .progress-ring::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0070d2, #005fb2);
+}
+
+.minimized-export-widget .export-content {
+    display: none;
+    width: 100%;
+    padding: 0;
+}
+
+.minimized-export-widget.expanded .export-content {
+    display: block;
+}
+
+.minimized-export-widget.expanded .slds-card__header {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e5e5;
+    background: #f7f9fc;
+    border-radius: 12px 12px 0 0;
+}
+
+.minimized-export-widget.expanded .slds-card__body {
+    padding: 0.75rem;
+}
+
+.minimized-export-widget .slds-progress-bar__value {
+    transition: width 0.3s ease-in-out;
+}
+
+.minimized-export-widget .pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 0 0 0 rgba(0, 112, 210, 0.7);
+    }
+    70% {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 0 0 10px rgba(0, 112, 210, 0);
+    }
+    100% {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 0 0 0 rgba(0, 112, 210, 0);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Background running indicator */
+.minimized-export-widget.background-running {
+    animation: pulse 2s infinite, glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 0 5px rgba(0, 112, 210, 0.5);
+    }
+    to {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 112, 210, 0.8);
+    }
+}
+
+/* Notification badge for background export */
+.minimized-export-widget::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 12px;
+    height: 12px;
+    background: #00d084;
+    border-radius: 50%;
+    border: 2px solid white;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.minimized-export-widget.background-running::after {
+    opacity: 1;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Dropdown z-index fix for expandable cards */
+.expandable-card lightning-combobox {
+    position: relative;
+    z-index: 100;
+}
+
+.expandable-card lightning-combobox .slds-dropdown {
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+.expandable-card .slds-combobox {
+    position: relative;
+    z-index: 100;
+}
+
+.expandable-card .slds-combobox .slds-dropdown {
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+/* Additional dropdown fixes */
+lightning-combobox {
+    position: relative;
+    z-index: 100;
+}
+
+lightning-combobox .slds-dropdown {
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+.slds-combobox {
+    position: relative;
+    z-index: 100;
+}
+
+.slds-combobox .slds-dropdown {
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+.slds-dropdown {
+    z-index: 9999 !important;
+    position: absolute !important;
+}
+
+/* Ensure all parent containers allow overflow */
+.slds-card__body {
+    overflow: visible !important;
+}
+
+.slds-card__body_inner {
+    overflow: visible !important;
+}
+
+/* Ensure minimized widget stays visible on all screen sizes */
+@media (max-width: 768px) {
+    .minimized-export-widget {
+        width: calc(100vw - 40px);
+        right: 20px;
+        left: 20px;
+    }
+}

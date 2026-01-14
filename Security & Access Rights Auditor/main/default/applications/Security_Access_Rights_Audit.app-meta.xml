@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-home</defaultLandingTab>
+    <description>The simple way to manage your security and access rights</description>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <label>Security &amp; Access Manager</label>
+    <tabs>Object_Access</tabs>
+    <tabs>Objects_Fields</tabs>
+    <tabs>Intel</tabs>
+    <tabs>System_Permission</tabs>
+    <tabs>UserDictionaryColumnConfig__c</tabs>
+    <tabs>UserClonerDetails__c</tabs>
+</CustomApplication>

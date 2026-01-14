@@ -1,0 +1,149 @@
+<apex:page controller="AuditObjectiveExportToExcelContoller" sidebar="false" showHeader="false" cache="true" readOnly="true" contentType="application/vnd.ms-excel#auditExport.xls">{!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+          <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+			<Style ss:ID="Default" ss:Name="Normal">
+				<Alignment ss:Vertical="Bottom"/>
+				<Borders/>
+				<Font/>
+				<Interior/>
+				<NumberFormat/>
+				<Protection/>
+			</Style>
+			<Style ss:ID="s67">
+				<Alignment ss:Vertical="Bottom"/>
+				<Borders>
+					<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+					<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+				</Borders>
+				<Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/>
+				<Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+			</Style>
+			<Style ss:ID="s68">
+				<Alignment ss:Vertical="Bottom"/>
+				<Borders>
+					<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+				</Borders>
+				<Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+				<Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+			</Style>
+			<Style ss:ID="s69">
+				<Alignment ss:Horizontal="Center"/>
+				<Borders>
+					<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+				</Borders>
+                <Font ss:Size="10" ss:Bold="1"/>
+                
+			</Style>
+			<Style ss:ID="s72">
+				<Alignment ss:Horizontal="Center"/>
+				<Borders>
+					<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+				</Borders>
+				<Font ss:Size="7" ss:Bold="1"/>
+			</Style>
+			<Style ss:ID="s71">
+				<Alignment ss:Horizontal="Left"/>
+				<Borders>
+					<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+				</Borders>
+			</Style>
+			<Style ss:ID="s70" ss:Name="Date">
+				<Alignment ss:Vertical="Bottom"/>
+				<DateFormat ss:Format="DD/MM/YYYY"/>
+			</Style>
+			<Style ss:ID="sNO">
+				<Alignment ss:Horizontal="Center"/>
+				<Borders>
+					<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+				</Borders>
+				<Font ss:Size="10" />
+				<Interior ss:Color="#FFC7CE" ss:Pattern="Solid"/>
+			</Style>
+			<Style ss:ID="sYES">
+				<Alignment ss:Horizontal="Center"/>
+				<Borders>
+					<Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+					<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+				</Borders>
+				<Font ss:Size="10"/>
+				<Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/>
+			</Style>
+		</Styles>
+        
+        <apex:repeat value="{!auditStepsMap}" var="templateName">
+        <Worksheet ss:Name="{!templateName}">
+            
+            <Table x:FullColumns="1" x:FullRows="1" >
+                <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                <Column ss:AutoFitWidth="0" ss:Width="250"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                     <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Row ss:Height="40"></Row>
+                
+                <Row ss:Height="30">
+                    <Cell></Cell> 
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">{!templateName}</Data></Cell> 
+                </Row> 
+                
+                <Row ss:Height="30">
+                    <Cell></Cell>
+                    
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Step Name</Data></Cell>
+                     
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Date of Last Review</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Comments</Data></Cell>
+                     <Cell ss:StyleID="s68"><Data ss:Type="String">Owner</Data></Cell>
+                </Row >
+                <apex:repeat value="{!auditStepsMap[templateName]}" var="step">
+                    
+                    <Row ss:Height="30">
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">{!step.Name}</Data></Cell>
+                        
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">{!step.ReviewDatee__c}</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">{!step.Comments__c}</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">{!step.OwnerExcel__c}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+        </apex:repeat>
+        
+    </Workbook>
+</apex:page> 
+<!--
+<apex:page controller="AuditObjectiveExportToExcelContoller" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#auditExport.xls">
+    {!xmlData}
+</apex:page>-->

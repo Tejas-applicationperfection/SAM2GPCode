@@ -1,0 +1,525 @@
+.THIS h1 {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 8px;
+    margin-bottom:6px;
+    padding-top: 6px;
+      margin-left: 0px;
+    
+     cursor: pointer;
+}
+
+
+.THIS .Heightmatch{
+    
+    margin-top: 25px;
+     
+}
+.THIS .ReviewHeightmatch{
+    
+    margin-top: 17px;
+     
+}
+.THIS .unusedpermissionHeightmatch{
+    
+    margin-top: 28px;
+     
+}
+
+
+.THIS .completion-date-label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+.THIS .no-padding {
+    padding-left: 0 !important;
+}
+
+.THIS .completion-date-value {
+    color: #333;
+}
+
+.THIS .Sec1_header{
+    
+    text-align: left;
+    font-size: var(--lwc-fontSize5, 1rem);
+    
+    letter-spacing: normal;
+    max-width: 240px;
+}
+ 
+
+ 
+
+
+
+.THIS .Assignee_Box{
+    margin-right: var(--slds-g-spacing-2, var(--lwc-spacingXSmall, 0.5rem));
+    display: inline;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+}
+
+
+.THIS .button-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+}
+                    
+.THIS .modern-button {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #4CAF50, #45A049);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.THIS .modern-button:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.THIS .modern-dropdown {
+    position: absolute;
+    top: 45px; /* Aligns below the button */
+    left: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    z-index: 10;
+    min-width: 200px;
+}
+
+.THIS .modern-dropdown-list {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.THIS .modern-dropdown-item {
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    text-align: left;
+    width: 100%;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.THIS .modern-dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+.THIS .modern-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+.THIS .dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+.THIS .modern-toast.success {
+    background: #4CAF50;
+}
+
+.THIS .modern-toast.error {
+    background: #F44336;
+}
+.THIS .no-label .slds-form-element__label {
+    display: none;
+}
+.THIS .no-label {
+    max-width: 50%;
+}
+
+.THIS .button-containerADvertising {
+    display: flex;
+    float: right;
+      width: min-content;
+    top: 19px;
+}
+.THIS a {
+    font-weight: 500;
+    font-size: 1.4em;
+    margin: 8px;
+    margin-bottom:6px;
+    padding-top: 6px;
+      margin-left: 0px;
+    
+     cursor: pointer;
+}
+.THIS .BorderTB{
+     border-top: 2px solid black;  
+    
+}
+.THIS .marPad{ 
+    margin-left: 0px;
+    padding-left: 0px;
+    margin-left: 0px;
+}
+.THIS .mZero{ 
+    margin-left: 0px;
+     padding-left: 11px;
+}
+.THIS .linkmp{ 
+  padding: 0.87rem 1.5rem;
+   
+}
+.THIS .rowAlign{ 
+    vertical-align: baseline;
+   
+}
+.THIS .slds-textarea { 
+    height: 33px;
+    padding: 5px 10px;
+        width: 90%;
+      border: 1px solid #ccc;                   
+}
+/*.THIS#commentInput { 
+    position: absolute;
+    bottom: 4px;
+    
+}
+
+.THIS .stepinput{
+    bottom: 12px; position: absolute;
+}*/
+.THIS .boxes{
+    margin-bottom: 0px;
+   /* margin-bottom: 17px;
+    height: 32px;*/
+}
+.THIS .stepname{
+        cursor: pointer;
+    
+}
+.THIS .custom-date-wrapper .slds-form-element__help {
+    display: none;
+}
+.THIS .slds-form-element__help {
+    display: none;
+}
+                    
+ .THIS [data-date-format].slds-form-element__help {
+    display: none;
+}
+.THIS .slds-form-element__help[data-date-format] {
+    display: none;
+}
+                    
+.THIS .Text_center {
+    display: flex;
+    justify-content: space-around;
+     
+    border-bottom: 1px solid #dddbda ;
+}
+    
+
+.THIS .Text_bordernone{
+         border-top: none;
+    
+}
+ 
+/*to show the spinner as the height of window */
+.THIS .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Adjust this if needed to make sure it's above other content */
+    cursor: pointer;
+}
+.THIS .circular-button {
+    border-radius: 50%;  
+    width: 40px; 
+    height: 40px; 
+        padding: 12px;
+    
+}
+.THIS .container{
+    
+    max-width: 100%;  overflow-x: auto;
+}
+.THIS table{
+     width: 100%;
+   
+  border-collapse: collapse;
+}
+
+.THIS .links {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 8px;
+    padding-top: 6px;
+}
+.THIS .black-icon svg {
+    fill: black; /* Change the fill color to black */
+}
+.THIS .button-83 {
+    width: inherit;
+    appearance: button;
+    background-color: #8694f4;
+    background-image: linear-gradient(to bottom, #fff, #eceae787);
+    border: 1px solid #d4d2d2;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    color: #444444;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 100%;
+    flex: 1;
+    font-weight: 700;
+    line-height: 19px;
+    margin: 3px;
+    outline: 2px solid transparent;
+    padding: 0.6rem 1.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow:-6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);
+}
+.THIS .buttonB {
+    width: inherit;
+    appearance: button;
+    background-color: #8694f4;
+    background-image: linear-gradient(to bottom, #fff, #eceae787);
+    border: 1px solid #d4d2d2;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    color: #444444;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 100%;
+    flex: 1;
+    font-weight: 700;
+    line-height: 19px;
+    margin: 3px;
+    outline: 2px solid transparent;
+    padding: 0.6rem 1.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow:-6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);
+}
+
+.THIS .btnNewtemplate {
+width: inherit;
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    background-color: #8694f4;
+    background-image: linear-gradient(to bottom, #fff, #eceae787);
+    border: 1px solid #d4d2d2;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    color: #444444;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 100%;
+    flex: 1;
+    font-weight: 700;
+    line-height: 12px;
+    margin: 3px;
+    outline: 2px solid transparent;
+    padding: 0.1rem 0.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);
+}
+
+
+.THIS .custom-layout {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.THIS .circular-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.THIS .legend-text {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.THIS .info-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+}
+.THIS .bgcWhite {
+     background-color:white;
+    
+}
+.THIS .info-button {
+    font-style: italic;
+    background-color: #0070d2;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.THIS .info-popup {
+    visibility: hidden;
+    width: 200px;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.THIS .ownerRow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.THIS .ownerbgc {
+    PADDING: 1EM;
+    BACKGROUND-COLOR: WHITESMOKE;
+    BORDER-RADIUS: 6PX;
+}
+
+.THIS .info-popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #f9f9f9 transparent transparent transparent;
+}
+
+.THIS .show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.THIS .hide {
+    visibility: hidden;
+    opacity: 0;
+}
+.SA_AuditAuditApp .slds-select_container .slds-select {
+        border-radius: 15px;
+       border: 1px solid #ccc;
+      background-color: #fff;
+                    }   
+                    
+.SA_AuditAuditApp .slds-input-has-icon_right .slds-input{
+             border: 1px solid #ccc;            
+                    }                    
+                    
+.THIS .RedYes{
+      font-size: 14px;
+      background: #e62222;
+    /*background: #84D65A;*/
+    color: #393A37;
+    border-radius: 3px;
+        font-variant: all-small-caps;
+}    
+.THIS .GreenNo{
+      font-size: 14px;
+    background: #4db53c;
+    color: #393A37;
+    border-radius: 3px;
+        font-variant: all-small-caps;
+}    
+/*from gpt*/   
+.THIS .navbar-button {
+    background: none;
+    border: none;
+    color: #0070d2; /* Salesforce blue color */
+    
+    font-weight: bold;
+    font-size: 14px;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    margin-right: 20px; /* Adds space between buttons */
+}
+
+/* Underline effect */
+.THIS .navbar-button::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #0070d2; /* Blue underline */
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+/* Hover effect to show underline */
+.THIS .navbar-button:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Button hover style */
+.THIS .navbar-button:hover {
+    color: #005f8a; /* Darker blue on hover */
+}

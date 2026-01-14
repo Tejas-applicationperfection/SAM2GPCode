@@ -1,0 +1,1978 @@
+<template>
+    <template if:true={showMainPanel}>
+        <div class="slds-card elevation-2">
+            <div class="slds-card__header slds-grid slds-grid_align-spread">
+                <header class="slds-media slds-media_center">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="utility:lock" size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span>{title}</span>
+                        </h2>
+                    </div>
+                </header>
+                <div class="slds-no-flex slds-grid slds-grid_align-end">
+                    
+
+                    
+                    <lightning-button variant="brand" label="Bulk Export" icon-name="utility:download"
+                        onclick={handleBulkExport} disabled={isBulkExportDisabled}
+                        class="slds-m-right_small"></lightning-button>
+                    
+                    <lightning-button variant="destructive" label="Export Privileged" icon-name="utility:shield"
+                        onclick={handleExportPrivileged} disabled={isExportPrivilegedDisabled}
+                        class="slds-m-right_small" title="Export only privileged permissions with detailed access information">
+                    </lightning-button>
+                  
+                    <lightning-button variant={analyzeButtonVariant} label={analyzeButtonLabel} onclick={handleAnalyze}
+                        disabled={isAnalyzeDisabled} class={analyzeButtonClass}></lightning-button>
+
+                    <lightning-button label={templateButtonLabel} icon-name={templateButtonIcon} variant="neutral"
+                        onclick={handleShowSaveTemplates} class="slds-m-left_small">
+                    </lightning-button>
+                </div>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <!-- Legend for Privileged Permissions -->
+                <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_small">
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="slds-media slds-media_center">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="utility:shield" size="x-small" class="slds-icon-text-error"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <span class="slds-text-body_small slds-text-color_weak">Privileged Permission</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="slds-media slds-media_center">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="utility:lock" size="x-small" class="slds-icon-text-default"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <span class="slds-text-body_small slds-text-color_weak">Standard Permission</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                
+                <!-- Search and Counters -->
+                <div class="slds-p-horizontal_medium">
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <div class="slds-form-element__control">
+                            <div class="slds-combobox_container">
+                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left" role="none">
+                                        <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left">
+                                            <lightning-icon icon-name="utility:search" size="x-small" class="search-icon"></lightning-icon>
+                                        </span>
+                                        <input type="text" 
+                                               class="slds-input slds-combobox__input" 
+                                               placeholder={searchPlaceholder}
+                                               onkeyup={handleSearchChange} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-p-vertical_x-small">
+                            <div class="slds-col">
+                                <div class="slds-text-color_weak slds-text-body_small">{countLabel}</div>
+                                <template if:true={selectedPermissions.length}>
+                                    <div class="slds-text-color_success slds-text-body_small slds-m-top_xx-small">
+                                        <lightning-icon icon-name="utility:multi_select_checkbox" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                        {selectedPermissionsLabel}
+                                    </div>
+                                </template>
+                                <template if:false={selectedPermissions.length}>
+                                    <template if:true={selectedPermission}>
+                                        <div class="slds-text-color_success slds-text-body_small slds-m-top_xx-small">
+                                            <lightning-icon icon-name="utility:check" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                            {selectedPermissionsLabel}
+                                        </div>
+                                    </template>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Permission Form -->
+                    <template if:true={showCustomPermissionForm}>
+                        <div class="slds-box slds-theme_shade slds-m-bottom_medium elevation-2">
+                            <div class="slds-text-heading_small slds-m-bottom_medium">Add Custom Permission</div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="custom-permission-input">Permission API
+                                    Name</label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" id="custom-permission-input" class="slds-input"
+                                        placeholder="e.g., ViewEncryptedData" value={customPermissionInput}
+                                        onchange={handleCustomPermissionChange} />
+                                </div>
+                                <div class="slds-text-body_small slds-text-color_weak slds-m-top_small">
+                                    Enter the API name of a Salesforce system permission without the "Permissions"
+                                    prefix.
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-grid_align-end slds-m-top_medium">
+                                <button class="slds-button slds-button_neutral"
+                                    onclick={handleCancelCustomPermission}>Cancel</button>
+                                <button class="slds-button slds-button_brand slds-m-left_small"
+                                    onclick={handleCustomPermissionSubmit}>Add Permission</button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Permission List -->
+                    <div class="item-list-container slds-scrollable_y">
+                        <ul class="slds-has-dividers_bottom-space">
+                            <template for:each={displayedPermissions} for:item="permission">
+                                <li key={permission.id} class="slds-item selectable-item"
+                                    onclick={handlePermissionSelect} data-id={permission.id}>
+                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                        <div class="slds-col slds-size_1-of-12">
+                                            <lightning-icon icon-name={permission.iconName} size="x-small"
+                                                class={permission.iconClass}>
+                                            </lightning-icon>
+                                        </div>
+                                        <div class="slds-col slds-size_11-of-12">
+                                            <div class="slds-grid slds-grid_vertical">
+                                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                                    <div class="slds-text-heading_small">{permission.label}</div>
+                                                    <template if:true={permission.isPrivileged}>
+                                                        <lightning-badge label="Privileged" class="slds-badge_inverse slds-theme_error"></lightning-badge>
+                                                    </template>
+                                                </div>
+                                                <div class="slds-text-body_small slds-text-color_weak">{permission.name}
+                                                </div>
+                                                <template if:true={permission.displayDescription}>
+                                                    <div class="slds-text-body_small slds-m-top_xx-small" title={permission.displayDescription}>
+                                                        <lightning-icon icon-name="utility:info" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                        {permission.displayDescription}
+                                                    </div>
+                                                </template>
+                                                <template if:true={permission.isCustomAdded}>
+                                                    <div class="slds-badge slds-badge_lightest slds-m-top_x-small">
+                                                        Custom Added</div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <div class="slds-text-align_center slds-m-top_medium pagination-controls">
+                        <div class="slds-button-group" role="group">
+                            <button onclick={handleFirstPage} class="slds-button slds-button_neutral" disabled={isFirstPage}>
+                                <lightning-icon icon-name="utility:jump_to_left" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                First
+                            </button>
+                            <button onclick={handlePreviousPage} class="slds-button slds-button_neutral" disabled={isFirstPage}>
+                                <lightning-icon icon-name="utility:chevronleft" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                Previous
+                            </button>
+                            <span class="slds-badge slds-badge_lightest slds-m-horizontal_small page-indicator">
+                                Page {currentPage} of {totalPages}
+                            </span>
+                            <button onclick={handleNextPage} class="slds-button slds-button_neutral" disabled={isLastPage}>
+                                Next
+                                <lightning-icon icon-name="utility:chevronright" size="x-small" class="slds-m-left_x-small"></lightning-icon>
+                            </button>
+                            <button onclick={handleLastPage} class="slds-button slds-button_neutral" disabled={isLastPage}>
+                                Last
+                                <lightning-icon icon-name="utility:jump_to_right" size="x-small" class="slds-m-left_x-small"></lightning-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Analysis Results Panel -->
+    <template if:true={showAnalysisPanel}>
+        <section class="slds-card slds-m-top_medium analysis-panel elevation-3">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="standard:report" size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span>"{currentPermissionLabel}" Access Analysis - {totalCount} Users Have Access</span>
+                        </h2>
+                    </div>
+                    <div class="slds-no-flex slds-grid slds-grid_align-end">
+                        <!-- Dynamic Fields Toggle -->
+                        <div class="slds-m-right_small">
+                            <lightning-input type="toggle" 
+                                label="Use Dynamic Fields" 
+                                checked={useDynamicFields} 
+                                onchange={handleToggleDynamicFields}
+                                message-toggle-active="Dynamic fields enabled"
+                                message-toggle-inactive="Using default fields">
+                            </lightning-input>
+                        </div>
+                        
+                        <!-- Field Selection Button -->
+                        <template if:true={useDynamicFields}>
+                            <lightning-button variant="neutral" 
+                                label={selectedFieldsCount} 
+                                icon-name="utility:settings" 
+                                onclick={handleShowFieldSelector}
+                                title="Select User Fields"
+                                class="slds-m-right_small">
+                            </lightning-button>
+                        </template>
+                        
+                        <template if:true={canExportSingle}>
+                            <lightning-button variant="brand" label="Export Analysis" icon-name="utility:download"
+                                onclick={handleExportSingle} disabled={isExporting} class="slds-m-right_small">
+                            </lightning-button>
+                        </template>
+                        <button class="close-button" title="Close" onclick={handleCloseAnalysis}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </div>
+                </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <!-- Tab Set for Results -->
+                <lightning-tabset variant="scoped" class="analysis-tabset slds-tabs_scoped">
+                    <!-- Profiles Tab -->
+                    <lightning-tab label={profilesTabLabel} value="profiles" class="slds-tabs_scoped__item">
+                        <div class="slds-p-around_medium">
+                            <template if:true={profilesData.length}>
+                                <div class="slds-text-body_small slds-p-bottom_medium">The following profiles have the
+                                    "{currentPermissionLabel}" permission:</div>
+                                <div class="table-container">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout elevation-1">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="slds-size_1-of-5" scope="col">
+                                                    <div class="slds-truncate" title="Profile Name">Profile Name</div>
+                                                </th>
+                                                <th class="slds-size_1-of-5" scope="col">
+                                                    <div class="slds-truncate" title="Profile ID">Profile ID</div>
+                                                </th>
+                                                <th class="slds-size_2-of-5" scope="col">
+                                                    <div class="slds-truncate" title="Description">Description</div>
+                                                </th>
+                                                <th class="slds-size_1-of-5" scope="col">
+                                                    <div class="slds-truncate" title="License Type">License Type</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={profilesData} for:item="profile">
+                                                <tr key={profile.id}>
+                                                    <td>
+                                                        <div class="slds-truncate" title={profile.name}>{profile.name}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={profile.id}>
+                                                            <span class="slds-text-font_monospace slds-text-color_weak">{profile.id}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={profile.description}>{profile.description}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={profile.userLicense}>{profile.userLicense}</div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            <template if:false={profilesData.length}>
+                                <div class="empty-state">
+                                    <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                    <h3 class="slds-text-heading_small slds-m-top_small">No Profiles Have This Permission</h3>
+                                </div>
+                            </template>
+                        </div>
+                    </lightning-tab>
+
+                    <!-- Permission Sets Tab -->
+                    <lightning-tab label={permSetsTabLabel} value="permissionSets" class="slds-tabs_scoped__item">
+                        <div class="slds-p-around_medium">
+                            <template if:true={permSetsData.length}>
+                                <div class="slds-text-body_small slds-p-bottom_medium">The following permission sets
+                                    include the "{currentPermissionLabel}" permission:</div>
+                                <div class="table-container">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout elevation-1">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="slds-size_2-of-8" scope="col">
+                                                    <div class="slds-truncate" title="Label">Label</div>
+                                                </th>
+                                                <th class="slds-size_3-of-8" scope="col">
+                                                    <div class="slds-truncate" title="Description">Description</div>
+                                                </th>
+                                                <th class="slds-size_2-of-8" scope="col">
+                                                    <div class="slds-truncate" title="API Name">API Name</div>
+                                                </th>
+                                                <th class="slds-size_1-of-8" scope="col">
+                                                    <div class="slds-truncate" title="Assignments">Assignments</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={permSetsData} for:item="permSet">
+                                                <tr key={permSet.id}>
+                                                    <td>
+                                                        <div class="slds-truncate" title={permSet.label}>{permSet.label}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={permSet.description}>{permSet.description}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={permSet.name}>{permSet.name}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={permSet.assignmentCount}>{permSet.assignmentCount}</div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            <template if:false={permSetsData.length}>
+                                <div class="empty-state">
+                                    <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                    <h3 class="slds-text-heading_small slds-m-top_small">No Permission Sets Have This Permission</h3>
+                                </div>
+                            </template>
+                        </div>
+                    </lightning-tab>
+
+                    <!-- Permission Set Groups Tab -->
+                    <lightning-tab label={permSetGroupsTabLabel} value="permissionSetGroups" class="slds-tabs_scoped__item">
+                        <div class="slds-p-around_medium">
+                            <template if:true={permSetGroupsData.length}>
+                                <div class="slds-text-body_small slds-p-bottom_medium">The following permission set
+                                    groups include permission sets with the "{currentPermissionLabel}" permission:
+                                </div>
+                                <div class="table-container">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout elevation-1">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="slds-size_3-of-8" scope="col">
+                                                    <div class="slds-truncate" title="Label">Label</div>
+                                                </th>
+                                                <th class="slds-size_3-of-8" scope="col">
+                                                    <div class="slds-truncate" title="Description">Description</div>
+                                                </th>
+                                                <th class="slds-size_1-of-8" scope="col">
+                                                    <div class="slds-truncate" title="API Name">API Name</div>
+                                                </th>
+                                                <th class="slds-size_1-of-8" scope="col">
+                                                    <div class="slds-truncate" title="Assignments">Assignments</div>
+                                                </th>
+                                                  <th class="slds-size_1-of-8" scope="col">
+                                                    <div class="slds-truncate" title="Component Permission Sets">Component Permission Sets</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={permSetGroupsData} for:item="psg">
+                                                <tr key={psg.id}>
+                                                    <td>
+                                                        <div class="slds-m-bottom_x-small">{psg.label}</div>
+                                                        <div class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                                                            Includes permission sets:
+                                                        </div>
+                                                        <div class="badge-container">
+                                                            <template for:each={psg.componentPermissionSets} for:item="ps">
+                                                                <span key={ps.id} class="permission-set-badge">{ps.label}</span>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={psg.description}>{psg.description}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={psg.name}>{psg.name}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="slds-truncate" title={psg.assignmentCount}>{psg.assignmentCount}</div>
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <div class="badge-container">
+                                                            <template for:each={psg.componentPermissionSets} for:item="ps">
+                                                                <span key={ps.id} class="permission-set-badge">{ps.label}</span>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            <template if:false={permSetGroupsData.length}>
+                                <div class="empty-state">
+                                    <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                    <h3 class="slds-text-heading_small slds-m-top_small">No Permission Set Groups Have This
+                                        Permission</h3>
+                                </div>
+                            </template>
+                        </div>
+                    </lightning-tab>
+
+                    <!-- Users Tab -->
+                    <lightning-tab label={usersTabLabel} value="users" class="slds-tabs_scoped__item">
+                        <div class="slds-p-around_medium">
+                            <template if:true={usersData.length}>
+                                <div class="slds-text-body_small slds-p-bottom_medium">The following users have the
+                                    "{currentPermissionLabel}" permission through their profiles, permission sets, or
+                                    permission set groups:</div>
+                                
+                                <!-- Dynamic Fields Table -->
+                                <template if:true={useDynamicFields}>
+                                    <template if:true={dynamicUserFields.length}>
+                                        <div class="dynamic-table-container">
+                                            <table class="slds-table slds-table_cell-buffer slds-table_bordered dynamic-table elevation-1">
+                                                <thead>
+                                                    <tr class="slds-line-height_reset">
+                                                        <!-- All dynamic fields (including core fields) -->
+                                                        <template for:each={dynamicUserFields} for:item="field">
+                                                            <th key={field.name} scope="col">
+                                                                <div class="slds-truncate" title={field.label}>
+                                                                    {field.label}
+                                                                    <template if:true={field.isCustom}>
+                                                                        <lightning-icon icon-name="utility:custom_apps" size="xx-small" class="slds-m-left_xx-small"></lightning-icon>
+                                                                    </template>
+                                                                    <template if:true={field.isCore}>
+                                                                        <lightning-icon icon-name="utility:user" size="xx-small" class="slds-m-left_xx-small"></lightning-icon>
+                                                                    </template>
+                                                                </div>
+                                                            </th>
+                                                        </template>
+                                                        <!-- Permission Sources -->
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Permission Sources">Permission Sources</div>
+                                                        </th>
+                                                        <!-- Status -->
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Status">Status</div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template for:each={usersData} for:item="user">
+                                                        <tr key={user.id}>
+                                                            <!-- All dynamic fields (including core fields) -->
+                                                            <template if:true={user.processedFields}>
+                                                                <template for:each={user.processedFields} for:item="field">
+                                                                    <td key={field.name}>
+                                                                        <div class="slds-truncate">
+                                                                            <template if:true={field.type}>
+                                                                                <template if:true={field.isBooleanType}>
+                                                                                    <template if:true={field.fieldValue}>
+                                                                                        <lightning-icon icon-name="utility:check" size="xx-small" variant="success"></lightning-icon>
+                                                                                    </template>
+                                                                                    <template if:false={field.fieldValue}>
+                                                                                        <lightning-icon icon-name="utility:close" size="xx-small" variant="error"></lightning-icon>
+                                                                                    </template>
+                                                                                </template>
+                                                                                <template if:false={field.isBooleanType}>
+                                                                                   {field.displayValue}
+                                                                                </template>
+                                                                            </template>
+                                                                            <template if:false={field.type}>
+                                                                               {field.displayValue}
+                                                                            </template>
+                                                                        </div>
+                                                                    </td>
+                                                                </template>
+                                                            </template>
+                                                            <!-- Fill empty cells if processedFields is missing or incomplete -->
+                                                            <template if:false={user.processedFields}>
+                                                                <template for:each={dynamicUserFields} for:item="field">
+                                                                    <td key={field.name}>
+                                                                        <div class="slds-truncate">
+                                                                            <span class="slds-text-color_weak">—</span>
+                                                                        </div>
+                                                                    </td>
+                                                                </template>
+                                                            </template>
+                                                            <!-- Permission Sources -->
+                                                            <td>
+                                                                <template if:true={user.permissionSources}>
+                                                                    <template if:true={user.permissionSources.length}>
+                                                                        <div class="badge-container">
+                                                                            <template for:each={user.permissionSources}
+                                                                                for:item="source">
+                                                                                <span key={source.id} 
+                                                                                    class="permission-set-badge source-badge"
+                                                                                    data-source-type={source.type}>
+                                                                                    <lightning-icon icon-name={source.iconName}
+                                                                                        size="xx-small"
+                                                                                        class="slds-m-right_xx-small"></lightning-icon>
+                                                                                    {source.type}: {source.name}
+                                                                                </span>
+                                                                            </template>
+                                                                        </div>
+                                                                    </template>
+                                                                </template>
+                                                            </td>
+                                                            <!-- Status -->
+                                                            <td>
+                                                                <template if:true={user.isActive}>
+                                                                    <span class="slds-badge slds-badge_success">Active</span>
+                                                                </template>
+                                                                <template if:false={user.isActive}>
+                                                                    <span class="slds-badge slds-badge_error">Inactive</span>
+                                                                </template>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </template>
+                                </template>
+                                
+                                <!-- Default Static Table -->
+                                <template if:false={useDynamicFields}>
+                                    <div class="table-container">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout elevation-1">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th class="slds-size_1-of-8" scope="col">
+                                                        <div class="slds-truncate" title="Name">Name</div>
+                                                    </th>
+                                                    <th class="slds-size_1-of-8" scope="col">
+                                                        <div class="slds-truncate" title="User ID">User ID</div>
+                                                    </th>
+                                                    <th class="slds-size_1-of-8" scope="col">
+                                                        <div class="slds-truncate" title="Username">Username</div>
+                                                    </th>
+                                                    <th class="slds-size_1-of-8" scope="col">
+                                                        <div class="slds-truncate" title="Email">Email</div>
+                                                    </th>
+                                                    <th class="slds-size_1-of-8" scope="col">
+                                                        <div class="slds-truncate" title="Profile">Profile</div>
+                                                    </th>
+                                                    <th class="slds-size_2-of-8" scope="col">
+                                                        <div class="slds-truncate" title="Permission Sources">Permission Sources</div>
+                                                    </th>
+                                                    <th class="slds-size_1-of-8" scope="col">
+                                                        <div class="slds-truncate" title="Status">Status</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template for:each={usersData} for:item="user">
+                                                    <tr key={user.id}>
+                                                        <td>
+                                                            <div class="slds-truncate" title={user.name}>{user.name}</div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title={user.id}>
+                                                                <span class="slds-text-font_monospace slds-text-color_weak">{user.id}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title={user.username}>{user.username}</div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title={user.email}>{user.email}</div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title={user.profileName}>{user.profileName}</div>
+                                                        </td>
+                                                        <td>
+                                                            <template if:true={user.permissionSources}>
+                                                                <template if:true={user.permissionSources.length}>
+                                                                    <div class="badge-container">
+                                                                        <template for:each={user.permissionSources}
+                                                                            for:item="source">
+                                                                            <span key={source.id} 
+                                                                                class="permission-set-badge source-badge"
+                                                                                data-source-type={source.type}>
+                                                                                <lightning-icon icon-name={source.iconName}
+                                                                                    size="xx-small"
+                                                                                    class="slds-m-right_xx-small"></lightning-icon>
+                                                                                {source.type}: {source.name}
+                                                                            </span>
+                                                                        </template>
+                                                                    </div>
+                                                                </template>
+                                                            </template>
+                                                        </td>
+                                                        <td>
+                                                            <template if:true={user.isActive}>
+                                                                <span class="slds-badge slds-badge_success">Active</span>
+                                                            </template>
+                                                            <template if:false={user.isActive}>
+                                                                <span class="slds-badge slds-badge_error">Inactive</span>
+                                                            </template>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </template>
+                                <!-- User Pagination Controls -->
+                                <template if:true={showUserPaginationControls}>
+                                    <div class="user-pagination-container">
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <!-- Page Information -->
+                                            <div class="slds-col slds-text-body_small">
+                                                {userPageInfo}
+                                            </div>
+                                            
+                                            <!-- Pagination Controls -->
+                                            <div class="slds-col slds-text-align_right">
+                                                <div class="slds-button-group" role="group">
+                                                    <button onclick={handleFirstUserPage} 
+                                                        class="slds-button slds-button_neutral slds-button_small" 
+                                                        disabled={isFirstUserPage}
+                                                        title="First Page">
+                                                        <lightning-icon icon-name="utility:jump_to_left" size="xx-small"></lightning-icon>
+                                                        <span class="slds-assistive-text">First Page</span>
+                                                    </button>
+                                                    <button onclick={handlePreviousUserPage} 
+                                                        class="slds-button slds-button_neutral slds-button_small" 
+                                                        disabled={isFirstUserPage}
+                                                        title="Previous Page">
+                                                        <lightning-icon icon-name="utility:chevronleft" size="xx-small"></lightning-icon>
+                                                        <span class="slds-assistive-text">Previous Page</span>
+                                                    </button>
+                                                    
+                                                    <span class="page-indicator">
+                                                        {userPaginationInfo}
+                                                    </span>
+                                                    
+                                                    <button onclick={handleNextUserPage} 
+                                                        class="slds-button slds-button_neutral slds-button_small" 
+                                                        disabled={isLastUserPage}
+                                                        title="Next Page">
+                                                        <lightning-icon icon-name="utility:chevronright" size="xx-small"></lightning-icon>
+                                                        <span class="slds-assistive-text">Next Page</span>
+                                                    </button>
+                                                    <button onclick={handleLastUserPage} 
+                                                        class="slds-button slds-button_neutral slds-button_small" 
+                                                        disabled={isLastUserPage}
+                                                        title="Last Page">
+                                                        <lightning-icon icon-name="utility:jump_to_right" size="xx-small"></lightning-icon>
+                                                        <span class="slds-assistive-text">Last Page</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Loading Indicator -->
+                                        <template if:true={isLoadingMoreUsers}>
+                                            <div class="slds-text-align_center slds-m-top_small">
+                                                <lightning-spinner size="small" alternative-text="Loading users..."></lightning-spinner>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                            <template if:false={usersData.length}>
+                                <div class="empty-state">
+                                    <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                    <h3 class="slds-text-heading_small slds-m-top_small">No Users Have This Permission</h3>
+                                </div>
+                            </template>
+                        </div>
+                    </lightning-tab>
+                </lightning-tabset>
+            </div>
+        </section>
+    </template>
+
+    <!-- Multiple Permissions Analysis Results Panel -->
+    <template if:true={showMultipleAnalysisPanel}>
+        <section class="slds-card slds-m-top_medium analysis-panel elevation-3">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="standard:report" size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span>Multiple Permissions Analysis - {multipleAnalysisResults.totalPermissions} Permissions Analyzed</span>
+                        </h2>
+                    </div>
+                    <div class="slds-no-flex slds-grid slds-grid_align-end">
+                        <template if:true={canExportMultiple}>
+                            <lightning-button variant="brand" label="Export Analysis" icon-name="utility:download"
+                                onclick={handleExportMultiple} disabled={isExporting} class="slds-m-right_small">
+                            </lightning-button>
+                        </template>
+                        <button class="close-button" title="Close" onclick={handleCloseMultipleAnalysis}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </div>
+                </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <!-- Summary for analyzed permissions -->
+                <div class="slds-p-around_medium">
+                    <div class="slds-text-body_regular slds-m-bottom_medium">
+                        Analysis complete for {multipleAnalysisResults.totalPermissions} permissions. 
+                        Use the "Export Analysis" button above to download detailed results.
+                    </div>
+                    
+                    <!-- Summary table -->
+                    <template if:true={multipleAnalysisResults.permissionResults}>
+                        <div class="table-container">
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout elevation-1">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="slds-size_3-of-8" scope="col">
+                                            <div class="slds-truncate" title="Permission Name">Permission Name</div>
+                                        </th>
+                                        <th class="slds-size_1-of-8" scope="col">
+                                            <div class="slds-truncate" title="Total Users">Total Users</div>
+                                        </th>
+                                        <th class="slds-size_1-of-8" scope="col">
+                                            <div class="slds-truncate" title="Profiles">Profiles</div>
+                                        </th>
+                                        <th class="slds-size_2-of-8" scope="col">
+                                            <div class="slds-truncate" title="Permission Sets">Permission Sets</div>
+                                        </th>
+                                        <th class="slds-size_1-of-8" scope="col">
+                                            <div class="slds-truncate" title="PS Groups">PS Groups</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={formattedMultipleResults} for:item="result">
+                                        <tr key={result.id} class="expandable-row" onclick={handleExpandPermission} data-permission={result.permissionName}>
+                                            <td>
+                                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                                    <div class="slds-truncate" title={result.permissionName}>
+                                                        <lightning-icon icon-name="utility:lock" size="xx-small" class="slds-m-right_x-small"></lightning-icon>
+                                                        {result.permissionName}
+                                                    </div>
+                                                    <lightning-button-icon 
+                                                        icon-name={result.expandIcon} 
+                                                        variant="bare" 
+                                                        size="small" 
+                                                        alternative-text="Expand Details"
+                                                        class="expand-button">
+                                                    </lightning-button-icon>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">
+                                                    <span class="slds-badge slds-badge_success">{result.totalUsers}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">
+                                                    <span class="slds-badge slds-badge_lightest">{result.profilesCount}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">
+                                                    <span class="slds-badge slds-badge_lightest">{result.permissionSetsCount}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">
+                                                    <span class="slds-badge slds-badge_lightest">{result.permissionSetGroupsCount}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Expandable Detail Row -->
+                                        <template if:true={result.isExpanded}>
+                                            <tr key={result.id} class="detail-row">
+                                                <td colspan="5">
+                                                    <div class="slds-p-around_medium detail-content">
+                                                        <!-- Tab Set for Detailed Results -->
+                                                        <lightning-tabset variant="scoped" class="detail-tabset">
+                                                            <!-- Profiles Tab -->
+                                                            <lightning-tab label="Profiles" value="profiles">
+                                                                <div class="slds-p-around_small">
+                                                                    <template if:true={result.profilesData.length}>
+                                                                        <div class="table-container">
+                                                                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th scope="col">Profile Name</th>
+                                                                                        <th scope="col">Profile ID</th>
+                                                                                        <th scope="col">License Type</th>
+                                                                                        <th scope="col">Type</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <template for:each={result.profilesData} for:item="profile">
+                                                                                        <tr key={profile.id}>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={profile.name}>
+                                                                                                    <lightning-icon icon-name="standard:user_role" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                                    {profile.name}
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={profile.id}>
+                                                                                                    <span class="slds-text-font_monospace slds-text-color_weak">{profile.id}</span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <span class="slds-badge slds-badge_lightest">{profile.userLicense}</span>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <span class="slds-badge slds-badge_success">Profile</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </template>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </template>
+                                                                    <template if:false={result.profilesData.length}>
+                                                                        <div class="empty-state">
+                                                                            <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                                                            <p>No profiles have this permission</p>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </lightning-tab>
+                                                            
+                                                            <!-- Permission Sets Tab -->
+                                                            <lightning-tab label="Permission Sets" value="permissionSets">
+                                                                <div class="slds-p-around_small">
+                                                                    <template if:true={result.permissionSetsData.length}>
+                                                                        <div class="table-container">
+                                                                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th scope="col">Label</th>
+                                                                                        <th scope="col">Permission Set ID</th>
+                                                                                        <th scope="col">API Name</th>
+                                                                                        <th scope="col">Assignments</th>
+                                                                                        <th scope="col">Type</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <template for:each={result.permissionSetsData} for:item="permSet">
+                                                                        <!-- Main Permission Set Row -->
+                                                                        <tr key={permSet.id} class="expandable-row" onclick={handleExpandPermissionSet} data-permset-id={permSet.id}>
+                                                                            <td>
+                                                                                <div class="slds-truncate" title={permSet.label}>
+                                                                                    <lightning-icon icon-name="standard:permission_set" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                    {permSet.label}
+                                                                                    <template if:true={permSet.assignments.length}>
+                                                                                        <lightning-button-icon 
+                                                                                            icon-name="utility:chevronright" 
+                                                                                            variant="bare" 
+                                                                                            size="x-small" 
+                                                                                            class="slds-m-left_xx-small expand-button"
+                                                                                            alternative-text="Expand Assignments"
+                                                                                            data-permset-id={permSet.id}>
+                                                                                        </lightning-button-icon>
+                                                                                    </template>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="slds-truncate" title={permSet.id}>
+                                                                                    <span class="slds-text-font_monospace slds-text-color_weak">{permSet.id}</span>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="slds-truncate" title={permSet.name}>
+                                                                                    <span class="slds-text-font_monospace">{permSet.name}</span>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <span class="slds-badge slds-badge_success">{permSet.assignmentCount}</span>
+                                                                            </td>
+                                                                            <td>
+                                                                                <span class="slds-badge slds-badge_brand">Permission Set</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        
+                                                                        <!-- Expandable Assignment Details Row -->
+                                                                        <template if:true={permSet.showAssignments}>
+                                                                            <tr key={permSet.id} class="detail-row">
+                                                                                <td colspan="5">
+                                                                                    <div class="slds-p-around_medium detail-content">
+                                                                                        <h4 class="slds-text-heading_small slds-m-bottom_small">Assignment Details</h4>
+                                                                                        <template if:true={permSet.assignments.length}>
+                                                                                            <div class="table-container">
+                                                                                                <table class="slds-table slds-table_cell-buffer slds-table_striped slds-table_fixed-layout">
+                                                                                                    <thead>
+                                                                                                        <tr>
+                                                                                                            <th scope="col">Assignee Name</th>
+                                                                                                            <th scope="col">Assignee ID</th>
+                                                                                                            <th scope="col">Assignment ID</th>
+                                                                                                            <th scope="col">Status</th>
+                                                                                                            <th scope="col">Expiration Date</th>
+                                                                                                        </tr>
+                                                                                                    </thead>
+                                                                                                    <tbody>
+                                                                                                        <template for:each={permSet.assignments} for:item="assignment">
+                                                                                                            <tr key={assignment.assignmentId}>
+                                                                                                                <td>
+                                                                                                                    <div class="slds-truncate" title={assignment.assigneeName}>
+                                                                                                                        <lightning-icon icon-name="standard:user" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                                                        {assignment.assigneeName}
+                                                                                                                    </div>
+                                                                                                                </td>
+                                                                                                                <td>
+                                                                                                                    <div class="slds-truncate" title={assignment.assigneeId}>
+                                                                                                                        <span class="slds-text-font_monospace slds-text-color_weak">{assignment.assigneeId}</span>
+                                                                                                                    </div>
+                                                                                                                </td>
+                                                                                                                <td>
+                                                                                                                    <div class="slds-truncate" title={assignment.assignmentId}>
+                                                                                                                        <span class="slds-text-font_monospace slds-text-color_weak">{assignment.assignmentId}</span>
+                                                                                                                    </div>
+                                                                                                                </td>
+                                                                                                                <td>
+                                                                                                                    <template if:true={assignment.isActive}>
+                                                                                                                        <template if:false={assignment.isRevoked}>
+                                                                                                                            <span class="slds-badge slds-badge_success">Active</span>
+                                                                                                                        </template>
+                                                                                                                        <template if:true={assignment.isRevoked}>
+                                                                                                                            <span class="slds-badge slds-badge_error">Revoked</span>
+                                                                                                                        </template>
+                                                                                                                    </template>
+                                                                                                                    <template if:false={assignment.isActive}>
+                                                                                                                        <span class="slds-badge slds-badge_warning">Inactive</span>
+                                                                                                                    </template>
+                                                                                                                </td>
+                                                                                                                <td>
+                                                                                                                    <div class="slds-truncate">
+                                                                                                                        <template if:true={assignment.expirationDate}>
+                                                                                                                            <lightning-formatted-date-time value={assignment.expirationDate}></lightning-formatted-date-time>
+                                                                                                                        </template>
+                                                                                                                        <template if:false={assignment.expirationDate}>
+                                                                                                                            <span class="slds-text-color_weak">No expiration</span>
+                                                                                                                        </template>
+                                                                                                                    </div>
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                        </template>
+                                                                                                    </tbody>
+                                                                                                </table>
+                                                                                            </div>
+                                                                                        </template>
+                                                                                        <template if:false={permSet.assignments.length}>
+                                                                                            <div class="empty-state">
+                                                                                                <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                                                                                <p>No assignments found for this permission set</p>
+                                                                                            </div>
+                                                                                        </template>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </template>
+                                                                    </template>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </template>
+                                                                    <template if:false={result.permissionSetsData.length}>
+                                                                        <div class="empty-state">
+                                                                            <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                                                            <p>No permission sets have this permission</p>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </lightning-tab>
+                                                            
+                                                            <!-- Permission Set Groups Tab -->
+                                                            <lightning-tab label="Permission Set Groups" value="permissionSetGroups">
+                                                                <div class="slds-p-around_small">
+                                                                    <template if:true={result.permissionSetGroupsData.length}>
+                                                                        <div class="table-container">
+                                                                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th scope="col">Label</th>
+                                                                                        <th scope="col">Permission Set Group ID</th>
+                                                                                        <th scope="col">API Name</th>
+                                                                                        <th scope="col">Assignments</th>
+                                                                                        <th scope="col">Component Permission Sets</th>
+                                                                                        <th scope="col">Type</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <template for:each={result.permissionSetGroupsData} for:item="psg">
+                                                                                        <tr key={psg.id}>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={psg.label}>
+                                                                                                    <lightning-icon icon-name="standard:permission_set_group" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                                    {psg.label}
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={psg.id}>
+                                                                                                    <span class="slds-text-font_monospace slds-text-color_weak">{psg.id}</span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={psg.name}>
+                                                                                                    <span class="slds-text-font_monospace">{psg.name}</span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <span class="slds-badge slds-badge_success">{psg.assignmentCount}</span>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <template if:true={psg.componentPermissionSets}>
+                                                                                                    <div class="badge-container">
+                                                                                                        <template for:each={psg.componentPermissionSets} for:item="ps">
+                                                                                                            <span key={ps.id} class="slds-badge slds-badge_lightest slds-m-right_xx-small slds-m-bottom_xx-small" title={ps.id}>
+                                                                                                                <lightning-icon icon-name="standard:permission_set" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                                                {ps.label}
+                                                                                                            </span>
+                                                                                                        </template>
+                                                                                                    </div>
+                                                                                                </template>
+                                                                                                <template if:false={psg.componentPermissionSets}>
+                                                                                                    <span class="slds-text-color_weak">No components</span>
+                                                                                                </template>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <span class="slds-badge slds-badge_warning">Permission Set Group</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </template>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </template>
+                                                                    <template if:false={result.permissionSetGroupsData.length}>
+                                                                        <div class="empty-state">
+                                                                            <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                                                            <p>No permission set groups have this permission</p>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </lightning-tab>
+                                                            
+                                                            <!-- Users Tab -->
+                                                            <lightning-tab label="Users" value="users">
+                                                                <div class="slds-p-around_small">
+                                                                    <template if:true={result.usersData.length}>
+                                                                        <div class="table-container">
+                                                                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th scope="col">Name</th>
+                                                                                        <th scope="col">User ID</th>
+                                                                                        <th scope="col">Username</th>
+                                                                                        <th scope="col">Email</th>
+                                                                                        <th scope="col">Profile</th>
+                                                                                        <th scope="col">Permission Sources</th>
+                                                                                        <th scope="col">Status</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <template for:each={result.usersData} for:item="user">
+                                                                                        <tr key={user.id}>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={user.name}>
+                                                                                                    <lightning-icon icon-name="standard:user" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                                    {user.name}
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={user.id}>
+                                                                                                    <span class="slds-text-font_monospace slds-text-color_weak">{user.id}</span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={user.username}>
+                                                                                                    <span class="slds-text-font_monospace">{user.username}</span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={user.email}>
+                                                                                                    {user.email}
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <div class="slds-truncate" title={user.profileName}>
+                                                                                                    <lightning-icon icon-name="standard:user_role" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                                    {user.profileName}
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <template if:true={user.permissionSources}>
+                                                                                                    <template if:true={user.permissionSources.length}>
+                                                                                                        <div class="badge-container">
+                                                                                                            <template for:each={user.permissionSources} for:item="source">
+                                                                                                                <span key={source.id} class="slds-badge slds-badge_lightest slds-m-right_xx-small slds-m-bottom_xx-small" title={source.id}>
+                                                                                                                    <lightning-icon icon-name={source.iconName} size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                                                                                    {source.type}: {source.name}
+                                                                                                                </span>
+                                                                                                            </template>
+                                                                                                        </div>
+                                                                                                    </template>
+                                                                                                </template>
+                                                                                                <template if:false={user.permissionSources}>
+                                                                                                    <span class="slds-text-color_weak">No sources</span>
+                                                                                                </template>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <template if:true={user.isActive}>
+                                                                                                    <span class="slds-badge slds-badge_success">Active</span>
+                                                                                                </template>
+                                                                                                <template if:false={user.isActive}>
+                                                                                                    <span class="slds-badge slds-badge_error">Inactive</span>
+                                                                                                </template>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </template>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </template>
+                                                                    <template if:false={result.usersData.length}>
+                                                                        <div class="empty-state">
+                                                                            <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                                                            <p>No users have this permission</p>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </lightning-tab>
+                                                        </lightning-tabset>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </template>
+                                </tbody>
+                            </table> 
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- Bulk export progress modal -->
+    <template if:true={showBulkExportModal}>
+        <template if:false={isBulkExportMinimized}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                            title="Minimize" onclick={handleMinimizeBulkExport}>
+                            <lightning-icon icon-name="utility:minimize_window" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Minimize</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-card__header-title">System Permissions Bulk Export</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-p-around_medium">
+                        <p class="slds-m-bottom_medium">{bulkExportStatus}</p>
+                        <div class="slds-progress-bar slds-progress-bar_large" aria-valuemin="0" aria-valuemax="100"
+                            aria-valuenow={bulkExportProgress} role="progressbar">
+                            <span class="slds-progress-bar__value progress-bar-smooth" lwc:dom="manual"></span>
+                        </div>
+                        <p class="slds-text-align_center slds-m-top_medium">{bulkExportProgress}% Complete</p>
+                        <p class="slds-text-align_center slds-text-color_weak slds-m-top_small">
+                            Processed {bulkExportProcessed} of {bulkExportTotal} permissions
+                        </p>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" variant="neutral" onclick={handleCancelBulkExport}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </template>
+
+    <!-- Minimized bulk export progress widget - Chat Icon Style -->
+    <template if:true={isBulkExportMinimized}>
+        <div class={minimizedWidgetClass} onclick={handleToggleMinimizedWidget} title={minimizedWidgetTooltip}>
+            <!-- Progress Ring for Chat Icon -->
+            <template if:false={isMinimizedExpanded}>
+                <div class="progress-ring"></div>
+                <div class="chat-icon">
+                    <lightning-icon icon-name="utility:download" size="small"></lightning-icon>
+                </div>
+            </template>
+            
+            <!-- Expanded Content -->
+            <template if:true={isMinimizedExpanded}>
+                <div class="export-content">
+                    <div class="slds-card__header">
+                        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                            <div class="slds-media slds-media_center">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="utility:download" size="x-small" 
+                                        class="slds-icon-text-default"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h3 class="slds-text-heading_x-small">Bulk Export</h3>
+                                    <p class="slds-text-body_small slds-text-color_weak">{bulkExportProgress}% Complete</p>
+                                </div>
+                            </div>
+                            <div class="slds-no-flex">
+                                <div class="slds-button-group" role="group">
+                                    <lightning-button-icon icon-name="utility:expand" 
+                                        title="Restore Full View" 
+                                        onclick={handleRestoreBulkExport}
+                                        size="x-small"
+                                        variant="border-filled">
+                                    </lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:minimize_window" 
+                                        title="Minimize to Icon" 
+                                        onclick={handleCollapseMinimizedWidget}
+                                        size="x-small"
+                                        variant="border-filled">
+                                    </lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:close" 
+                                        title="Cancel Export" 
+                                        onclick={handleCancelBulkExport}
+                                        size="x-small"
+                                        variant="border-filled">
+                                    </lightning-button-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-progress-bar slds-progress-bar_small slds-m-bottom_x-small" 
+                            aria-valuemin="0" aria-valuemax="100" aria-valuenow={bulkExportProgress} role="progressbar">
+                            <span class="slds-progress-bar__value progress-bar-smooth" lwc:dom="manual"></span>
+                        </div>
+                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                            {bulkExportStatus}
+                        </p>
+                        <p class="slds-text-body_small slds-text-color_weak slds-text-align_center">
+                            Processed {bulkExportProcessed} of {bulkExportTotal} permissions
+                        </p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <!-- Template Manager Section -->
+    <template if:true={showTemplateManager}>
+        <!-- Warning message if custom object is missing -->
+        <template if:true={showMissingObjectWarning}>
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning elevation-2" role="alert">
+                <span class="slds-assistive-text">Warning</span>
+                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small">
+                    <lightning-icon icon-name="utility:warning" size="small" variant="inverse"></lightning-icon>
+                </span>
+                <h2>The PermissionsTemplate__c custom object is missing. Templates cannot be saved without it.</h2>
+                <div class="slds-notify__close">
+                    <lightning-button label="Create Object" variant="brand"
+                        onclick={handleCreateCustomObject}></lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <div class="template-manager-container slds-card elevation-3">
+            <div class="slds-card__header slds-grid slds-grid_align-spread">
+                <header class="slds-media slds-media_center">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="utility:template" size="small"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span>Template Manager</span>
+                        </h2>
+                    </div>
+                </header>
+                <div class="slds-no-flex">
+                    <lightning-button label="Back to Permissions" icon-name="utility:back" variant="neutral"
+                        onclick={handleShowSaveTemplates}>
+                    </lightning-button>
+                </div>
+            </div>
+            <div class="slds-card__body slds-card__body_inner">
+                <!-- Automatic Templates Status Section 
+                <template if:true={automaticTemplatesInitialized}>
+                    <div class="slds-box slds-theme_shade slds-m-bottom_medium elevation-1">
+                        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                            <div class="slds-col">
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <template if:true={automaticTemplatesExist}>
+                                            <lightning-icon icon-name="utility:success" size="small" variant="success"></lightning-icon>
+                                        </template>
+                                        <template if:false={automaticTemplatesExist}>
+                                            <lightning-icon icon-name="utility:info" size="small" variant="warning"></lightning-icon>
+                                        </template>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h3 class="slds-text-heading_small">Comprehensive Automatic Templates</h3>
+                                        <p class="slds-text-body_small slds-text-color_weak">
+                                            {automaticTemplateMessage}
+                                        </p>
+                                        <template if:true={automaticTemplatesExist}>
+                                            <p class="slds-text-body_small slds-text-color_success slds-m-top_x-small">
+                                                <lightning-icon icon-name="utility:check" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                Comprehensive templates (all-permission-sets-auto, all-profiles-auto, all-permission-set-groups-auto) are available for use
+                                            </p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <template if:true={automaticTemplatesExist}>
+                                    <span class="slds-badge slds-badge_success">Ready</span>
+                                </template>
+                                <template if:false={automaticTemplatesExist}>
+                                    <span class="slds-badge slds-badge_warning">Pending</span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>  -->
+                
+                <!-- Create Template Section Card -->
+                <!-- Create New Template Section - Only visible to users with BulkExporterGrantUserTemplateCreation permission set -->
+                <template if:true={isCurrentUserAdmin}>
+                    <div class="expandable-card slds-m-bottom_medium elevation-1">
+                        <!-- Information message about permission set requirement -->
+                        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" role="alert">
+                            <span class="slds-assistive-text">Info</span>
+                            <span class="slds-icon_container slds-icon-utility-info slds-m-right_x-small">
+                                <lightning-icon icon-name="utility:info" size="x-small" variant="inverse"></lightning-icon>
+                            </span>
+                            <h2>Users must be assigned the <strong>BulkExporterGrantUserTemplateCreation</strong> permission set to create templates.</h2>
+                        </div>
+                        <div class="expandable-card__header" onclick={handleToggleCreateSection}>
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                                <div class="slds-col slds-size_1-of-12">
+                                    <lightning-icon icon-name={createSectionIcon} size="x-small" class="expandable-icon">
+                                    </lightning-icon>
+                                </div>
+                                <div class="slds-col slds-size_11-of-12">
+                                    <h3 class="slds-text-heading_small">Create New Template</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class={createSectionClass}>
+                        <!-- Template Name Input -->
+                        <div class="slds-m-bottom_medium">
+                            <lightning-input data-id="templateName" label="Template Name"
+                                placeholder="Enter a name for this template" required>
+                            </lightning-input>
+                        </div>
+
+                        <div class="slds-grid slds-gutters slds-wrap">
+                            <!-- First Row: Profiles, Permission Sets, System Permissions -->
+                            <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                                <c-selection-panel title="Profiles" items={profiles}
+                                    onselectionchange={handleProfileSelectionChange}>
+                                </c-selection-panel>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                                <c-selection-panel title="Permission Sets" items={permissionSets}
+                                    onselectionchange={handlePermSetSelectionChange}>
+                                </c-selection-panel>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                                <c-selection-panel title="System Permissions" items={systemPermissions}
+                                    show-privileged-filter
+                                    onselectionchange={handleSystemPermissionSelectionChange}
+                                    onselectprivileged={handleSelectAllPrivileged}>
+                                </c-selection-panel>
+                            </div>
+
+                            <!-- Second Row: Permission Set Groups, Users, User Object Fields -->
+                            <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                                <c-selection-panel title="Permission Set Groups" items={permissionSetGroups}
+                                    onselectionchange={handlePermSetGroupSelectionChange}>
+                                </c-selection-panel>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                                <c-selection-panel title="Users" items={users}
+                                    onselectionchange={handleUserSelectionChange}
+                                    show-include-all-toggle
+                                    onincludeallchange={handleIncludeAllUsersToggle}
+                                    enable-pagination={enableUserPagination}
+                                    items-per-page={userPageSize}
+                                    onloadmore={handleLoadMoreUsers}
+                                    show-license-filter
+                                    license-options={availableLicenseTypes}
+                                    onlicensechange={handleUserLicenseFilterChange}>
+                                </c-selection-panel>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-3 slds-m-bottom_medium">
+                                <c-selection-panel title="User Object Fields" items={userFields}
+                                    onselectionchange={handleUserFieldSelectionChange}>
+                                </c-selection-panel>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-grid_align-center">
+                            <lightning-button label="Generate Template" variant="brand" icon-name="utility:save"
+                                onclick={handleGenerateTemplate} class="slds-m-top_medium">
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+                </template>
+
+                <!-- Export Template Section Card -->
+                <div class="expandable-card elevation-1">
+                    <div class="expandable-card__header" onclick={handleToggleExportSection}>
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <div class="slds-col slds-size_1-of-12">
+                                <lightning-icon icon-name={exportSectionIcon} size="x-small" class="expandable-icon">
+                                </lightning-icon>
+                            </div>
+                            <div class="slds-col slds-size_11-of-12">
+                                <h3 class="slds-text-heading_small">Export Existing Template</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class={exportSectionClass}>
+                        <div class="slds-grid slds-gutters slds-wrap">
+                            <div class="slds-col slds-size_1-of-3">
+                                <lightning-combobox label="Select Template" options={templates} value={selectedTemplateId}
+                                    onchange={handleTemplateChange}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 slds-p-top_large">
+                                <lightning-button label="Export Template" icon-name="utility:download" variant="brand"
+                                    onclick={handleExportTemplate} disabled={isExportButtonDisabled}>
+                                </lightning-button>
+                            </div>
+                            <div class="slds-col slds-size_full slds-large-size_full slds-p-top_medium"
+                                if:true={selectedTemplate}>
+                                <!-- Header -->
+                                <div class="slds-card__header slds-grid slds-border_bottom">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <lightning-icon icon-name="standard:template" alternative-text="Template"
+                                                size="small"></lightning-icon>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title">
+                                                <a href="javascript:void(0);"
+                                                    class="slds-card__header-link slds-truncate">
+                                                    <span>Template Details</span>
+                                                </a>
+                                            </h2>
+                                        </div>
+                                        <div class="slds-no-flex">
+                                            <span class="slds-badge slds-badge_success">Active</span>
+                                        </div>
+                                    </header>
+                                </div>
+
+                                <!-- Body -->
+                                <div class="slds-card__body template-details">
+                                    <!-- Template Name -->
+                                    <div class="slds-p-horizontal_medium slds-p-vertical_small slds-border_bottom">
+                                        <div class="slds-grid slds-grid_vertical-align-center">
+                                            <lightning-icon icon-name="standard:document" alternative-text="Template"
+                                                size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            <h3 class="slds-text-heading_medium">{selectedTemplate.name}</h3>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stats Cards 
+                                    <div
+                                        class="slds-grid slds-gutters slds-p-horizontal_medium slds-p-vertical_medium slds-border_bottom">
+                                         
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <article class="slds-tile slds-media slds-card__tile elevation-1">
+                                                <div class="slds-media__figure">
+                                                    <span class="slds-icon_container slds-icon-standard-user">
+                                                        <lightning-icon icon-name="standard:user"
+                                                            alternative-text="Profile" size="small"></lightning-icon>
+                                                    </span>
+                                                </div>
+                                                <div class="slds-media__body">
+                                                    <h3 class="slds-text-color_weak slds-text-title_caps">Profiles</h3>
+                                                    <div class="slds-tile__detail">
+                                                        <template if:true={selectedTemplate.profileId}>
+                                                            <p class="slds-text-heading_large">{profileCount}</p>
+                                                        </template>
+                                                        <template if:false={selectedTemplate.profileId}>
+                                                            <p class="slds-text-heading_large">0</p>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+
+                                        
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <article class="slds-tile slds-media slds-card__tile elevation-1">
+                                                <div class="slds-media__figure">
+                                                    <span class="slds-icon_container slds-icon-standard-permission-set">
+                                                        <lightning-icon icon-name="standard:permission_set"
+                                                            alternative-text="Permission Sets"
+                                                            size="small"></lightning-icon>
+                                                    </span>
+                                                </div>
+                                                <div class="slds-media__body">
+                                                    <h3 class="slds-text-color_weak slds-text-title_caps">Permission
+                                                        Sets</h3>
+                                                    <div class="slds-tile__detail">
+                                                        <template if:true={selectedTemplate.permissionSetIds}>
+                                                            <p class="slds-text-heading_large">{permSetCount}</p>
+                                                        </template>
+                                                        <template if:false={selectedTemplate.permissionSetIds}>
+                                                            <p class="slds-text-heading_large">0</p>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+
+                                        
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <article class="slds-tile slds-media slds-card__tile elevation-1">
+                                                <div class="slds-media__figure">
+                                                    <span class="slds-icon_container slds-icon-standard-settings">
+                                                        <lightning-icon icon-name="standard:settings"
+                                                            alternative-text="System Permissions" size="small"></lightning-icon>
+                                                    </span>
+                                                </div>
+                                                <div class="slds-media__body">
+                                                    <h3 class="slds-text-color_weak slds-text-title_caps">System Permissions</h3>
+                                                    <div class="slds-tile__detail">
+                                                        <template if:true={selectedTemplate.systemPermissionNames}>
+                                                            <p class="slds-text-heading_large">{systemPermCount}</p>
+                                                        </template>
+                                                        <template if:false={selectedTemplate.systemPermissionNames}>
+                                                            <p class="slds-text-heading_large">0</p>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    </div>-->
+
+                                    <!-- Permission Details Section - 5 Column Layout -->
+                                    <div class="slds-grid slds-gutters slds-wrap slds-p-horizontal_medium slds-p-vertical_medium">
+                                        <!-- First Row: Profiles, Permission Sets, Permission Set Groups, System Permissions -->
+                                        <div class="slds-col slds-size_1-of-4">
+                                            <div class="detail-box slds-m-bottom_medium">
+                                                <div class="detail-box-header">
+                                                    <lightning-icon icon-name="standard:user"
+                                                        alternative-text="Profiles" size="x-small"
+                                                        class="slds-m-right_x-small"></lightning-icon>
+                                                    <h3 class="slds-text-heading_small">Profiles</h3>
+                                                    <span class="slds-badge slds-m-left_small">{profileCount}</span>
+                                                </div>
+
+                                                <template if:true={profileNames.length}>
+                                                    <div class="detail-scrollable slds-m-top_x-small">
+                                                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                                                            <template for:each={profileNames} for:item="profileName">
+                                                                <li key={profileName} class="slds-item">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                                        <lightning-icon icon-name="utility:check"
+                                                                            size="x-small"
+                                                                            class="slds-icon-text-success slds-m-right_x-small"></lightning-icon>
+                                                                        <span>{profileName}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                                <template if:false={profileNames.length}>
+                                                    <div class="empty-state slds-m-top_x-small">
+                                                        No profiles selected
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="slds-col slds-size_1-of-4">
+                                            <div class="detail-box slds-m-bottom_medium">
+                                                <div class="detail-box-header">
+                                                    <lightning-icon icon-name="standard:permission_set"
+                                                        alternative-text="Permission Sets" size="x-small"
+                                                        class="slds-m-right_x-small"></lightning-icon>
+                                                    <h3 class="slds-text-heading_small">Permission Sets</h3>
+                                                    <span class="slds-badge slds-m-left_small">{permSetCount}</span>
+                                                </div>
+
+                                                <template if:true={permSetNames.length}>
+                                                    <div class="detail-scrollable slds-m-top_x-small">
+                                                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                                                            <template for:each={permSetNames} for:item="permSetName">
+                                                                <li key={permSetName} class="slds-item">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                                        <lightning-icon icon-name="utility:check"
+                                                                            size="x-small"
+                                                                            class="slds-icon-text-success slds-m-right_x-small"></lightning-icon>
+                                                                        <span>{permSetName}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                                <template if:false={permSetNames.length}>
+                                                    <div class="empty-state slds-m-top_x-small">
+                                                        No permission sets selected
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="slds-col slds-size_1-of-4">
+                                            <div class="detail-box slds-m-bottom_medium">
+                                                <div class="detail-box-header">
+                                                    <lightning-icon icon-name="standard:permission_set_group"
+                                                        alternative-text="Permission Set Groups" size="x-small"
+                                                        class="slds-m-right_x-small"></lightning-icon>
+                                                    <h3 class="slds-text-heading_small">Permission Set Groups</h3>
+                                                    <span class="slds-badge slds-m-left_small">{permSetGroupCount}</span>
+                                                </div>
+
+                                                <template if:true={permSetGroupNames.length}>
+                                                    <div class="detail-scrollable slds-m-top_x-small">
+                                                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                                                            <template for:each={permSetGroupNames} for:item="groupName">
+                                                                <li key={groupName} class="slds-item">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                                        <lightning-icon icon-name="utility:check"
+                                                                            size="x-small"
+                                                                            class="slds-icon-text-success slds-m-right_x-small"></lightning-icon>
+                                                                        <span>{groupName}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                                <template if:false={permSetGroupNames.length}>
+                                                    <div class="empty-state slds-m-top_x-small">
+                                                        No permission set groups selected
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="slds-col slds-size_1-of-4">
+                                            <div class="detail-box slds-m-bottom_medium">
+                                                <div class="detail-box-header">
+                                                    <lightning-icon icon-name="standard:settings"
+                                                        alternative-text="System Permissions" size="x-small"
+                                                        class="slds-m-right_x-small"></lightning-icon>
+                                                    <h3 class="slds-text-heading_small">System Permissions</h3>
+                                                    <span class="slds-badge slds-m-left_small">{systemPermCount}</span>
+                                                </div>
+
+                                                <template if:true={systemPermNames.length}>
+                                                    <div class="detail-scrollable slds-m-top_x-small">
+                                                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                                                            <template for:each={systemPermNames} for:item="perm">
+                                                                <li key={perm} class="slds-item">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                                        <lightning-icon icon-name="utility:check"
+                                                                            size="x-small"
+                                                                            class="slds-icon-text-success slds-m-right_x-small"></lightning-icon>
+                                                                        <span>{perm}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                                <template if:false={systemPermNames.length}>
+                                                    <div class="empty-state slds-m-top_x-small">
+                                                        No system permissions selected
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <!-- Second Row: Users, User Object Fields -->
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <div class="detail-box slds-m-bottom_medium">
+                                                <div class="detail-box-header">
+                                                    <lightning-icon icon-name="standard:user"
+                                                        alternative-text="Users" size="x-small"
+                                                        class="slds-m-right_x-small"></lightning-icon>
+                                                    <h3 class="slds-text-heading_small">Users</h3>
+                                                    <span class="slds-badge slds-m-left_small">{userCount}</span>
+                                                </div>
+
+                                                <template if:true={userNames.length}>
+                                                    <div class="detail-scrollable slds-m-top_x-small">
+                                                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                                                            <template for:each={userNames} for:item="userName">
+                                                                <li key={userName} class="slds-item">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                                        <lightning-icon icon-name="utility:check"
+                                                                            size="x-small"
+                                                                            class="slds-icon-text-success slds-m-right_x-small"></lightning-icon>
+                                                                        <span>{userName}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                                <template if:false={userNames.length}>
+                                                    <div class="empty-state slds-m-top_x-small">
+                                                        No users selected
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <div class="detail-box slds-m-bottom_medium">
+                                                <div class="detail-box-header">
+                                                    <lightning-icon icon-name="standard:field"
+                                                        alternative-text="User Object Fields" size="x-small"
+                                                        class="slds-m-right_x-small"></lightning-icon>
+                                                    <h3 class="slds-text-heading_small">User Object Fields</h3>
+                                                    <span class="slds-badge slds-m-left_small">{userFieldCount}</span>
+                                                </div>
+
+                                                <template if:true={userFieldNames.length}>
+                                                    <div class="detail-scrollable slds-m-top_x-small">
+                                                        <ul class="slds-list_vertical slds-has-dividers_top-space">
+                                                            <template for:each={userFieldNames} for:item="fieldName">
+                                                                <li key={fieldName} class="slds-item">
+                                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                                        <lightning-icon icon-name="utility:check"
+                                                                            size="x-small"
+                                                                            class="slds-icon-text-success slds-m-right_x-small"></lightning-icon>
+                                                                        <span>{fieldName}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                                <template if:false={userFieldNames.length}>
+                                                    <div class="empty-state slds-m-top_x-small">
+                                                        No user fields selected
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Loading State -->
+    <template if:true={isLoading}>
+        <div class="slds-backdrop slds-backdrop_open">
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+    </template>
+    
+    <!-- Hidden container for HTML tables used for Excel export -->
+    <div class="export-container" style="display:none;"></div>
+
+    <!-- Field Selection Modal -->
+    <template if:true={showFieldSelector}>
+        <section role="dialog" tabindex="-1" aria-labelledby="field-selector-heading" aria-modal="true" aria-describedby="field-selector-content" class="slds-modal slds-fade-in-open">
+            <div style="width: 80%; margin: 10rem auto;" >
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleCloseFieldSelector}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="field-selector-heading" class="slds-modal__title slds-hyphenate">Select User Fields</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="field-selector-content">
+                    <div class="slds-text-body_regular slds-m-bottom_medium">
+                        Choose which User object fields to display in the analysis table and include in Excel exports.
+                    </div>
+                    
+                    <!-- Search Box -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <label class="slds-form-element__label" for="field-search">Search Fields</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-input-has-icon slds-input-has-icon_left">
+                                <lightning-icon icon-name="utility:search" size="x-small" class="slds-input__icon slds-input__icon_left"></lightning-icon>
+                                <input type="text" 
+                                    id="field-search" 
+                                    class="slds-input" 
+                                    placeholder="Search by field name, label, type, description, or help text..."
+                                    value={fieldSearchTerm}
+                                    oninput={handleFieldSearch} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selection Controls -->
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_medium">
+                        <div class="slds-text-body_small slds-text-color_weak">
+                            {visibleSelectedCount} of {visibleFieldCount} fields selected
+                        </div>
+                        <div class="slds-button-group" role="group">
+                            <lightning-button variant="neutral" 
+                                label="Select All" 
+                                onclick={handleSelectAllFields}
+                                disabled={allVisibleSelected}
+                                size="small">
+                            </lightning-button>
+                            <lightning-button variant="neutral" 
+                                label="Deselect All" 
+                                onclick={handleDeselectAllFields}
+                                disabled={noVisibleSelected}
+                                size="small">
+                            </lightning-button>
+                        </div>
+                    </div>
+                    
+                    <!-- Field Selection List -->
+                    <div class="slds-scrollable_y" style="max-height: 350px;">
+                        <template if:true={filteredUserFields.length}>
+                            <div class="slds-form-element">
+                                <fieldset class="slds-form-element__control">
+                                    <legend class="slds-form-element__legend slds-form-element__label">Available Fields</legend>
+                                    
+                                    <!-- Table Structure -->
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th scope="col" style="width: 60px;">
+                                                    <div class="slds-text-align_center">
+                                                        <span class="slds-text-body_small slds-text-color_weak">Select</span>
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 25%;">
+                                                    <div class="slds-truncate" title="Field Name">
+                                                        <span class="slds-text-body_small slds-text-color_weak">Field Name</span>
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 15%;">
+                                                    <div class="slds-truncate" title="Type">
+                                                        <span class="slds-text-body_small slds-text-color_weak">Type</span>
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 30%;">
+                                                    <div class="slds-truncate" title="Description">
+                                                        <span class="slds-text-body_small slds-text-color_weak">Description</span>
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 30%;">
+                                                    <div class="slds-truncate" title="Help Text">
+                                                        <span class="slds-text-body_small slds-text-color_weak">Help Text</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={filteredUserFields} for:item="field">
+                                                <tr key={field.name} class="slds-hint-parent">
+                                                    <!-- Checkbox Column -->
+                                                    <td class="slds-text-align_center">
+                                                        <lightning-input type="checkbox"
+                                                            data-field={field.name}
+                                                            checked={field.isSelected}
+                                                            onchange={handleUserFieldSelection}
+                                                            aria-label={field.label}>
+                                                        </lightning-input>
+                                                    </td>
+                                                    
+                                                    <!-- Field Name Column -->
+                                                    <td>
+                                                        <div class="slds-cell-wrap">
+                                                            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xx-small">
+                                                                <span class="slds-text-body_regular slds-text-color_default slds-wrap">{field.label}</span>
+                                                                <template if:true={field.isCustom}>
+                                                                    <lightning-icon icon-name="utility:custom_apps" size="xx-small" class="slds-m-left_xx-small" title="Custom Field"></lightning-icon>
+                                                                </template>
+                                                                <template if:true={field.isCore}>
+                                                                    <span class="slds-badge slds-badge_lightest slds-m-left_xx-small">Core</span>
+                                                                </template>
+                                                            </div>
+                                                            <div class="slds-text-body_small slds-text-color_weak slds-wrap">
+                                                                {field.name}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <!-- Type Column -->
+                                                    <td>
+                                                        <div class="slds-cell-wrap">
+                                                            <span class="slds-text-body_small slds-text-color_default slds-wrap">{field.type}</span>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <!-- Description Column -->
+                                                    <td>
+                                                        <div class="slds-cell-wrap">
+                                                            <template if:true={field.description}>
+                                                                <span class="slds-text-body_small slds-text-color_default slds-wrap">{field.description}</span>
+                                                            </template>
+                                                            <template if:false={field.description}>
+                                                                <span class="slds-text-body_small slds-text-color_weak">—</span>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <!-- Help Text Column -->
+                                                    <td>
+                                                        <div class="slds-cell-wrap">
+                                                            <template if:true={field.helpText}>
+                                                                <span class="slds-text-body_small slds-text-color_default slds-wrap">{field.helpText}</span>
+                                                            </template>
+                                                            <template if:false={field.helpText}>
+                                                                <span class="slds-text-body_small slds-text-color_weak">—</span>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+                        </template>
+                        <template if:false={filteredUserFields.length}>
+                            <div class="slds-text-align_center slds-p-around_medium">
+                                <lightning-icon icon-name="utility:search" size="medium" class="slds-text-color_weak"></lightning-icon>
+                                <div class="slds-text-heading_small slds-m-top_small">No fields found</div>
+                                <div class="slds-text-body_small slds-text-color_weak">
+                                    Try adjusting your search terms
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Cancel" onclick={handleCloseFieldSelector}></lightning-button>
+                    <lightning-button variant="brand" label="Apply Selection" onclick={handleApplyFieldSelection}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

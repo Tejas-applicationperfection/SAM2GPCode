@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseObject>Fields_Profile_Log__c</baseObject>
+    <category>admin</category>
+    <deployed>true</deployed>
+    <description>Changes to field level security made through Security and Access Manager</description>
+    <label>Field Level Profile Changes Logs</label>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Id</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>true</checkedByDefault>
+            <field>Name</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedDate</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedBy</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastModifiedDate</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastModifiedBy</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Objects_And_Fields_Log__c</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Value__c</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>ProfileId__c</field>
+            <table>Fields_Profile_Log__c</table>
+        </columns>
+        <masterLabel>Fields Profile Logs</masterLabel>
+    </sections>
+</ReportType>

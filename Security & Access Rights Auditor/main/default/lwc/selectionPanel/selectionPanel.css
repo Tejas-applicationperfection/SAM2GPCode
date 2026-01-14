@@ -1,0 +1,191 @@
+.item-list-container {
+    max-height: 300px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.virtual-scroll-container {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.virtual-item-list {
+    position: relative;
+    box-sizing: border-box;
+}
+
+.slds-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.slds-card__body {
+    flex: 1;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+.selectable-item {
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.selectable-item:hover {
+    background-color: #f3f2f2;
+}
+
+.selectable-item:active {
+    background-color: #e8f4fd;
+}
+
+/* Loading state */
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Improved scrollbar styling */
+.virtual-scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.virtual-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.virtual-scroll-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.virtual-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Performance optimizations */
+.selectable-item {
+    will-change: transform;
+    contain: layout style paint;
+}
+
+/* Better visual feedback for selections */
+.selectable-item input[type="checkbox"]:checked + label .slds-checkbox_faux {
+    background-color: #0176d3;
+    border-color: #0176d3;
+}
+
+/* Pagination controls styling */
+.pagination-controls {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Load more button styling */
+.load-more-container {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Search input improvements */
+.slds-form-element {
+    margin-bottom: 0.75rem;
+}
+
+/* Count label styling */
+.count-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    margin-bottom: 0.5rem;
+}
+
+/* Performance indicator */
+.performance-indicator {
+    font-size: 0.625rem;
+    color: #706e6b;
+    font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .item-list-container,
+    .virtual-scroll-container {
+        max-height: 250px;
+        height: 250px;
+    }
+    
+    .selectable-item {
+        min-height: 50px;
+        padding: 0.25rem;
+    }
+    
+    .slds-card__body {
+        padding: 0.5rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .selectable-item:hover {
+        background-color: #000;
+        color: #fff;
+    }
+    
+    .selectable-item:active {
+        background-color: #333;
+        color: #fff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .selectable-item {
+        transition: none;
+    }
+}
+
+/* Privileged permission styling */
+.privileged-permission-text {
+    color: #c23934;
+    font-weight: 600;
+}
+
+/* Privileged permission item */
+.selectable-item[data-privileged="true"] {
+    border-left: 3px solid #c23934;
+}
+
+.selectable-item[data-privileged="true"]:hover {
+    background-color: #fef5f5;
+}
+
+/* Select All Privileged button */
+.slds-button_destructive {
+    background-color: #c23934;
+    color: white;
+}
+
+.slds-button_destructive:hover {
+    background-color: #a02622;
+}

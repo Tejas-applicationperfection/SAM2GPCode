@@ -1,0 +1,1364 @@
+<!--
+Author     : Tejas Kshirsagar
+Description: Lightning Component for PermissionAudit App.
+
+    
+<ltng:require scripts="{!$Resource.jquery + '/jquery-3.6.0.min.js'}" afterScriptsLoaded="{!c.handleScriptsLoaded}" />
+<ltng:require scripts="{!$Resource.table2excel + '/jquery.table2excel.min.js'}" afterScriptsLoaded="{!c.handleScriptsLoaded}" />
+
+-->
+<aura:component  controller="AuditObjectiveController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,lightning:isUrlAddressable" access="global" >
+    <ltng:require styles="{!$Resource.AuditAppCss}" />
+   <ltng:require styles="{!$Resource.RemoveDateFormatStyle + '/styles.css'}"/>
+      <lightning:navigation aura:id="navigationService" />
+    
+    <aura:attribute name="selectedTimeFrame" type="String" />
+    <aura:attribute name="timeFrameOptions" type="List" default="['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']" />
+  <aura:attribute name="showDropdown" type="Boolean" default="false" />
+    
+    
+      <aura:attribute name="isDateInputDisabled" type="Boolean" default="false" />
+
+    
+     <aura:attribute name="hasAccess" type="Boolean" default="true" access="public"/>
+    <!-- selectedSection navbar -->
+      <aura:attribute name="selectedSection" type="String" default="table2" />
+
+    <aura:attribute name="selectedLookUpRecord" type="sObject" default="{}"/>
+    
+    <aura:attribute name="showMessage" type="Boolean" default="false" />
+    <aura:attribute name="showMessageId" type="String" default="" />
+    
+    <aura:attribute name="userId" type="String" />
+    <aura:attribute name="userList" type="List" />
+    <aura:attribute name="searchTerm" type="String" default="" />
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="step" type="List" />
+    <aura:attribute name="index" type="Integer" default="0" />
+    
+    <aura:attribute name="lastClickCount" type="Integer" default="0"/>
+    <aura:attribute name="showConfirmDialog" type="boolean" default="false"/>
+     <aura:attribute name="showchangelookup" type="Boolean" default="false"/>
+    <aura:attribute name="formatDateTogg" type="boolean" default="true"/>
+     <aura:attribute name="DateTogg" type="Boolean" default="false"/>
+     <aura:attribute name="IsNotifyUser" type="Boolean" default="false"/>
+    <aura:attribute name="showDeleteTempBtn" type="Boolean" default="false" />
+    <aura:attribute name="changelookup" type="Boolean" default="false" />
+    <aura:attribute name="auditObjectives" type="Audit_Step__c[]" />
+    <aura:attribute name="templateOptions" type="List" />
+    <aura:attribute name="selectedTemplate"  type="String"/>
+    <aura:attribute name="templates" type="List" default="[]" access="public" />
+    <aura:attribute name="cbaseURL" type="String"/>
+    <aura:attribute name="showTable" type="Boolean" default="true" />
+    <aura:attribute name="editTemplate" type="Boolean" default="true" />
+    <aura:attribute name="showdupesavebutton" type="Boolean" default="false" />
+    <aura:attribute name="showInputMessage" type="Boolean" default="false" />
+    <aura:attribute name="Addplus" type="Boolean" default="true" />
+    <aura:attribute name="showTable2" type="Boolean" default="true" />
+    <aura:attribute name="isRemoveTemplate" type="Boolean" default="false" />
+    <aura:attribute name="isAddTemplate" type="Boolean" default="true" />
+    <aura:attribute name="isTemplate" type="Boolean" default="false" />
+    <aura:attribute name="showbutton" type="Boolean" default="true" /> <!-- it will use to hide/show the save button when the edit button will click -->
+    <aura:attribute name="ShowRenameButton" type="Boolean" default="false" />
+    <aura:attribute name="showCancelEdit" type="Boolean" default="false" /><!-- it will use to hide/show the cancel button when the edit button will click -->
+    <aura:attribute name="EditTable" type="Boolean" default="true" />
+    <aura:attribute name="isEdit" type="Boolean" default="false" /><!-- it will use to hide/show the input boxes for date and comments when the edit button will click -->
+    <aura:attribute name="isReorder" type="Boolean" default="false" />
+    <aura:attribute name="displayTable" type="Boolean" default="true" />
+    <aura:attribute name="showPopupMessage" type="Boolean" default="false" />
+    <aura:attribute name="showEmailMessage" type="Boolean" default="false" />
+    <aura:attribute name="showSaveMessage" type="Boolean" default="false" />
+    <aura:attribute name="notificationDate" type="String" /> 
+<aura:attribute name="scheduleSuccessMessage" type="String" />
+    <aura:attribute name="showScheduleSuccessMessage" type="Boolean" default="false" />
+    <aura:attribute name="showScheduleErrorMessage" type="Boolean" default="false" />
+    <aura:attribute name="editCancel" type="Boolean" default="false" />
+    <aura:attribute name="showTempMessage" type="Boolean" default="false" />
+    <aura:attribute name="stepList" type="List" default="[]" />
+    <aura:attribute name="defaultList" type="List" default="[]" />
+    <aura:attribute name="modifiedList" type="List" default="[]" />
+    <aura:attribute name="inputValue" type="String" default="" />
+    <aura:attribute name="TemplateValue" type="String" default="" />
+    <aura:attribute name="stepOrderValue" type="String" default="" />
+    <aura:attribute name="stepValues" type="String[]" />
+    <aura:attribute name="Name" type="String" default="" />
+    <aura:attribute name="reviewDate" type="Date" />
+       <aura:attribute name="reviewdueDate" type="Date" />
+    <aura:attribute name="comments" type="String" />
+    <aura:attribute name="relevantForReview" type="String" />
+    <aura:attribute name="permissionReviewData" type="List" default="[]"/>
+    <aura:attribute name="ObjPermReviewData" type="List" default="[]"/>
+    <aura:attribute name="ProPsetReviewData" type="List" default="[]"/>
+    
+    
+    <aura:attribute name="relevantForReview1" type="String"  />
+    <aura:attribute name="relevantForReview2" type="String"  />
+    <aura:attribute name="relevantForReview3" type="String"  />
+    <aura:attribute name="relevantForReview4" type="String"  />
+    <aura:attribute name="relevantForReview5" type="String"  />
+    <aura:attribute name="relevantForReview6" type="String"  />
+    <aura:attribute name="relevantForReview7" type="String"  />
+    <aura:attribute name="relevantForReview8" type="String"  />
+    <aura:attribute name="picklistData" type="Object[]" default="[{'SA_Audit__PicklistSelection__c': 'relevantForReview1', 'SA_Audit__Selection_value__c': 'No'}, {'SA_Audit__PicklistSelection__c': 'relevantForReview2', 'SA_Audit__Selection_value__c': 'No'}, {'SA_Audit__PicklistSelection__c': 'relevantForReview3', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'relevantForReview4', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'relevantForReview5', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'relevantForReview6', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'relevantForReview7', 'SA_Audit__Selection_value__c': 'No'}]" /><!-- ,{'SA_Audit__PicklistSelection__c': 'relevantForReview8', 'SA_Audit__Selection_value__c': 'No'} -->
+     <aura:attribute name="ObjpicklistData" type="Object[]" default="[{'SA_Audit__PicklistSelection__c': 'ObjForReview1', 'SA_Audit__Selection_value__c': 'No'}, {'SA_Audit__PicklistSelection__c': 'ObjForReview2', 'SA_Audit__Selection_value__c': 'No'}, {'SA_Audit__PicklistSelection__c': 'ObjForReview3', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'ObjForReview4', 'SA_Audit__Selection_value__c': 'No'}]" />
+    <aura:attribute name="Pro_Pset_Desc_picklistData" type="Object[]" default="[{'SA_Audit__PicklistSelection__c': 'PermReview1', 'SA_Audit__Selection_value__c': 'No'}, {'SA_Audit__PicklistSelection__c': 'PermReview2', 'SA_Audit__Selection_value__c': 'No'}, {'SA_Audit__PicklistSelection__c': 'PermReview3', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'PermReview4', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'PermReview5', 'SA_Audit__Selection_value__c': 'No'},{'SA_Audit__PicklistSelection__c': 'PermReview6', 'SA_Audit__Selection_value__c': 'No'}]" />
+    <!--    <aura:attribute name="dateData" type="Object[]" default="[{'SA_Audit__DateSelectionName__c': 'dateOfReview1', 'SA_Audit__Date_Selection_value__c': ''}, {'SA_Audit__DateSelectionName__c': 'dateOfReview2', 'SA_Audit__Date_Selection_value__c': ''}, {'SA_Audit__DateSelectionName__c': 'dateOfReview3', 'SA_Audit__Date_Selection_value__c': ''},{'SA_Audit__DateSelectionName__c': 'dateOfReview4', 'SA_Audit__Date_Selection_value__c': ''},{'SA_Audit__DateSelectionName__c': 'dateOfReview5', 'SA_Audit__Date_Selection_value__c': ''},{'SA_Audit__DateSelectionName__c': 'dateOfReview6', 'SA_Audit__Date_Selection_value__c': ''},{'SA_Audit__DateSelectionName__c': 'dateOfReview7', 'SA_Audit__Date_Selection_value__c': ''},{'SA_Audit__DateSelectionName__c': 'dateOfReview8', 'SA_Audit__Date_Selection_value__c': ''}]" /> -->
+    <aura:attribute name="dateData" type="Object[]" default="[{'name': 'date1', 'value': ''}, {'name': 'date2', 'value': ''}, {'name': 'date3', 'value': ''}, {'name': 'date4', 'value': ''}, {'name': 'date5', 'value': ''}, {'name': 'date6', 'value': ''}, {'name': 'date7', 'value': ''}]" /> <!-- , {'name': 'date8', 'value': ''} -->
+      <aura:attribute name="objectdateData" type="Object[]" default="[{'name': 'Objdate1', 'value': ''}, {'name': 'Objdate2', 'value': ''}, {'name': 'Objdate3', 'value': ''}, {'name': 'Objdate4', 'value': ''} ]"/>  
+     <aura:attribute name="ProPsetDateData" type="Object[]" default="[{'name': 'Permdate1', 'value': ''}, {'name': 'Permdate2', 'value': ''}, {'name': 'Permdate3', 'value': ''}, {'name': 'Permdate4', 'value': ''}, {'name': 'Permdate5', 'value': ''}, {'name': 'Permdate6', 'value': ''} ]"/>  
+    
+    <aura:attribute name="dateOfReview1" type="String" />
+    <aura:attribute name="dateOfReview2" type="String" />
+    <aura:attribute name="dateOfReview3" type="String" />
+    <aura:attribute name="dateOfReview4" type="String" />
+    <aura:attribute name="dateOfReview5" type="String" />
+    <aura:attribute name="dateOfReview6" type="String" />
+    <aura:attribute name="dateOfReview7" type="String" />
+    <aura:attribute name="dateOfReview8" type="String" />
+    <aura:attribute name="option16" type="String" default="" /> <!--Profile data -->
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="showSpinnerObjPerm" type="Boolean" default="false"/>
+    <aura:attribute name="editingIndex" type="Integer" default="-1" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <!--Loading Spinner -->
+    <lightning:navigation aura:id="navService" />
+    
+
+    <body style="background:white;height: max-content;">
+        
+        
+        <div class="slds-page-header">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                <div class="slds-p-horizontal_small slds-size_1-of-1">
+                    <table class="slds-table slds-table_bordered" rendered="true" width="100%">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <th scope="col" class=" bgcWhite " style="text-align: left;background-color:white;">
+                                    <div class="slds-truncate" title="Application Perfection"><img src="{!$Resource.logoApplicationPerfection}" height="90" width="245"/>
+                                    </div>
+                                </th>
+                               <th scope="col" style="text-align: right ;background-color:white;" class=" bgcWhite button-containerADvertising">
+                                    <lightning:button variant="brand" label="Help/Training" onclick="{!c.openContactUSLink}" class="button-83"/>
+                                    <lightning:button variant="brand" label="FAQ's" onclick="{!c.openContactUSLink}" class="button-83"/>
+                                    <lightning:button variant="brand" label="Request a feature/support" onclick="{!c.openContactUSLink}" class="button-83"/>
+                                    <lightning:button variant="brand" label="Release Notes" onclick="{!c.openContactUSLink}" class="button-83"/>
+                                </th>
+                                <th scope="col" class=" bgcWhite " style="text-align: right; width: 160px;background-color:white;">
+                                    <div class="slds-truncate" title="Security &amp; Access Manager"><img src="{!$Resource.logo}" height="95"/>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <aura:if isTrue="{!v.hasAccess}">
+        
+        
+        <div class="slds-grid slds-p-top--xx-large" style="display: flex;  flex-wrap: wrap;  cursor: pointer;align-items: center;">
+            <aura:iteration items="{!v.permissionReviewData}" var="item">
+             <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="blue" themeBeforeThreshold="red" size="big" totalProgress="100" actualProgress="{!item.OrgHealthCount}" Legend="Org Health" resultFormat="Percentage" threshold="49"/>
+            
+        </div>
+        <div class="info-container" data-id="info1" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info1'}">
+                <div class="info-popup show">
+                    By evaluating the total permissions in the organization, it displays the overall health of the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+    <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.Profilecount}" actualProgress="{!item.unusedProfilesCount}" Legend="Unused Custom Profile" resultFormat="Mix" threshold="1" />
+           
+        </div>
+        <div class="info-container" data-id="info2" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info2'}">
+                <div class="info-popup show">
+                    It displays the count of custom profiles(managed not included) that can be assigned or deleted but are not used anywhere in the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+    <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.Permissioncount}" actualProgress="{!item.unusedPermissionCount}" Legend="Unused Custom PermissionSets" resultFormat="Mix" threshold="1" />
+            
+        </div>
+        <div class="info-container" data-id="info3" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info3'}">
+                <div class="info-popup show">
+                    It displays the count of custom PermissionSets(managed not included) that can be assigned or deleted but are not used anywhere in the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+    <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.PermissionGroupcount}" actualProgress="{!item.unusedPermissionGroupCount}" Legend="Unused PermissionSet Groups" resultFormat="Mix" threshold="1" />
+            
+        </div>
+        <div class="info-container" data-id="info4" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info4'}">
+                <div class="info-popup show">
+                    It displays the count of custom PermissionSetGroups(managed not included) that can be assigned or deleted but are not used anywhere in the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+    <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.Rolescount}" actualProgress="{!item.unusedRolesCanDelete}" Legend="Unused Roles" resultFormat="Mix" threshold="1" />
+            
+        </div>
+        <div class="info-container" data-id="info5" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info5'}">
+                <div class="info-popup show">
+                    It displays the count of Roles that can be assigned or deleted but are not used anywhere in the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+    <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.PublicGroupcount}" actualProgress="{!item.unusedPublicGroupCanDelete}" Legend="Unused Public Groups" resultFormat="Mix" threshold="1" />
+            
+        </div>
+        <div class="info-container" data-id="info6" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info6'}">
+                <div class="info-popup show">
+                    It displays the count of PublicGroups that can be assigned or deleted but are not used anywhere in the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+    <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.InternalRolescount}" actualProgress="{!item.unusedInternalRolesCanDelete}" Legend="Unused Internal Roles" resultFormat="Mix" threshold="1" />
+            
+        </div>
+        <div class="info-container" data-id="info7" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info7'}">
+                <div class="info-popup show">
+                    It displays the count of InternalRoles that can be assigned or deleted but are not used anywhere in the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    
+    <div class="slds-col custom-layout">
+        <div class="circular-container">
+            <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.ExternalRolescount}" actualProgress="{!item.unusedExternalRolesCanDelete}" Legend="Unused External Roles" resultFormat="Mix" threshold="1" />
+           
+        </div>
+        <div class="info-container" data-id="info8" onmouseover="{!c.showInfo}" onmouseout="{!c.hideInfo}">
+            <button class="info-button">i</button>
+            <aura:if isTrue="{!v.showMessageId == 'info8'}">
+                <div class="info-popup show">
+                    It displays the count of ExternalRoles that can be assigned or deleted but are not used anywhere in the organization.
+                </div>
+            </aura:if>
+        </div>
+    </div>
+                
+                
+                <!-- object permission -->
+                
+            </aura:iteration>
+        </div> 
+        <div class="slds-box" >
+            <div class="slds-align_absolute-center">
+                <button class="slds-button slds-button_icon slds-button_icon-small slds-m-bottom_small" onclick="{!c.toggleTable}">
+                    <lightning:icon variant="bare" iconName="utility:hide" size="small" class="black-icon" />
+                    <br/>
+                    <span style="color:black;font-weight: 600;text-wrap: nowrap;">Show/Hide Table</span>
+                </button>
+            </div>
+            <aura:if isTrue="{!v.showSpinner}">
+                <div class="{! 'overlay ' + (v.showSpinner ? '' : 'slds-hide') }">
+                    <lightning:spinner variant="brand" size="medium" aura:id="spinner" alternativeText="Loading...."/>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.showSaveMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    Your Changes Have Been Saved Succesfully!!
+                </div> 
+            </aura:if>
+            <aura:if isTrue="{!v.showTempMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    Click on 'Add' to insert new values into the template!
+                </div>
+            </aura:if>
+            <div class="slds-m-around_xx-large"> 
+                <aura:if isTrue="{!v.showConfirmDialog}">
+                    <!--Modal Box Start-->
+                    <div role="dialog" class="slds-modal slds-fade-in-open ">
+                        <div class="slds-modal__container">
+                            <!--Modal Box Header Start-->
+                            <header class="slds-modal__header slds-box slds-theme_shade slds-theme_alert-texture">
+                                <h1 class="slds-text-heading--medium" style="font-family:'Salesforce Sans';">Confirm Delete</h1>
+                            </header>
+                            <!--Modal Box Header End-->
+                            
+                            <!--Modal Box Content Start-->
+                            <div class="slds-modal__content slds-p-around--medium">
+                                <center><b style="font-family:'Salesforce Sans'; font-size: 1.1rem;">Are you sure you want to delete this item?</b></center>
+                            </div>
+                            <!--Modal Box Content End-->
+                            
+                            <!--Modal Box Button Start-->
+                            <footer class="slds-modal__footer" style="display:ruby;">
+                                <lightning:button name='No' label='No' class="slds-button slds-button_brand button-83" onclick='{!c.handleConfirmDialogNo}'/>
+                                <lightning:button variant="brand" class="slds-button slds-button_brand button-83"  name='Yes' label='Yes' onclick='{!c.handleConfirmDialogYes}'/>
+                            </footer>
+                            <!--Modal Box Button End-->
+                        </div>
+                    </div>
+                    <div class="slds-backdrop slds-backdrop--open"></div>            
+                </aura:if>
+            </div>
+            <aura:if isTrue="{!v.showTable}">
+                
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered" aura:id="table" style="border: 2px solid black;width: 100%;border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="font-weight: bold;text-align: left;">
+                            
+                            
+                            </th>
+                            <th scope="col" class="slds-text-title_bold" style="font-weight: 600;display: flex;text-align: left;">
+                                <h4 style="padding-top: 22px;"> Template :</h4>
+                                <aura:if isTrue="{!not(v.isTemplate) }">
+                                    <td style="bottom:6px;min-width: max-content;">
+                                        <lightning:select name="select1" aura:id="templateSelect"  value="{!v.selectedTemplate}" onchange="{!c.handleTemplateChange}">
+                                            <!-- <option value="Default" data-id="default">Default</option> -->
+                                            <aura:iteration items="{!v.templates}" var="template">
+                                                <option value="{!template}">{!template}</option>
+                                                
+                                            </aura:iteration> 
+                                        </lightning:select>
+                                        
+
+                                    </td>
+                                </aura:if>
+                                <aura:if isTrue="{!v.isTemplate }">
+                                    <td style="min-width: max-content;">
+                                        <lightning:input   style="font-weight: 500;min-width: max-content;"  aura:id="Newtemplate"  placeholder="Enter Template Name" value="{!v.TemplateValue}" /> 
+                                    </td>
+                                </aura:if>
+                                
+                                <aura:if isTrue="{!v.isAddTemplate }">
+                                    <td>
+                                        <button style="margin-top: 10px; height: 36px;" class="slds-button slds-button_brand btnNewtemplate" title="Add" onclick="{!c.AddTemplate}"> New Template</button>
+                                    </td> 
+                                </aura:if>  
+                                <aura:if isTrue="{!v.showDeleteTempBtn }">
+                                    <td>  
+                                        <button aura:id="deleteButton" style="margin-top: 10px; height: 36px;" class="slds-button slds-button_brand btnNewtemplate" title="Add" onclick="{!c.handleDeleteTemplate}"> Delete Template </button>
+                                    </td>
+                                </aura:if> 
+                                <aura:if isTrue="{!v.isRemoveTemplate }">
+                                    <td>
+                                        <button style="margin-top: 16px; height: 36px;" class="slds-button slds-button_brand button-83" title="remove" onclick="{!c.RemoveTemplate}"> Cancel </button> 
+                                    </td>
+                                </aura:if>
+                                <aura:if isTrue="{!v.isTemplate }" >
+                                    <td>
+                                        <button style="margin-top: 16px; height: 36px;" class="slds-button slds-button_brand button-83" title="SaveTemplate" onclick="{!c.SaveTemplate}">SaveTemplate </button> 
+                                    </td>
+                                </aura:if> 
+                            </th>
+                            <th scope="col" style="font-weight: bold;text-align: left;"></th>
+                            <th scope="col" style="font-weight: bold;text-align: left;"></th>
+                            <th scope="col" style="font-weight: bold;text-align: left;"></th>
+                            <th scope="col" style="font-weight: bold;text-align: left;"></th>
+                        </tr>
+                         <tr class="">
+                            <th scope="col" class="Sec1_header " style="font-weight: 600;text-align: left;">Step no</th>
+                            <th scope="col" class="Sec1_header" style="font-weight: 600;text-align: left;">Step name</th>
+                            <th scope="col"  class="Sec1_header" style="font-weight: 600;text-align: left;">Date of next review</th>
+                            <th scope="col"  class="Sec1_header" style="font-weight: 600;text-align: left;">Comments</th>
+                            <th scope="col"  class="Sec1_header" style="font-weight: 600;text-align: left;">Owner</th>
+                            <th scope="col" class="Sec1_header" style="font-weight: 600;text-align: left;"></th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        
+                        <aura:if isTrue="{!v.displayTable}">  
+                            <aura:iteration items="{!v.modifiedList}" var="step" indexVar="index">
+                                
+                                <tr>
+                                    <td class="  rowAlign" >
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control custom-control">
+                                                <td style="width:1px;border-top: none;" class="slds-text-title_bold" data-index="{!step.index}">{!index +1}</td> 
+                                                
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="slds-border_left slds-border_right rowAlign" > 
+                                        <div class="slds-form-element ">
+                                            <div class=" ">
+                                               <aura:if isTrue="{!and(not(v.isReorder), not(step.isEditing))}">
+                                                    <td style="border-top: none; font-weight:600;" class="slds-text-title_bold stepname"> 
+                                                      <!--  <a href="{!'/lightning/r/SA_Audit__Audit_Step__c/' + step.Id + '/view'}" target="_blank">{!step.Name}</a> -->
+                                                       <a href="javascript:void(0);" onclick="{!c.redirectToSafeUrl}" data-record-id="{!step.Id}"><lightning:formattedText value="{!step.Name}"/></a>                                                     
+                                                         
+                                                        <div id="{!'formattedDate-' + index}" data-index="{!index}" style="font-weight: 400; font-size: 14px; color: #6B6C6F; margin-top: 5px; display: block;">
+                                                           <lightning:layoutItem size="12" padding="around-small"  class="no-padding">
+                                                                <span class="formattedDateText completion-date-label">Date of last Review Completed:</span>
+                                                              <span class="formattedDateText completion-date-value"> <lightning:formattedDateTime value="{!step.duedate}"/></span>
+                                                           
+                                                                <button class="slds-button slds-button_icon slds-button_icon-small slds-button_icon-bare" 
+                                                                        title="{!index}" 
+                                                                        onclick="{!c.changeCmpltnDate}" 
+                                                                        data-index="{!index}" 
+                                                                        style="color: #000;">
+                                                                    <lightning:icon iconName="utility:edit" size="xx-small" alternativeText="edit" />
+                                                                </button>
+                                                            </lightning:layoutItem>
+                                                            
+                                                        </div>
+                                                          
+                                                        <!-- Date Input (Initially Hidden) -->
+                                                         
+                                                        <div id="{!'editDate-' + index}" data-index="{!index}" style="display: none;"  >
+                                                            <lightning:input class="duedateinp" aura:id="duedateInput" placeholder="Enter Date" type="date" value="{!step.duedate}" data-index="{!index}" />
+                                                            <lightning:buttonIcon iconName="utility:check" variant="bare" alternativeText="Save Date" onclick="{!c.saveAuditItems}" />
+                                                        </div>
+                                                         
+
+                                                    </td> 
+
+
+                                                </aura:if>
+                                               <!--   <aura:if isTrue="{!step.isEditing}">
+                                                   <lightning:input class="duedateinp date-format-hide" aura:id="duedateinp" style="font-weight: 500;    margin-top: 10px;" type="date" placeholder="Enter completion Date" value="{!v.reviewdueDate}" />
+                                               </aura:if>
+                                                when click on add new step button this  will get rendered -->
+                                                <aura:if isTrue="{!step.isEditing}">
+                                                    <div class="slds-text-color_default">
+                                                        <lightning:input   style="font-weight: 500; bottom: 25px; position: relative;"   placeholder="Enter New Step" value="{!v.inputValue}" /> 
+                                                    </div> 
+                                                </aura:if>
+                                                <aura:if isTrue="{!v.isReorder}">
+                                                    <div class="slds-text-color_default">
+                                                        <td style="border-top: none;" class="slds-text-title_bold"> 
+                                              <!-- scanner wont allow this code
+												 <lightning:input class="stepInp"  style="font-weight: 500; bottom: 22px; position: relative;"  aura:id="StepInput" type="text" value="{!step.Name}" data-index="{!index}"/>  -->
+                                                       <lightning:formattedText value="{!step.Name}"/>     
+		                                           </td>  
+                                                    </div> 
+                                                </aura:if>
+                                                <!--     <aura:if isTrue="{!v.isReorder}" >
+                                        <button class="slds-button slds-button_icon slds-button_icon-small slds-button slds-button_brand circular-button" title="Rename Step" onclick="{!c.renameStep}" data-index="{!index}">
+                                            <lightning:icon variant="bare" iconName="utility:save" size="small" alternativeText="Save" />
+                                        </button> </aura:if> -->
+                                            </div>
+                                        </div>
+                                        <aura:if isTrue="{!v.showInputMessage}">
+                                            <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                                                <span class="slds-assistive-text">Info</span>
+                                                Enter Values to Save!!
+                                            </div> 
+                                        </aura:if>
+                                    </td>  
+                                    <td class="slds-border_left slds-border_right rowAlign">
+                                        <div class="slds-form-element">
+                                            <div class="">
+                                                <aura:if isTrue="{!not(step.isEditing) &amp;&amp;  !v.isEdit}">
+                                                    <div class="custom-date-wrapper">
+                                                    <lightning:input class="dateinp" aura:id="dateInput" style="font-weight: 500;" placeholder="Enter Date" type="date" value="{!step.ReviewDate}" />
+                                                    </div>
+                                                    </aura:if>
+                                                <aura:if isTrue="{!step.isEditing &amp;&amp;  !v.isEdit}">
+                                                    <div class="slds-text-color_default">
+                                                        <lightning:input class="dateinp stepinput date-format-hide" aura:id="dateInput" style="font-weight: 500;    margin-top: 10px;" type="date" placeholder="Enter Date" value="{!v.reviewDate}" />
+                                                    </div>
+                                                </aura:if>
+                                                <aura:if isTrue="{!v.isEdit}">
+                                                    <div class="slds-text-color_default" style="font-weight: 500;text-align: center;white-space: pre-wrap; word-wrap: break-word;">
+                                                         <lightning:formattedText value="{!step.ReviewDate}"/>
+                                                    </div>
+                                                </aura:if>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="width: 40%; vertical-align: top;">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <aura:if isTrue="{!not(step.isEditing) &amp;&amp;  !v.isEdit}">
+                                                    <lightning:textarea    placeholder="Enter Comments" style="font-weight: 500;"  aura:id="commentInput" value="{!step.Comments}" rows="1" /> 
+                                                </aura:if>
+                                                
+                                                <!-- isEditing will show u the new input boxes for new step adding -->
+                                                <aura:if isTrue="{!step.isEditing  &amp;&amp;  !v.isEdit}">
+                                                    <div class="slds-text-color_default" >
+                                                        <lightning:input  aura:id="commentInput"  style="font-weight: 500;    height: 33px; padding: 5px 10px;    width: 90%;  " required="true"  placeholder="Enter Comments" type="text" value="{!v.comments}"/> 
+                                                    </div> </aura:if>
+                                                
+                                                <!--isedit var will show you the Output when the edit button is clicked to prevent the editing of date n comments while renaming -->
+                                                <aura:if isTrue="{!v.isEdit}">
+                                                    <div class="slds-text-color_default" style="font-weight: 500;text-align: center;white-space: pre-wrap; word-wrap: break-word;">
+                                                        
+                                                        <lightning:formattedText value="{!step.Comments}"/>
+                                                    </div>
+                                                </aura:if>
+                                                
+                                            </div>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="slds-border_left rowAlign" >  
+                                        <aura:if isTrue="{!not(step.isEditing) &amp;&amp;  !v.isEdit}">
+                                            <div class="slds-p-around_medium ownerRow" >
+                                               <lightning:combobox name="userLookup" 
+                                                                label="{!index}" 
+                                                                placeholder="Owner" 
+                                                                options="{!v.options}" 
+                                                                value="{!step.Owner}" 
+                                                                onchange="{!c.handleSelection}" 
+                                                                class="no-label"
+                                                                disabled= "true"
+                                                                  size="1"
+                                                                />
+                                             <!--      <a href="{!'/lightning/r/SA_Audit__Audit_Step__c/' + step.Id + '/view'}" target="_blank">{!step.Owner}</a> -->
+                                                
+                                                
+                                                <button class="slds-button slds-button_icon slds-button_icon-small slds-button slds-button_brand circular-button" title="{!index}" onclick="{!c.changeOwner}" data-index="{!index}">
+                                                    <lightning:icon variant="bare" iconName="utility:change_owner" size="x-small" alternativeText="change_owner" />
+                                                </button>
+                                                 
+                                            </div> 
+                                        </aura:if>
+                                        
+                                        <!--  owner lookup change modal box -->
+                                        <aura:if isTrue="{!v.showchangelookup}">
+                                            <!--Modal Box Start-->
+                                            <div role="dialog" class="slds-modal slds-fade-in-open ">
+                                                <div class="slds-modal__container">
+                                                    <!--Modal Box Header Start-->
+                                                    <header class="slds-modal__header slds-box slds-theme_shade slds-theme_alert-texture">
+                                                        <h1 class="" style="font-family:'Salesforce Sans';font-size: var(--lwc-fontSize7, 1.25rem);line-height: var(--lwc-lineHeightHeading, 1.25);">Owner</h1>
+                                                        
+                                                    </header>
+                                                    <!--Modal Box Header End-->
+                                                    
+                                                    <!--Modal Box Content Start-->
+                                                    <div class="slds-p-horizontal_small slds-size_3-of-3 ownerbgc">
+                                                        <c:customLookup objectAPIName="User" Index="{!index}" Template="{!step.Template}" IconName="standard:user" selectedRecord="{!step.Owner}" label="User Name"/>
+                                                        <!-- here c: is org. namespace prefix-->
+                                                    </div>
+                                                    <div class="slds-p-horizontal_small slds-size_3-of-3 ownerbgc">
+                                                        <table>
+                                                            
+                                                            <tr>
+                                                                <td>
+                                                                    <h2><span><b>Actions</b>  </span> </h2>
+                                                                </td>
+                                                                </tr>
+                                                            <tr>
+                                                                <td>
+
+                                                                    <input type="checkbox" label="{!index}" onclick="{!c.notifyAssignee}"  class="Assignee_Box" id="BoxAssignee"  value="{!index}"> </input> 
+                                                                    <label for="BoxAssignee" class="uiLabel-right form-element__label uiLabel" data-aura-rendered-by="1927:0" data-aura-class="uiLabel"><span id="176:2024;a-label" class="" data-aura-rendered-by="1928:0">Send notification email</span><!--render facet: 1930:0--><!--render facet: 1931:0--></label>
+                                                                    
+                                                                </td>
+                                                                
+                                                            </tr>
+                                                               
+                                                             
+                                                            
+                                                        </table>
+                                                        
+                                                        
+                                                        
+                                                    </div>
+                                                    <!--Modal Box Content End-->
+                                                    
+                                                    <!--Modal Box Button Start-->
+                                                    <footer class="slds-modal__footer" style="display:ruby;">
+                                                        <lightning:button name='Cancel' label='Cancel' class="slds-button slds-button_brand button-83" onclick='{!c.handleOwnerModalNo}'/>
+                                                        <lightning:button variant="brand" class="slds-button slds-button_brand button-83"  name='Save' label='Save' onclick='{!c.handleSelection}'/>
+                                                    </footer>
+                                                    <!--Modal Box Button End-->
+                                                </div>
+                                            </div>
+                                            <div class="slds-backdrop slds-backdrop--open"></div>            
+                                        </aura:if>
+                
+                                        
+                                       
+                                        <aura:if isTrue="{!step.isEditing  &amp;&amp;  !v.isEdit}"> 
+                                         <div class="slds-p-around_medium">
+                                            <lightning:combobox name="userLookup" 
+                                                                label="{!index}" 
+                                                                placeholder="Search Users" 
+                                                                options="{!v.options}" 
+                                                                value="{!step.Owner}" 
+                                                                onchange="{!c.handleSelection}" 
+                                                                class="no-label"
+                                                                disabled="{!step.isEditing}"
+                                                                />
+                                        </div>
+                                        </aura:if>
+                                        
+                                    </td><!---->
+                                     <td class=" rowAlign"> 
+                                        <aura:if isTrue="{!step.isEditing}">
+                                            <button class="slds-button slds-button_icon slds-button_icon-small slds-button slds-button_brand circular-button" title="Remove Step" onclick="{!c.removeStep}" data-index="{!index}">
+                                                <lightning:icon variant="bare" iconName="utility:delete" size="small" alternativeText="Remove" />
+                                            </button> </aura:if>
+                                        <aura:if isTrue="{!not(step.isEditing) &amp;&amp; !v.showbutton }">
+                                            <button class="slds-button slds-button_icon slds-button_icon-small slds-button slds-button_brand circular-button" title="Remove Step" onclick="{!c.removeExistingStep}" data-index="{!index}" data-stepname="{!step.Name}">
+                                                <lightning:icon variant="bare" iconName="utility:record_delete" size="small" alternativeText="Remove" />
+                                            </button> </aura:if>
+                                        
+                                    </td>
+                                </tr>
+                                
+                            </aura:iteration>
+                        </aura:if>
+                        
+                        <tr><td></td><td></td><td></td><td></td>
+                            <td><div class="slds-align_absolute-center">
+                                <!--  <td> <lightning:button label="Save"  class="slds-button slds-button_brand button-83" onclick="{!c.saveAuditItems}"  /></td>-->
+                                <aura:if isTrue="{!v.showbutton  &amp;&amp; !v.showdupesavebutton}">
+                                    <td style="text-align: center; border: none;">
+                                        <button  class="slds-button slds-button_brand button-83" title="Save" onclick="{!c.saveAuditItems}" >
+                                            Save
+                                        </button> 
+                                        <div style="text-align: center;">
+                                            <lightning:helptext icon-name="utility:salesforce1" content="Click Here to Save Data"></lightning:helptext>
+                                        </div>
+                                    </td>
+                                </aura:if>
+                                
+                                <aura:if isTrue="{!v.showdupesavebutton}">
+                                    <td style="text-align: center; border: none;">
+                                        <button   class="slds-button slds-button_brand button-83"  title="Save" onclick="{!c.saveTemplateItems}" >
+                                            Save
+                                        </button>
+                                        <div style="text-align: center;">
+                                            <lightning:helptext icon-name="utility:salesforce1" content="Click Here to Save Data for New Template"></lightning:helptext>
+                                        </div>
+                                    </td>
+                                </aura:if>
+                                <aura:if isTrue="{!v.ShowRenameButton}">
+                                    <td style="text-align: center; border: none;">
+                                        <button label="Rename step"   class="slds-button slds-button_brand button-83"  onclick="{!c.renameItems}">
+                                            Rename step
+                                        </button> 
+                                        <div style="text-align: center;">
+                                            <lightning:helptext icon-name="utility:salesforce1" content="Click Here to Apply the changes/Confirm Renaming"></lightning:helptext>
+                                        </div>
+                                    </td> 
+                                </aura:if>
+                                
+                                <aura:if isTrue="{!v.Addplus}">
+                                    <td style="text-align: center; border: none;"> 
+                                        <button label="Add Step" onclick="{!c.addStep}"   class="slds-button slds-button_brand button-83"  >                  
+                                            Add
+                                        </button>
+                                        <div style="text-align: center;">
+                                            <lightning:helptext icon-name="utility:salesforce1" content="Click Here to Add New Steps"></lightning:helptext>
+                                        </div>
+                                    </td> 
+                                </aura:if>
+                                <aura:if isTrue="{!v.editTemplate}">
+                                    <td style="text-align: center; border: none;"><button label="Edit Default Step"   class="slds-button slds-button_brand button-83"   onclick="{!c.editReorderStep}">
+                                        Edit
+                                        </button>
+                                        <div style="text-align: center;">
+                                            <lightning:helptext icon-name="utility:salesforce1" content="Click Here to Edit/Rename the Steps"></lightning:helptext>
+                                        </div>
+                                    </td>
+                                </aura:if>
+                                 <aura:if isTrue="{!v.showCancelEdit}">
+                                    <td style="text-align: center; border: none;"><button label="Cancel"   class="slds-button slds-button_brand button-83"   onclick="{!c.CancelEdit}">
+                                        Cancel
+                                        </button>
+                                        <div style="text-align: center;">
+                                            <lightning:helptext icon-name="utility:salesforce1" content="Click Here to Cancel Action"></lightning:helptext>
+                                        </div>
+                                    </td>
+                                </aura:if>
+                                
+                                <td style="text-align: center; border: none;"><button label="download"   class="slds-button slds-button_brand button-83"   onclick="{!c.exportToExcel}">
+                                    Download 
+                                    </button>
+                                    <div style="text-align: center;">
+                                        <lightning:helptext icon-name="utility:download" content="Click to Export to Excel"></lightning:helptext>
+                                    </div> 
+                                </td> 
+                                
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    
+                    
+                </table>
+            </aura:if>
+            
+            
+        </div>
+        
+        
+        
+        <!--SectionTwo Report start ==== --> 
+        <div class="slds-box  container"  style="  max-width: 100%;  overflow-x: auto; padding: 1% 0px 4% 9px;">
+            <div class="slds-align_absolute-center">
+                <button class="slds-button slds-button_icon slds-button_icon-small slds-m-bottom_small" onclick="{!c.toggleTable2}">
+                    <lightning:icon variant="bare" iconName="utility:hide" size="small"   class="black-icon"/>
+                    <br/>
+                    <span style="color:black;font-weight: 600;text-wrap: nowrap;">Show/Hide Table</span>
+                </button>
+            </div>
+            <aura:if isTrue="{!v.showPopupMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    Your Changes Have Been Saved Succesfully!!
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.showEmailMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    Your Email execution is in progress. please check your email...
+                </div>
+            </aura:if>
+            <!-- <aura:if isTrue="{!v.showScheduleSuccessMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    Review check has been scheduled successfully. please check your email for more info...
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.showScheduleErrorMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_info" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    Review check scheduled already,for more info visit "Scheduled Jobs" inside Setup...
+                </div>
+            </aura:if> -->
+            <aura:if isTrue="{!v.showScheduleSuccessMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    {!v.scheduleSuccessMessage} <!-- Show the dynamic success message -->
+                </div>
+            </aura:if>
+            
+            <!-- Error message -->
+            <aura:if isTrue="{!v.showScheduleErrorMessage}">
+                <div class="slds-notify slds-notify_toast slds-theme_info" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    Review check scheduled already, for more info visit "Scheduled Jobs" inside Setup...
+                </div>
+            </aura:if>
+            
+            
+            <aura:if isTrue="{!v.showTable2}">
+                <div style="margin-bottom:5px;">  
+                    <div class="button-container"> 
+                         <!-- <button label="Schedule Review Check"  style="height: 36px;  max-width: fit-content;  float: right;    margin: 0 6px 6px 0;" class="slds-button slds-button_brand button-83"   onclick="{!c.handleMenuSelect}">
+                            Schedule  
+                        </button> -->
+                        <div class="dropdown-container" aura:id="dropdownContainer">
+                            <!-- Button to toggle the dropdown -->
+                            <button 
+                                    class="slds-button slds-button_brand button-83"
+                                    style="height: 36px; max-width: fit-content; float: right; margin: 0 6px 6px 0;"
+                                    onclick="{!c.toggleDropdown}">
+                                Schedule
+                            </button>
+                            
+                            <!-- Dropdown -->
+                            <div aura:id="dropdown" class="modern-dropdown" style="{!v.showDropdown ? '' : 'display:none;'}">
+                                <ul class="modern-dropdown-list">
+                                    <aura:iteration items="{!v.timeFrameOptions}" var="option">
+                                        <li>
+                                            <button 
+                                                    class="modern-dropdown-item" 
+                                                    onclick="{!c.handleScheduleOption}" 
+                                                    data-value="{!option}">
+                                                {!option}
+                                            </button>
+                                        </li>
+                                    </aura:iteration>
+                                </ul>
+                            </div>
+                        </div>
+                         
+                        <button label="ExportToExcel"  style="height: 36px;  max-width: fit-content;  float: right;    margin: 0 6px 6px 0;" class="slds-button slds-button_brand button-83"   onclick="{!c.exportToExcel_II}">
+                            Download  
+                        </button> 
+                                                 
+                        <button label="Sync"  style="height: 36px;  max-width: fit-content;  float: right;    margin: 0 6px 6px 0;" class="slds-button slds-button_brand button-83"   onclick="{!c.syncDashboard}">
+                            Sync  
+                        </button> 
+                       
+                        <!--  <lightning:buttonMenu alternativeText="Show More" iconName="utility:down" menuAlignment="right" onselect="{!c.handleMenuSelect}">
+                           
+                            <lightning:menuItem label="Schedule Review Check" value="scheduleReview" />
+                        </lightning:buttonMenu> -->
+                    </div>
+                     <div style=" background-color: #f4f6f9; display: flex; border-right: 1px solid #dcdcdc;">
+
+                         <lightning:button 
+                                           label="Permissions" 
+                                           onclick="{!c.showPermissions}" 
+                                           class="navbar-button"
+                                           />
+                         
+                         <lightning:button 
+                                           label="Object Permissions" 
+                                           onclick="{!c.fetchObjectPermission}" 
+                                           class="navbar-button"
+                                           />
+                         <lightning:button 
+                                           label="Profile/Pset Description" 
+                                           onclick="{!c.fetchProfilePsetPermission}" 
+                                           class="navbar-button"
+                                           />
+                         
+                    </div> 
+                </div> 
+                <aura:if isTrue="{!v.selectedSection == 'table2'}"> 
+                    <div id="table2">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered tablee" aura:id="table"    style="border: 2px solid black; width: 100%;border-collapse: collapse; ">
+                            <thead> 
+                                <tr>
+                                    <th colspan="4" class="slds-text-title_bold"  style="border-bottom: 1px solid darkgrey;font-weight: 600;">Permissions Usage</th>
+                                    <th colspan="6" class="slds-text-title_bold slds-border_left slds-border_right" style="border-bottom: 1px solid darkgrey; border-left: 2px solid black;  font-weight: 600;border-right: 2px solid black;">Permission Review Recommended Actions</th>
+                                </tr>
+                                
+                                <tr>
+                                    <!-- <td class="slds-text-title_bold">Step</td> -->
+                                    <td class="Sec1_header" style="font-weight: 600; border-bottom: 2px solid black;">Security area</td> 
+                                    <td  class="Sec1_header" style="font-weight: 600;border-bottom: 2px solid black; ">Type of permission </td> 
+                                    <td class="Sec1_header" style="font-weight: 600; border-bottom: 2px solid black;">Total numbers</td> 
+                                    <td class="Sec1_header" style="font-weight: 600;border-bottom: 2px solid black; ">Review ?</td>
+                                    <td class="Sec1_header" style=" border-left: 2px solid black; " ><!--/*blank*/   --></td> 
+                                    <td style="font-weight: 600; "><!--/*blank*/  --></td> 
+                                    <td class="Sec1_header" style="font-weight: 600; ">Unused permissions</td>
+                                    <td class="Sec1_header" style=" font-weight: 600;">Report link</td> 
+                                    <td class="Sec1_header" style="font-weight: 600; ">Percentage</td>  
+                                    <td class="Sec1_header" style="font-weight: 600; ">Last review date</td>  
+                                </tr>
+                                <tr></tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <aura:iteration items="{!v.permissionReviewData}" var="item">
+                                        
+                                        <td style=" border:none;">
+                                            <tr style="position: relative; bottom: 213px;font-weight: 600; border:none; font-size: 1.1em;"> <td style=" border:none;" > <ui:outputText value="Permissions"/>	  </td></tr>
+                                            
+                                        </td> 
+                                        <td class="slds-border_left slds-border_right marPad" style="border-top: 2px solid black;">  
+                                            <tr>
+                                                <td style="border-top: none;" class="marZero" > <h1> <ui:outputText value="Custom Profiles"/></h1>	 
+                                                    <p class="Heightmatch"  ></p></td>
+                                            </tr>  
+                                            <tr>
+                                                <td class="marZero"> <h1><ui:outputText value="Custom PermissionSets"/></h1>	 
+                                                    <p class="Heightmatch"  ></p></td>
+                                            </tr> 
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="PermissionSet Groups"/></h1>	 
+                                                    <p  class="Heightmatch"  ></p></td>
+                                            </tr> 
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Roles"/></h1>	 
+                                                    <p class="Heightmatch" ></p></td>
+                                            </tr> 
+                                            <!--/*blank*/   <tr>   <td> <h1 class="mLZero"><ui:outputText value="Territories"/></h1></td>   </tr>--> 
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Public Groups"/></h1>	 
+                                                    <p  class="Heightmatch"  ></p></td>
+                                            </tr> 
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Internal Roles"/></h1>	 
+                                                    <p  class="Heightmatch"  ></p></td>
+                                            </tr> 
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="External Roles"/></h1>	 
+                                                    <p  class="Heightmatch"  ></p></td>
+                                            </tr> 
+                                        </td>
+                                        <td class="slds-border_left slds-border_right" style="padding-top: 8px;border-top: 2px solid black;">
+                                            <tr class="Text_center"><td class="Text_bordernone" style="border-top: none;">  <h1>{!item.Profilecount} </h1> <p  class="Heightmatch"  ></p> </td> <!-- Profile Count -->
+                                            </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.Permissioncount } </h1> <p  class="Heightmatch"  ></p> </td> <!-- Permission Set Count -->
+                                            </tr> 
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.PermissionGroupcount} </h1> <p  class="Heightmatch"  ></p></td> <!-- Permission Set Groups Count -->   </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.Rolescount} </h1> <p  class="Heightmatch"  ></p></td> <!-- Roles Count -->   </tr>
+                                            <!--/*blank*/   <tr>  <td>  <h1>{!item.Territoriescount} </h1></td>   Territories Count    </tr>-->
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.PublicGroupcount} </h1> <p  class="Heightmatch"  ></p></td> <!--public groups Count -->   </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.InternalRolescount} </h1> <p  class="Heightmatch"  ></p></td> <!-- Internal Roles Count -->   </tr>
+                                            <tr class="Text_center" style="border-bottom:none;"><td class="Text_bordernone">  <h1>{!item.ExternalRolescount} </h1> <p  class="Heightmatch"  ></p></td> <!-- External roles Count -->   </tr>
+                                        </td>
+                                       <td class="slds-border_left slds-border_right" style="border-right: 2px solid black; padding-bottom: 5px; border-top: 2px solid black;">
+    <div style="display: flex; flex-direction: column;">
+        <aura:iteration items="{!v.picklistData}" var="item">
+            <lightning:select class="boxes" name="{!item.SA_Audit__PicklistSelection__c}" value="{!item.SA_Audit__Selection_value__c}" onchange="{!c.handleSelectionChange}">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </lightning:select>
+             <p  class="ReviewHeightmatch"  ></p>
+        </aura:iteration> 
+    </div>   
+                                           
+</td>
+<td class="slds-border_left slds-border_right" style="border-top: 2px solid black;">
+    <div style="margin-bottom: 10px;">
+        <h1>Have you any unused profiles?</h1>
+        <p  class="ReviewHeightmatch">Visit Intel Tab and view the :Profiles with or without users assigned Report.</p>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h1>Have you any unused permissionsets?</h1>
+        <p  class="ReviewHeightmatch">Visit Intel Tab and view the :Permission sets with or without users assigned.</p>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h1>Have you any unused permissionsetGroups?</h1> 
+        <p  class="ReviewHeightmatch">Visit Intel Tab and view the :User Permission Set Group Access.</p>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h1>Have you any unused Roles?</h1>
+        <p  class="ReviewHeightmatch">Visit Intel Tab and view the :User Role.</p>
+    </div>
+    <!-- <div style="margin-bottom: 10px;">
+        <h1>Have you any unused Territories?</h1>
+    </div>-->
+    <div style="margin-bottom: 10px;">
+        <h1>Have you any unused Public Groups?</h1>
+        <p  class="ReviewHeightmatch">Visit Intel Tab and view the :Public Group.</p>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <h1>Have you any unused Internal Roles?</h1>
+        <p  class="ReviewHeightmatch">Visit Intel Tab and view the :Internal Roles.</p>
+    </div>
+    <div>
+        <h1>Have you any unused External Roles?</h1>         
+        <p  class="ReviewHeightmatch">Visit Intel Tab and view the :External Roles.</p>
+    </div>
+</td>
+                                        <td class="BorderTB slds-border_left slds-border_right"  >
+                                            <aura:if isTrue="{!item.unusedProfilesCount > 0}">
+                                                <tr><td class="RedYes" style="border-top: none;"><h1>Yes</h1></td></tr>
+                                            </aura:if>
+                                            <aura:if isTrue="{!item.unusedProfilesCount == 0  || item.unusedProfilesCount == Null}">
+                                                <tr><td class="GreenNo" style="border-top: none;"><h1>No</h1></td></tr>
+                                            </aura:if>
+                                             <p  class="Heightmatch"  ></p>
+                                            
+                                            <aura:if isTrue="{!item.unusedPermissionCount > 0}">
+                                                <tr><td class="RedYes"><h1>Yes</h1></td></tr>
+                                            </aura:if>
+                                            <aura:if isTrue="{!item.unusedPermissionCount == 0 || item.unusedPermissionCount == Null}">
+                                                <tr><td class="GreenNo" ><h1>No</h1></td></tr>
+                                            </aura:if>
+                                             <p  class="Heightmatch"  ></p>
+                                            <aura:if isTrue="{!item.unusedPermissionGroupCount > 0}">
+                                                <tr><td class="RedYes"><h1>Yes</h1></td></tr>
+                                            </aura:if>
+                                            <aura:if isTrue="{!item.unusedPermissionGroupCount == 0 || item.unusedPermissionGroupCount == Null}">
+                                                <tr><td class="GreenNo"><h1>No</h1></td></tr>
+                                            </aura:if>
+                                             <p  class="Heightmatch"  ></p>
+                                            <aura:if isTrue="{!item.unusedRolesCanDelete > 0}">
+                                                <tr><td class="RedYes"><h1>Yes</h1></td></tr>
+                                            </aura:if>
+                                            <aura:if isTrue="{!item.unusedRolesCanDelete == 0 || item.unusedRolesCanDelete == Null}">
+                                                <tr><td class="GreenNo"><h1>No</h1></td></tr>
+                                            </aura:if>
+                                             <p  class="Heightmatch"  ></p>
+                                            <!--  <aura:if isTrue="{!item.unusedTerritoriesCanDelete > 0}">
+                        <tr><td><h1>Yes</h1></td></tr>
+                    </aura:if>
+                    <aura:if isTrue="{!item.unusedTerritoriesCanDelete == 0}">
+                        <tr><td><h1>No</h1></td></tr>
+                    </aura:if> -->
+                                            
+                                            <aura:if isTrue="{!item.unusedPublicGroupCanDelete > 0}">
+                                                <tr><td class="RedYes"><h1>Yes</h1></td></tr>
+                                            </aura:if>
+                                            <aura:if isTrue="{!item.unusedPublicGroupCanDelete == 0 || item.unusedPublicGroupCanDelete == Null}">
+                                                <tr><td class="GreenNo"><h1>No</h1></td></tr>
+                                            </aura:if>
+                                             <p  class="Heightmatch"  ></p>
+                                            <aura:if isTrue="{!item.unusedInternalRolesCanDelete > 0}">
+                                                <tr><td class="RedYes"><h1>Yes</h1></td></tr>
+                                            </aura:if>
+                                            <aura:if isTrue="{!item.unusedInternalRolesCanDelete == 0 || item.unusedInternalRolesCanDelete == Null}">
+                                                <tr><td class="GreenNo"><h1>No</h1></td></tr>
+                                            </aura:if>
+                                             <p  class="Heightmatch"  ></p>
+                                            <aura:if isTrue="{!item.unusedExternalRolesCanDelete > 0}">
+                                                <tr><td class="RedYes"><h1>Yes</h1></td></tr>
+                                            </aura:if>
+                                            <aura:if isTrue="{!item.unusedExternalRolesCanDelete == 0 || item.unusedExternalRolesCanDelete == Null}">
+                                                <tr><td class="GreenNo"><h1>No</h1></td></tr>
+                                            </aura:if> 
+                                             
+                                        </td>
+                                        
+                                        <td class="BorderTB slds-border_left slds-border_right"  >
+                                            <tr class="Text_center"><td class="Text_bordernone" style="border-top: none;" ><h1>{!item.unusedProfilesCount}</h1> <p  class="unusedpermissionHeightmatch"  ></p></td></tr>
+                                            <tr class="Text_center"> <td class="Text_bordernone" > <h1>{!item.unusedPermissionCount}</h1>  <p  class="unusedpermissionHeightmatch"  ></p></td> </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.unusedPermissionGroupCount}</h1> <p  class="unusedpermissionHeightmatch"  ></p></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.unusedRolesCanDelete}</h1> <p  class="unusedpermissionHeightmatch"  ></p></td></tr>
+                                            <!-- <tr><td><h1>{!item.unusedTerritoriesCanDelete}</h1></td></tr> -->
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.unusedPublicGroupCanDelete}</h1> <p  class="unusedpermissionHeightmatch"  ></p></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.unusedInternalRolesCanDelete}</h1> <p  class="unusedpermissionHeightmatch"  ></p></td></tr>
+                                            <tr class="Text_center" style="border-bottom:none; "><td class="Text_bordernone" ><h1>{!item.unusedExternalRolesCanDelete}</h1> <p  class="unusedpermissionHeightmatch"  ></p></td></tr>
+                                            
+                                        </td>
+                                        <td class="BorderTB slds-border_left slds-border_right"  style=" ">
+                                            
+                                            <tr> 
+                                                <td style="border-top: none;" class="linkmp" >
+                                                    <a id="profileAssigned1" data-label="Profile Link" onclick="{!c.handleLinkClick}"  target="_blank"> 
+                                                        <lightning:icon variant="bare" iconName="utility:link" size="x-small" class="black-icon"/>
+                                                    </a>  
+                                                    &nbsp; 
+                                                    <a onclick="{!c.handlelink}" data-option="16"  href="javascript:void(0);">
+                                                        <lightning:icon variant="bare" iconName="utility:email" size="x-small" class="black-icon"/>
+                                                    </a>  
+                                                    &nbsp;
+                                                    <a onclick="{!c.handleDashlink}" data-option="16"  href="javascript:void(0);">
+                                                        <lightning:icon variant="bare" iconName="standard:dashboard" size="x-small" title="Click to See Report/Dashboard"/>
+                                                    </a> 
+                                                    <p  class="ReviewHeightmatch"  ></p>
+                                                </td>
+                                            </tr> 
+                                             
+                                            <tr>
+                                                <td style="border-top: none;"  class="linkmp" > 
+                                                    <a id="profileAssigned2" data-label="Pset Link" onclick="{!c.handleLinkClick}"  target="_blank"> 
+                                                        <lightning:icon variant="bare" iconName="utility:link" size="x-small" class="black-icon"/> 
+                                                    </a>     
+                                                    &nbsp; 
+                                                    <a onclick="{!c.handlelink}" data-option="10"  href="javascript:void(0);"> 
+                                                        <lightning:icon variant="bare" iconName="utility:email" size="x-small" class="black-icon"/>
+                                                    </a> 
+                                                    &nbsp;
+                                                    <a onclick="{!c.handleDashlink}" data-option="10"  href="javascript:void(0);">
+                                                        <lightning:icon variant="bare" iconName="standard:dashboard" size="x-small" title="Click to See Report/Dashboard"/>
+                                                    </a>
+                                                    <p  class="ReviewHeightmatch"  ></p>
+                                                </td> 
+                                            </tr>
+                                             
+                                            <tr><td style="border-top: none;"  class="linkmp" >
+                                                <a id="profileAssigned3" data-label="PsetGroup Link" onclick="{!c.handleLinkClick}"  target="_blank"> <lightning:icon variant="bare" iconName="utility:link" size="x-small" class="black-icon"/> </a>     
+                                                &nbsp; <a onclick="{!c.handlelink}" data-option="33"  href="javascript:void(0);">  <lightning:icon variant="bare" iconName="utility:email" size="x-small" class="black-icon"/></a>
+                                                &nbsp;
+                                                <a onclick="{!c.handleDashlink}" data-option="33"  href="javascript:void(0);">
+                                                    <lightning:icon variant="bare" iconName="standard:dashboard" size="x-small" title="Click to See Report/Dashboard"/>
+                                                </a><p  class="ReviewHeightmatch"  ></p>
+                                                </td>  </tr>
+                                            
+                                            <tr><td style="border-top: none;"  class="linkmp"> 
+                                                <a id="profileAssigned4" data-label="Roles Link" onclick="{!c.handleLinkClick}"  target="_blank"> <lightning:icon variant="bare" iconName="utility:link" size="x-small" class="black-icon"/> </a>     
+                                                &nbsp; <a onclick="{!c.handlelink}" data-option="4"  href="javascript:void(0);">  <lightning:icon variant="bare" iconName="utility:email" size="x-small" class="black-icon"/></a>
+                                                &nbsp;
+                                                <a onclick="{!c.handleDashlink}" data-option="4"  href="javascript:void(0);">
+                                                    <lightning:icon variant="bare" iconName="standard:dashboard" size="x-small" title="Click to See Report/Dashboard"/>
+                                                </a><p  class="ReviewHeightmatch"  ></p>
+                                                </td> </tr>
+                                             
+                                            <!--   <tr><td style="border-top: none;" >  <h1>  <a id="profileAssigned" label="Link to report" onclick="{!c.handleLinkClick}"  target="_blank">Link To Report </a>    
+                         /  <a onclick="{!c.handlelink}" data-option="8"  href="javascript:void(0);">Mail Me Report</a>  </h1> 
+                    </td></tr> -->
+                                            
+                                            <tr><td style="border-top: none;"  class="linkmp" >
+                                                <a id="profileAssigned5" data-label="PublicGroup Link" onclick="{!c.handleLinkClick}"  target="_blank"> <lightning:icon variant="bare" iconName="utility:link" size="x-small" class="black-icon"/> </a>   
+                                                &nbsp; <a onclick="{!c.handlelink}" data-option="18"  href="javascript:void(0);">  <lightning:icon variant="bare" iconName="utility:email" size="x-small" class="black-icon"/></a>
+                                                &nbsp;
+                                                <a onclick="{!c.handleDashlink}" data-option="18"  href="javascript:void(0);">
+                                                    <lightning:icon variant="bare" iconName="standard:dashboard" size="x-small" title="Click to See Report/Dashboard"/>
+                                                </a><p  class="ReviewHeightmatch"  ></p>
+                                                </td> </tr>
+                                             
+                                            <tr><td style="border-top: none;"   class="linkmp">  <a id="profileAssigned6" data-label="Internal Link" onclick="{!c.handleLinkClick}"  target="_blank"> <lightning:icon variant="bare" iconName="utility:link" size="x-small" class="black-icon"/> </a>    
+                                                &nbsp; <a onclick="{!c.handlelink}" data-option="3"  href="javascript:void(0);">  <lightning:icon variant="bare" iconName="utility:email" size="x-small" class="black-icon"/></a> 
+                                                &nbsp;
+                                                <a onclick="{!c.handleDashlink}" data-option="3"  href="javascript:void(0);">
+                                                    <lightning:icon variant="bare" iconName="standard:dashboard" size="x-small" title="Click to See Report/Dashboard"/>
+                                                </a><p  class="ReviewHeightmatch"  ></p>
+                                                </td> </tr>
+                                             
+                                            <tr><td style="border-top: none;"   class="linkmp">  <a id="profileAssigned7" data-label="External Link"   onclick="{!c.handleLinkClick}"  target="_blank"> <lightning:icon variant="bare" iconName="utility:link" size="x-small" class="black-icon"/> </a>    
+                                                &nbsp; <a onclick="{!c.handlelink}" data-option="32"  href="javascript:void(0);">  <lightning:icon variant="bare" iconName="utility:email" size="x-small" class="black-icon"/></a> 
+                                                &nbsp;
+                                                <a onclick="{!c.handleDashlink}" data-option="32"  href="javascript:void(0);">
+                                                    <lightning:icon variant="bare" iconName="standard:dashboard" size="x-small" title="Click to See Report/Dashboard"/>
+                                                </a><p  class="ReviewHeightmatch"  ></p>
+                                                </td> </tr>
+                                             
+                                        </td> 
+                                        
+                                        <td class="BorderTB slds-border_left slds-border_right"  style=" border-bottom:none;">
+                                            <tr class="Text_center"><td class="Text_bordernone" style="border-top: none;"><h1>{!item.percentageUnusedProfiles}</h1> <p  class="Heightmatch"  ></p></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.percentageUnusedPermissions}</h1> <p  class="Heightmatch"  ></p></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.percentageUnusedPsetGroup}</h1> <p  class="Heightmatch"  ></p></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.percentageUnusedRoles}</h1> <p  class="Heightmatch"  ></p></td></tr>
+                                            <!--  <tr><td><h1>{!item.percentageUnusedTerritories}</h1></td></tr> -->
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.percentageUnusedPublicGroup}</h1> <p  class="Heightmatch"  ></p></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.percentageUnusedInternalRoles}</h1> <p  class="Heightmatch"  ></p></td></tr>
+                                            <tr class="Text_center" style=" border-bottom:none;"><td class="Text_bordernone" ><h1>{!item.percentageUnusedExternalRoles}</h1> <p  class="Heightmatch"  ></p></td></tr>
+                                            
+                                        </td>
+                                        <td class="BorderTB slds-border_left slds-border_right"  style="border-right: 2px solid black;    padding-bottom: 8px; ">
+                                            <aura:iteration items="{!v.dateData}" var="item">
+                                                <div class="custom-date-wrapper">
+                                                    <lightning:input class="boxes date-format-hide"  type="date" name="{!item.name}" placeholder="Enter Date" value="{!item.value}" onchange="{!c.handleDateChange}" aura:id="{!item.name}"/>
+                                                </div>
+                                                <p  class="ReviewHeightmatch"  ></p>
+                                            </aura:iteration> 
+                                        </td>  
+                                    </aura:iteration>
+                                </tr> 
+                                
+                                <div > </div>
+                            </tbody>
+                        </table>
+                    </div>
+                </aura:if>
+                
+                
+                
+                
+                <!-- Object Permission Table -->
+                <aura:if isTrue="{!v.selectedSection == 'ObjectTable'}">
+                    
+                    <div id="ObjectTable" style="position: relative;">
+                        <aura:if isTrue="{!v.showSpinnerObjPerm}">
+                            <div class="{! 'overlay ' + (v.showSpinnerObjPerm ? '' : 'slds-hide') }" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.6); z-index: 10; display: flex; justify-content: center; align-items: center;">
+                                <lightning:spinner variant="brand" size="medium" aura:id="spinner" alternativeText="Loading...."/>
+                            </div>
+                        </aura:if>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered tablee" aura:id="ObjectTable"    style="border: 2px solid black; width: 100%;border-collapse: collapse; ">
+                            
+                            <thead>
+                                
+                                <tr>
+                                    <th colspan="4" class="slds-text-title_bold"  style="border-bottom: 1px solid darkgrey;font-weight: 600;">Object Permission Review Intel</th>
+                                    <th colspan="6" class="slds-text-title_bold slds-border_left slds-border_right" style="border-bottom: 1px solid darkgrey; border-left: 2px solid black;  font-weight: 600;border-right: 2px solid black;"> Object Permission Review Recommended Actions</th>
+                                </tr>
+                                
+                                <tr>
+                                    <!-- <td class="slds-text-title_bold">Step</td> -->
+                                    <td class="Sec1_header" style="font-weight: 600; border-bottom: 2px solid black;">Security area</td> 
+                                    <td  class="Sec1_header" style="font-weight: 600;border-bottom: 2px solid black; ">Type of Metadata and Description Population </td> 
+                                    <td class="Sec1_header" style="font-weight: 600; border-bottom: 2px solid black;">Total numbers</td> 
+                                    <td class="Sec1_header" style="font-weight: 600;border-bottom: 2px solid black; ">Review ?</td>
+                                    
+                                    
+                                    <td class="Sec1_header" style="font-weight: 600; ">Percentage</td>  
+                                    <td class="Sec1_header" style="font-weight: 600; ">Last review date</td>  
+                                </tr>
+                                <tr></tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <aura:iteration items="{!v.ObjPermReviewData}" var="item">
+                                        
+                                        <td colspan="1" style=" border:none;">
+                                            <tr style="position: relative; bottom: 72px;font-weight: 600; border:none; font-size: 1.1em;"> <td style=" border:none;" > <ui:outputText value="Metadata"/>	  </td></tr>
+                                            
+                                        </td> 
+                                        <td class="slds-border_left slds-border_right marPad" style="border-top: 2px solid black;">  
+                                            <tr>  <td style="border-top: none;" class="marZero" > <h1> <ui:outputText value="Total Objects"/></h1></td></tr>   
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Objects with description populated"/></h1></td></tr>
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Objects with description not populated"/></h1></td> </tr>
+                                            <!--/*blank*/   <tr>   <td> <h1 class="mLZero"><ui:outputText value="Territories"/></h1></td>   </tr>--> 
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Objects with Editable Description"/></h1></td></tr>
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Objects with Blank Editable Description"/></h1></td></tr>
+                                            <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Objects with uneditable description blank"/></h1></td></tr>
+                                            
+                                        </td>
+                                        <td class="slds-border_left slds-border_right" style="padding-top: 8px;border-top: 2px solid black;">
+                                            <tr class="Text_center"><td class="Text_bordernone" style="border-top: none;">  <h1>{!item.TotalObjects} </h1> </td> <!-- Total Objects -->
+                                            </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.DescPopulatedObjects } </h1> </td> <!-- Objects with description populated -->
+                                            </tr> 
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.DescNotPopulated} </h1></td> <!-- Objects with description not populated -->   </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.EditableObjects} </h1></td> <!-- Objects with Editable Description -->   </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.BlankEditableDesc} </h1></td> <!-- Objects with Blank Editable Description -->   </tr>
+                                            <tr class="Text_center"><td class="Text_bordernone">  <h1>{!item.UneditableBlank} </h1></td> <!-- Objects with uneditable description blank -->   </tr>
+                                        </td>
+                                        <td class="slds-border_left slds-border_right" style="border-right: 2px solid black; padding-bottom: 5px;border-top: 2px solid black;">
+                                            <div style="display: flex; flex-direction: column;">
+                                                <aura:iteration items="{!v.ObjpicklistData}" var="item">
+                                                    <lightning:select class="boxes" name="{!item.SA_Audit__PicklistSelection__c}" value="{!item.SA_Audit__Selection_value__c}" onchange="{!c.handleOBJSelectionChange}">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No">No</option>
+                                                    </lightning:select>
+                                                </aura:iteration> 
+                                            </div>   
+                                        </td>
+                                        
+                                        
+                                        <td class="BorderTB slds-border_left slds-border_right"  style=" border-bottom:none;">
+                                            <tr class="Text_center"><td class="Text_bordernone" style="border-top: none;"><h1>{!item.CustomObjectPercentage}</h1></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.DescriptionPopulatedPercentage}</h1></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.TotalManagedObjectsPercentage}</h1></td></tr>
+                                            <tr class="Text_center"><td class="Text_bordernone" ><h1>{!item.DescriptionPopulatedPercentage}</h1></td></tr>
+                                            
+                                            
+                                        </td>
+                                        <td class="BorderTB slds-border_left slds-border_right"  style="border-right: 2px solid black;    padding-bottom: 8px; ">
+                                            <aura:iteration items="{!v.objectdateData}" var="item">
+                                                <div class="custom-date-wrapper">
+                                                    <lightning:input class="boxes date-format-hide"  type="date" name="{!item.name}" placeholder="Enter Date" value="{!item.value}" onchange="{!c.handleDateChange}" aura:id="{!item.name}"/>
+                                                </div>
+                                            </aura:iteration> 
+                                        </td> 
+                                    </aura:iteration>
+                                </tr> 
+                                
+                                <div > </div>
+                            </tbody>
+                        </table>
+                    </div>
+                </aura:if>
+                
+                <!-- profile pset Table -->
+                <aura:if isTrue="{!v.selectedSection == 'ProfilePsetTable'}">
+                <div id="profilePsetTable" style="position: relative;">
+                    <aura:if isTrue="{!v.showSpinnerObjPerm}">
+                        <div class="{! 'overlay ' + (v.showSpinnerObjPerm ? '' : 'slds-hide') }" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.6); z-index: 10; display: flex; justify-content: center; align-items: center;">
+                            <lightning:spinner variant="brand" size="medium" aura:id="spinner" alternativeText="Loading...."/>
+                        </div>
+                    </aura:if>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered tablee" aura:id="profilePsetTable"    style="border: 2px solid black; width: 100%;border-collapse: collapse; ">
+                        
+                        <thead>
+                            
+                            <tr>
+                                <th colspan="4" class="slds-text-title_bold"  style="border-bottom: 1px solid darkgrey;font-weight: 600;">Profile/Pset Description Review </th>
+                                <th colspan="6" class="slds-text-title_bold slds-border_left slds-border_right" style="border-bottom: 1px solid darkgrey; border-left: 2px solid black;  font-weight: 600;border-right: 2px solid black;"> Object Permission Review Recommended Actions</th>
+                            </tr>
+                            
+                            <tr>
+                                <!-- <td class="slds-text-title_bold">Step</td> -->
+                                <td class="Sec1_header" style="font-weight: 600; border-bottom: 2px solid black;">Security area</td> 
+                                <td  class="Sec1_header" style="font-weight: 600;border-bottom: 2px solid black; ">Type of Metadata and Description Population </td> 
+                                <td class="Sec1_header" style="font-weight: 600; border-bottom: 2px solid black;">Total numbers</td> 
+                                <td class="Sec1_header" style="font-weight: 600;border-bottom: 2px solid black; ">Review ?</td>
+                                
+                                
+                                <td class="Sec1_header" style="font-weight: 600; ">Percentage</td>  
+                                <td class="Sec1_header" style="font-weight: 600; ">Last review date</td>  
+                            </tr>
+                            <tr></tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <aura:iteration items="{!v.ProPsetReviewData}" var="itemS">
+                                    
+                                    <td colspan="1" style=" border:none;">
+                                        <tr style="position: relative; bottom: 72px;font-weight: 600; border:none; font-size: 1.1em;"> <td style=" border:none;" > <ui:outputText value="Metadata"/>	  </td></tr>
+                                        
+                                    </td> 
+                                    <td class="slds-border_left slds-border_right marPad" style="border-top: 2px solid black;">  
+                                        <tr>  <td style="border-top: none;" class="marZero" > <h1> <ui:outputText value="Number of Total profiles"/></h1></td></tr>   
+                                        <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Total Profiles with Description Populated"/></h1></td></tr>
+                                        <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Number of Total PermissionSets"/></h1></td> </tr>
+                                        <!--/*blank*/   <tr>   <td> <h1 class="mLZero"><ui:outputText value="Territories"/></h1></td>   </tr>--> 
+                                        <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Total PermissionSets with Description Populated"/></h1></td></tr>
+                                        <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Number of Total Pset Groups"/></h1></td></tr>
+                                        <tr>   <td class="marZero"> <h1 class="mLZero"><ui:outputText value="Total Pset Group with Description Populated"/></h1></td></tr>
+                                        
+                                    </td>
+                                    <td class="slds-border_left slds-border_right" style="padding-top: 8px;border-top: 2px solid black;">
+                                        <tr class="Text_center"><td class="Text_bordernone" style="border-top: none;">  <h1> {!itemS.ProfileCount} </h1> </td> <!-- Profile Count -->
+                                        </tr>
+                                        <tr class="Text_center"><td class="Text_bordernone">  <h1>{!itemS.ProfileDescriptionCount} </h1> </td> <!-- Permission Set Count -->
+                                        </tr> 
+                                        <tr class="Text_center"><td class="Text_bordernone">  <h1>{!itemS.PermissionSetCount} </h1></td> <!-- Permission Set Groups Count -->   </tr>
+                                        <tr class="Text_center"><td class="Text_bordernone">  <h1>{!itemS.PermissionSetDescriptionCount} </h1></td> <!-- Roles Count -->   </tr>
+                                        <tr class="Text_center"><td class="Text_bordernone">  <h1>{!itemS.PermissionSetGroupCount} </h1></td> </tr>
+                                        <tr class="Text_center"><td class="Text_bordernone">  <h1>{!itemS.PermissionSetGroupDescriptionCount} </h1></td> </tr>
+                                    </td>
+                                    <td class="slds-border_left slds-border_right" style="border-right: 2px solid black; padding-bottom: 5px;border-top: 2px solid black;">
+                                        <div style="display: flex; flex-direction: column;">
+                                            <aura:iteration items="{!v.Pro_Pset_Desc_picklistData}" var="item">
+                                                <lightning:select class="boxes" name="{!item.SA_Audit__PicklistSelection__c}" value="{!item.SA_Audit__Selection_value__c}" onchange="{!c.handleSelectionChange}">
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </lightning:select>
+                                            </aura:iteration> 
+                                        </div>   
+                                    </td>
+                                    
+                                    
+                                    <td class="BorderTB slds-border_left slds-border_right"  style=" border-bottom:none;">
+                                        <tr class="Text_center"><td class="Text_bordernone" style="border-top: none;"><h1>{!itemS.ProfilePercentage}</h1></td></tr>
+                                        <tr class="Text_center"><td class="Text_bordernone" ><h1>{!itemS.ProfilePercentageDec}</h1></td></tr>
+                                        <tr class="Text_center"><td class="Text_bordernone" ><h1>{!itemS.PermissionSetPercentage}</h1></td></tr>
+                                        <tr class="Text_center"><td class="Text_bordernone" ><h1>{!itemS.PermissionSetPercentageDec}</h1></td></tr>
+                                        
+                                        <tr class="Text_center"><td class="Text_bordernone" ><h1>{!itemS.PsetGroupPercentage}</h1></td></tr>
+                                        <tr class="Text_center"><td class="Text_bordernone" ><h1>{!itemS.PsetGroupPercentageDec}</h1></td></tr>
+                                        
+                                        
+                                    </td>
+                                    
+                                    
+                                    <td class="BorderTB slds-border_left slds-border_right"  style="border-right: 2px solid black;    padding-bottom: 8px; ">
+                                            <aura:iteration items="{!v.ProPsetDateData}" var="item">
+                                                <div class="custom-date-wrapper">
+                                                    <lightning:input class="boxes date-format-hide"  type="date" name="{!item.name}" placeholder="Enter Date" value="{!item.value}" onchange="{!c.handleDateChange}" aura:id="{!item.name}"/>
+                                                </div>
+                                            </aura:iteration> 
+                                        </td>
+                                    
+                                </aura:iteration>  
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                </aura:if>
+
+                
+            </aura:if>
+            </div>
+        </aura:if>
+        <aura:if isTrue="{!not(v.hasAccess)}">
+            <div style="text-align: center; margin-top: 100px; height: 100vh;"> 
+                <h1 style="text-align:center; font-family:verdana; color:red;font-size: x-large;  font-weight: 500;">
+                    Sorry, you do not have access to AuditTab.
+                </h1>
+                <p style="text-align:center; font-family:verdana;">
+                    It looks like your current subscription does not include access to AuditTab, To gain access, please purchase the feature by contacting our support team or visiting our [website](<a href="https://applicationperfection.com/contact/">ApplicationPerfection.com</a>). If you believe you should have access, please reach out to support for assistance.
+                </p>
+            </div>
+        </aura:if>
+    </body>
+    
+    
+</aura:component>

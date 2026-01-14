@@ -1,0 +1,43 @@
+<aura:component controller="RecordAccessLightning">
+    <aura:method name="doInit" description="Sample method with parameters">
+        <aura:attribute name="objectName" type="String"/>
+        <aura:attribute name="objectLabel" type="String"/>
+        <aura:attribute name="callback" type="Function" />
+    </aura:method>                                            
+    <aura:attribute name="organization" type="sObject" default="{}"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <!-- Main Container -->
+    <div class="slds-card">
+        <!-- Header Section -->
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning:icon iconName="standard:organization" size="small"/>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_small">Organization Wide Default</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        
+        <!-- Body Section -->
+        <div class="slds-card__body slds-card__body_inner">
+            <dl class="slds-list_horizontal slds-wrap">
+                <dt class="slds-item_label slds-text-color_weak slds-truncate" style="width: 180px;">Organization Name:</dt>
+                <dd class="slds-item_detail slds-truncate">
+                    <lightning:formattedText value="{!v.organization.organizationName}" />
+                </dd>
+            </dl>
+            <dl class="slds-list_horizontal slds-wrap slds-m-top--small">
+                <dt class="slds-item_label slds-text-color_weak slds-truncate" style="width: 180px;">{!v.organization.fieldOrg}:</dt>
+                <dd class="slds-item_detail">
+                    <lightning:badge label="{!v.organization.defaultAccess}" />
+                </dd>
+            </dl>
+        </div>
+    </div>
+</aura:component>

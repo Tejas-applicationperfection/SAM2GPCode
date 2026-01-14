@@ -1,0 +1,113 @@
+<!--
+Author     : Himanshu Kr. Varshney
+Description: This VF Page will generate the Excel for Option 22 Of Intel Tab
+Dependency : Called From inteTab.cmp
+-->
+<apex:page controller="ListViewExcelController" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#ListViewReport.xls">
+    {!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="s68">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+                </Borders>
+                <Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s69">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+             <Style ss:ID="s99">
+                <Alignment style="word-wrap: break-word;" ss:WrapText="1" ss:Vertical="Center"/>
+                 <Interior ss:Color="#E7E6E6" ss:Pattern="Solid"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+        </Styles>
+        <!--<apex:repeat value="{!ddWList}" var="ddW">-->
+        <Worksheet ss:Name="List Views of All Objects">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                <Column ss:AutoFitWidth="0" ss:Width="170"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="300"/>
+                <Column ss:AutoFitWidth="0" ss:Width="250"/>
+                <Column ss:AutoFitWidth="0" ss:Width="250"/>
+                <Row ss:Height="30"></Row>
+                <Row ss:Height="25">
+                    <Cell></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Object</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">View Name</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">View Unique Name</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Filter By Owner</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Filtered by Fields</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Selected Fields</Data></Cell>
+                </Row>
+                <apex:repeat value="{!finalList}" var="item">
+                    <Row>
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!item.sobjectType}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!item.viewName}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!item.viewUniqueName}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!item.filterByOwner}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!item.additionalFilters}"/></Data></Cell>
+                        <Cell ss:StyleID="s99"><Data ss:Type="String"><apex:outputText value="{!item.selectedFields}"/></Data></Cell>
+                    </Row>
+                </apex:repeat>
+                <Row ss:Height="30"></Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported from Salesforce.com Org Id:</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.org.Id}" rendered="{!reportInfos.orgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Company</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.org.Name}" rendered="{!reportInfos.orgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Date of Export</Data></Cell>
+                    <Cell ss:StyleID="">
+                        <Data ss:Type="String">
+                            <apex:outputText value="{!NOW()}"/>
+                        </Data>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported By:</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.exportUser}"/></Data></Cell>
+                </Row>
+            </Table>
+        </Worksheet>
+        <!--</apex:repeat>-->
+    </Workbook>
+</apex:page>

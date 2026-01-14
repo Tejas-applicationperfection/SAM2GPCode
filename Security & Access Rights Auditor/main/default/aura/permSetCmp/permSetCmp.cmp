@@ -1,0 +1,88 @@
+<aura:component controller="RecordAccessLightning" implements="force:lightningQuickAction,force:hasRecordId">
+    <aura:method name="doInit" description="Permission Set method with parameters">
+        <aura:attribute name="userID" type="String"/>
+        <aura:attribute name="objectAPI" type="String"/>
+        <aura:attribute name="callback" type="Function" />
+    </aura:method>                                            
+    <aura:attribute name="permSetList" type="ProfileWrapper[]"/>
+    <aura:attribute name="existPermSet" type="Boolean"/>
+    
+    <aura:if isTrue="{!v.existPermSet}">
+        <!-- Main Container -->
+        <div class="slds-card">
+            <!-- Header Section -->
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="standard:permission_set" size="small"/>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span class="slds-text-heading_small">Permission Sets</span>
+                        </h2>
+                    </div>
+                </header>
+            </div>
+            
+            <!-- Body Section -->
+            <div class="slds-card__body slds-card__body_inner">
+                <aura:iteration items="{!v.permSetList}" var="permSet">
+                    <div class="slds-box slds-box_x-small slds-m-bottom--medium">
+                        <!-- Permission Set Name -->
+                        <div class="slds-m-bottom--small">
+                            <strong><lightning:formattedText value="{!permSet.profileName}" /></strong>
+                        </div>
+                        
+                        <!-- Permissions Table -->
+                        <div style="overflow-x: auto;">
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="table-layout: fixed; width: 100%;">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th style="width: 16.66%;" scope="col"><div class="slds-truncate">Create</div></th>
+                                        <th style="width: 16.66%;" scope="col"><div class="slds-truncate">Read</div></th>
+                                        <th style="width: 16.66%;" scope="col"><div class="slds-truncate">Edit</div></th>
+                                        <th style="width: 16.66%;" scope="col"><div class="slds-truncate">Delete</div></th>
+                                        <th style="width: 16.66%;" scope="col"><div class="slds-truncate">View All</div></th>
+                                        <th style="width: 16.66%;" scope="col"><div class="slds-truncate">Modify All</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label="Create" class="slds-text-align_center">
+                                            <lightning:input type="checkbox" disabled="true" checked="{!permSet.create}" variant="label-hidden" />
+                                        </td>
+                                        <td data-label="Read" class="slds-text-align_center">
+                                            <lightning:input type="checkbox" disabled="true" checked="{!permSet.read}" variant="label-hidden" />
+                                        </td>
+                                        <td data-label="Edit" class="slds-text-align_center">
+                                            <lightning:input type="checkbox" disabled="true" checked="{!permSet.edit}" variant="label-hidden" />
+                                        </td>
+                                        <td data-label="Delete" class="slds-text-align_center">
+                                            <lightning:input type="checkbox" disabled="true" checked="{!permSet.del}" variant="label-hidden" />
+                                        </td>
+                                        <td data-label="View All Records" class="slds-text-align_center">
+                                            <lightning:input type="checkbox" disabled="true" checked="{!permSet.viewAllRecords}" variant="label-hidden" />
+                                        </td>
+                                        <td data-label="Modify All Records" class="slds-text-align_center">
+                                            <lightning:input type="checkbox" disabled="true" checked="{!permSet.modifyAllRecords}" variant="label-hidden" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Additional Permissions -->
+                        <div class="slds-m-top--small">
+                            <dl class="slds-list_horizontal slds-wrap">
+                                <dt class="slds-item_label slds-text-color_weak slds-truncate" style="width: 150px;">Modify All Data:</dt>
+                                <dd class="slds-item_detail">
+                                    <lightning:input type="checkbox" disabled="true" checked="{!permSet.modifyAllData}" variant="label-hidden" />
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </aura:iteration>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

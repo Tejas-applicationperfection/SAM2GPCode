@@ -1,0 +1,163 @@
+<apex:page controller="GenerateProfileXML" sidebar="false" showHeader="true" docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true">
+   <!-- <head>
+		<title>Generate Profile XML</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/jquery.min.js')}"/>
+		<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+		<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+		<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+		<apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+		<apex:slds />
+	</head>
+  <script type="text/javascript">
+/*Visualforce.remoting.timeout = 200000;
+		function getXMLFiles() {
+			//var selectedProfilesId = '{!selectedProfilesId}';
+			const startTime = performance.now();
+			
+			console.log(document.getElementById('theProfs'));
+			var selectedProfilesId = document.getElementById('theProfs').value;
+			console.log('selectedProfilesId::' + selectedProfilesId);
+			var zipFile = new JSZip();
+			var zipFilename = 'deploypkg.zip';
+			var count = 0;
+			Visualforce.remoting.Manager.invokeAction(
+				'{!$RemoteAction.GenerateProfileXML.getXMLFiles}',
+				selectedProfilesId,
+				function(result, event){
+					if (event.status) {
+						for(var xmlFilename in result) {
+							count++;
+							console.log('xmlFilename::' + xmlFilename); 
+							if(xmlFilename == 'package') {
+								zipFile.file("package/" + xmlFilename + ".xml", result[xmlFilename], {base64: true});
+							} else {
+								zipFile.file(xmlFilename , result[xmlFilename], {base64: true});
+							}
+						}
+						if(count > 0) {
+							console.log('intra::');
+							//content = zipFile.generate();
+							//console.log('content::' + content);
+							//var element = document.createElement('a');
+							//element.setAttribute('href', 'application/zip;base64,' + content);
+							//element.setAttribute('download', zipFilename);
+						
+							//element.style.display = 'none';
+							//document.body.appendChild(element);
+						
+							//element.click();
+						
+							//document.body.removeChild(element);
+							content = zipFile.generate();
+							setTimeout(location.href="data:application/zip;base64," + content, 20000);
+							console.log('iese::');
+							const duration = performance.now() - startTime;
+							console.log(`someMethodIThinkMightBeSlow took ${duration}ms`);
+						}
+
+					} else if (event.type === 'exception') {
+						document.getElementById("responseErrors").innerHTML =
+							event.message + "<br/>\n<pre>" + event.where + "</pre>";
+					} else {
+						document.getElementById("responseErrors").innerHTML = event.message;
+					}
+				},
+				{escape: true}
+			);
+		}*/
+	</script>
+	
+	<body>
+		<apex:form id="theForm">
+		<div class="slds-scope">
+		
+			<div class="slds-page-header">
+				<div class="demo-only demo-only--sizing slds-grid slds-wrap">
+					<div class="slds-p-horizontal_small slds-size_1-of-1">
+						<table class="slds-table slds-table_bordered " width="100%">
+							<thead>
+								<tr class="slds-text-title_caps">
+									<th scope="col" style="text-align: left">
+										<div class="slds-truncate" title="Application Perfection">
+											<apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+										</div>
+									</th>
+									<th scope="col" style="text-align: right">
+										<div class="slds-truncate" title="Security & Access Manager">
+											<apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+										</div>
+									</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+			<apex:outputPanel id="errorSection">
+				<apex:pageMessages />
+			</apex:outputPanel>
+			<div id="responseErrors"></div>
+			<apex:outputPanel id="selectOptions">
+				<div class="demo-only demo-only--sizing slds-grid slds-wrap">
+					<div class="slds-size_1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-12"/>
+					<div class="slds-size_1-of-1 slds-medium-size--1-of-1 slds-large-size--7-of-12">
+						Type of the permission: &nbsp;
+						<apex:selectList value="{!selectedPerm}" size="1" styleClass="slds-select">
+							<apex:selectOptions value="{!PermissionType}"/>
+							<apex:actionSupport event="onchange" rerender="selectOptions" action="{!changeType}" status="tableStatus"/>
+						</apex:selectList>
+						<c:MultiselectPicklist leftLabel="Available Profiles/Permission Sets"
+							leftOption="{!remainingProfiles}"
+							leftOption1=""
+							rightLabel="Selected Profiles/Permission Sets"
+							rightOption="{!selectedProfiles}"
+							size="6"
+							width="250px"/>
+					</div>
+				</div>
+			</apex:outputPanel>
+			<div style="text-align: center">
+				<br/>
+				<apex:commandButton value="Select" action="{!SelectProfile}" rerender="theForm, selectOptions" status="tableStatus"  style="width: 120px;" styleClass="slds-button slds-button_success"/>
+				<apex:commandButton value="Export XML" onclick="getXMLFiles();" action="{!ExportToXML}" rerender="theForm" status="tableStatus"  style="width: 120px;" styleClass="slds-button slds-button_success"/>
+			</div>
+			<output type="text" id="theProfs" style="display: none">{!selectedProfilesId}</output>
+			 <apex:actionFunction name="deployZip" action="{!deployZip}" rerender="XMLpopup, theForm" status="tableStatus">
+				<apex:param name="data" assignTo="{!ZipData}" value=""/>
+			</apex:actionFunction>
+			<c:Zip name="generateZip" oncomplete="deployZip(data);">
+				<c:Zipentry path="package.xml" data="{!PackageXml}"/>
+				<apex:repeat value="{!selectedProfileIdList}" var="profileId">
+					<c:Zipentry path="Profile/{!profileNameMap[profileId]}.profile" data="{!profileXMLMap[profileId]}"/>
+				</apex:repeat>
+			</c:Zip>  
+			<br/>
+			<br/>
+			<div class="demo-only demo-only--sizing slds-grid slds-wrap">
+				<div class="slds-p-horizontal_small slds-size_1-of-1">
+					You selected {!selectedProfiles.size} Profiles / Permission Sets<br/><br/>
+					<apex:repeat value="{!profileNameMap}" var="profileId">
+						<apex:outputText value="{!profileNameMap[profileId]}" /><br/>
+					</apex:repeat>
+				</div>
+			</div>
+			<apex:actionStatus id="tableStatus" layout="block">
+				<apex:facet name="start">
+					<p >
+						<div class="slds-spinner_container slds-is-fixed">
+							<div role="status" class="slds-spinner slds-spinner_large slds-spinner_brand">
+								<span class="slds-assistive-text">Loading</span>
+								<div class="slds-spinner__dot-a"></div>
+								<div class="slds-spinner__dot-b"></div>
+							</div>
+						</div>
+					</p>
+				</apex:facet>
+				<apex:facet name="stop"></apex:facet>
+			</apex:actionStatus>
+		</div>
+		</apex:form>
+</body>   -->
+</apex:page>

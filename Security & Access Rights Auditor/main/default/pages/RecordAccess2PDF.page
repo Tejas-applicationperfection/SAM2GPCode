@@ -1,0 +1,492 @@
+<apex:page controller="RecordAccess2"   docType="HTML-5.0" applyHtmlTag="false" applyBodyTag="false" sidebar="false"  renderAs="PDF" showHeader="false" standardStylesheets="false">
+	<head>
+		<title>Record Access Querier </title>
+	</head>
+	<body>
+	<apex:form >
+		<table width="100%" class="table">
+			<tr>
+				<td style="text-align: left">
+					<apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/> 
+				</td>
+				<td style="text-align: right">
+					<apex:image id="theImage" value="{!$Resource.logo}" width="200" height="50"/>
+				</td>
+			</tr>
+		</table>
+		<table width="100%" border="1" style="border-collapse: collapse;" >
+			<tr>
+				<td>User Name:&nbsp;&nbsp;
+					<strong><apex:outputText value="{!User.Name}"/></strong>
+				</td>
+				<td>Record ID:&nbsp;&nbsp;
+					<strong><apex:outputText value="{!currentId}" label="Record ID:"/></strong>
+				</td>
+			</tr>
+			<tr>
+				<td>This is an {!sObjLabel} Id. {!sObjLabel} name:</td>
+				 <td>
+					<strong><apex:outputText value="{!sObj['Name']}" rendered="{!sObjName!='Case'}"/></strong>
+					<strong><apex:outputText value="{!sObj['CaseNumber']}" rendered="{!sObjName=='Case'}"/></strong>
+				</td>
+			</tr>
+		</table>
+			<br></br>
+		<table width="100%" border="1" style="border-collapse: collapse;" class="table table-striped">
+			<tr>
+				<td><strong>Organization Wide Default: </strong>
+				</td>
+				<td colspan="5"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td> Name: </td>
+				<td> <apex:outputField value="{!organization['Name']}"/> </td>
+				<td><apex:outputText value="Default {!sObjLabel} Access:" rendered="{!fieldOrg != ''}"/> </td>
+				<td><apex:outputField value="{!organization[fieldOrg]}" rendered="{!fieldOrg != '' && !isCustom}"/>
+					<apex:outputText value="{!customShr}" rendered="{!isCustom}"/>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><strong>User Profile:</strong>
+				</td>
+				<td></td>
+				<td colspan="4"><strong><apex:outputText value="Object Permissions:" escape="true"/></strong></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><apex:outputText value="Name: {!profileName} "/></td>
+				<td>
+					<div style="float:left">Create:</div>
+					<div style="float:left"><apex:outputField value="{!objPermission.PermissionsCreate}"/></div>
+				</td>
+				<td><div style="float:left">Read:</div>
+					<div style="float:left"><apex:outputField value="{!objPermission.PermissionsRead}"/></div>
+				</td>
+				<td><div style="float:left">Edit:</div>
+					<div style="float:left"><apex:outputField value="{!objPermission.PermissionsEdit}"/></div>
+				</td>
+				<td><div style="float:left">Delete:</div>
+					<div style="float:left"><apex:outputField value="{!objPermission.PermissionsDelete}"/></div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><apex:outputText value=""/></td>
+				<td><div style="float:left">Modify All Data:</div>
+					<div style="float:left"><apex:outputField value="{!userPermission.PermissionsModifyAllData}"/></div>
+				</td>
+				<td><div style="float:left">Modify All Records:</div>
+					<div style="float:left"><apex:outputField value="{!objPermission.PermissionsModifyAllRecords}"/></div>
+				</td>
+				<td><div style="float:left">View All Records:</div>
+					<div style="float:left"><apex:outputField value="{!objPermission.PermissionsViewAllRecords}"/></div>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="6"><apex:outputText value="<b>Permission Sets: </b>" escape="true" rendered="{!prSet}"/></td>
+			</tr>
+			<apex:repeat value="{!permissionSetMap}" var="perm">
+				<tr>
+					<td></td>
+					<td><apex:outputText value="{!perm.Label} "/></td>
+					<td>Create:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsCreate}"/></td>
+					<td>Read:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsRead}"/></td>
+					<td>Edit:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsEdit}"/></td>
+					<td>Delete:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsDelete}"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><apex:outputText value=""/></td>
+					<td>Modify All Data:&nbsp;<apex:outputField value="{!perm.PermissionsModifyAllData}"/></td>
+					<td>Modify All Records:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsModifyAllRecords}"/></td>
+					<td>View All Records:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsViewAllRecords}"/></td>
+					<td></td>
+				</tr>
+			</apex:repeat>
+			<tr>
+				<td colspan="6">
+					<strong>User Role:
+						<apex:outputText value=" {!userRoleMap[user.UserRoleId].Name}" rendered="{!user.UserRoleId != null}"/>
+					</strong>
+					<apex:outputText value=" No User Role defined" rendered="{!user.UserRoleId == null}"/>
+					</td>
+			</tr>
+			
+			<apex:repeat value="{!userSharingRoleMap}" var="sharingRole">
+				<tr>
+					<td></td>
+					<apex:variable value="{!userSharingRoleMap[sharingRole]}" var="index"/>
+					<td colspan="5"><apex:outputText value="This record was shared with user {!sharingRole.Name} - role  {!userSharingRoleMap[sharingRole][index.size - 1].Name} :"/>
+					</td>
+					
+					<apex:repeat value="{!userSharingRoleMap[sharingRole]}" var="userRole">
+						<tr><td></td>
+							<td colspan="5">
+								<apex:outputText value=" - {!userRole.Name}" label=""/>
+							</td>
+						</tr>
+					</apex:repeat>
+				</tr>
+			</apex:repeat>
+			
+			<apex:outputPanel rendered="{!enableEnterpriseTerritory || enableTerritory}" layout="none">
+				<tr>
+					<td> <strong>Territory Management:</strong></td>
+					<td colspan="5"></td>
+				</tr>
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!enableEnterpriseTerritory}" layout="none">
+				<apex:repeat value="{!territory2WrapperList}" var="territory2wrp">
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText escape="true" value="<b>{!user.Name}</b> is assigned to territory <b>{!territory2wrp.territory2Hierarchy[0]['Name']}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'Territory2Forecast' && !territory2wrp.isRoleTerritory}"/>
+							<apex:outputText escape="true" value="<b>{!user.Name}</b> is assigned to territory <b>{!territory2wrp.territory2Hierarchy[0]['Name']}</b> and account of {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'ImplicitChild' && !territory2wrp.isRoleTerritory}"/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText escape="true" value="<b>Territory Hierarchy</b>" rendered="{!territory2wrp.existParentTer2}"/>
+						</td>
+					</tr>
+					<apex:variable var="ind" value="{!territory2wrp.territory2Hierarchy.size}" />
+					<apex:repeat value="{!territory2wrp.territory2Hierarchy}" var="terHierarchy" rendered="{!territory2wrp.existParentTer2}">
+						<apex:variable var="ind" value="{!ind-1}"/>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value=" - {!territory2wrp.territory2Hierarchy[ind]['Name']}" label=""/>
+							</td>
+						</tr>
+					</apex:repeat>
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText value="<i>User assigned to territory</i> : <b>{!territory2wrp.territory2Hierarchy[territory2wrp.lastTerritory]['Name']}</b> is <b>{!territory2wrp.userTerritory.Name}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'Territory2Forecast' && territory2wrp.isRoleTerritory}" escape="true"/>
+							<apex:outputText value="<i>User assigned to territory</i> : <b>{!territory2wrp.territory2Hierarchy[territory2wrp.lastTerritory]['Name']}</b> is <b>{!territory2wrp.userTerritory.Name}</b> and Account of {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'ImplicitChild' && territory2wrp.isRoleTerritory}" escape="true"/>
+						</td>
+					</tr>
+					<tr> 
+						<td></td>
+						<td colspan="5">
+							<apex:outputText value="<b>Roles above:</b> <i>{!userRoleMap[territory2wrp.userTerritory.UserRoleId]['Name']}</i> assigned to <i>{!territory2wrp.userTerritory.Name}</i>" escape="true" rendered="{!territory2wrp.isRoleTerritory}" />
+						</td>
+					</tr>
+					<apex:variable var="ind" value="{!territory2wrp.userRolelist.size}" />
+					<apex:repeat value="{!territory2wrp.userRolelist}" var="terUserRole" rendered="{!territory2wrp.isRoleTerritory}" >
+						<apex:variable var="ind" value="{!ind-1}"/>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value=" - {!territory2wrp.userRolelist[ind].Name}" label=""/>
+							</td>
+						</tr>
+						
+					</apex:repeat>
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText value=" - {!userRoleMap[territory2wrp.userTerritory.UserRoleId]['Name']}" label="" rendered="{!territory2wrp.isRoleTerritory}"/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><Strong>Name</Strong></td>
+						<td>Account Access</td>
+						<td>Contact Access</td>
+						<td>Opportunity Access</td>
+						<td>Case Access</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><Strong><apex:outputText value="{!territory2wrp.territory2['Name']}" label=""/></Strong></td>
+						<td><apex:outputText value="{!territory2wrp.territory2['AccountAccessLevel']}" label=""/></td>
+						<td><apex:outputText value="{!territory2wrp.territory2['ContactAccessLevel']}" label=""/></td>
+						<td><apex:outputText value="{!territory2wrp.territory2['OpportunityAccessLevel']}" label=""/></td>
+						<td><apex:outputText value="{!territory2wrp.territory2['CaseAccessLevel']}" label=""/></td>
+					</tr>
+					
+				</apex:repeat>
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!enableTerritory}" layout="none">
+				<apex:repeat value="{!territoryWrapperList}" var="territorywrp">
+					<apex:variable var="ind" value="{!territorywrp.territoryHierarchy.size}" />
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText escape="true" value="<b>{!user.Name}</b> is assigned to territory <b>{!territorywrp.territoryHierarchy[ind-1]['Name']}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territorywrp.territory['Name']}</b>" rendered="{!!territorywrp.isRoleTerritory && territorywrp.existParentTer}"/>
+							
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText value="Territory Hierarchy" rendered="{!territorywrp.existParentTer}"/>
+						</td>
+					</tr>
+					<apex:repeat value="{!territorywrp.territoryHierarchy}" var="terHierarchy" rendered="{!territorywrp.existParentTer}">
+						<apex:variable var="ind" value="{!ind-1}"/>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value=" - {!territorywrp.territoryHierarchy[ind]['Name']}" label=""/>
+							</td>
+						</tr>
+					</apex:repeat>
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText value="<i>User assigned to territory</i> : {!territorywrp.territoryHierarchy[territorywrp.lastTerritory]['Name']} is <b>{!territorywrp.userTerritory.Name}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territorywrp.territory['Name']}</b>" rendered="{!territorywrp.isRoleTerritory}" escape="true"/>
+							<!--<apex:outputText value="<i>User assigned to territory</i> : {!territorywrp.territoryHierarchy[territorywrp.lastTerritory]['Name']} is <b>{!territorywrp.userTerritory.Name}</b> and account of {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territorywrp.territory['Name']}</b>" rendered="{!objTer2IdMap[territorywrp.territory['ID']] == 'ImplicitChild'}" escape="true"/>-->
+						</td>   
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText value="<b>Roles above:</b> <i>{!userRoleMap[territorywrp.userTerritory.UserRoleId]['Name']}</i> assigned to <i>{!territorywrp.userTerritory.Name}</i>" rendered="{!territorywrp.isRoleTerritory}" escape="true"/>
+						</td>
+					</tr>
+					<apex:variable var="ind" value="{!territorywrp.userRolelist.size}" />
+					<apex:repeat value="{!territorywrp.userRolelist}" var="terUserRole" rendered="{!territorywrp.isRoleTerritory}">
+						<apex:variable var="ind" value="{!ind-1}"/>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value=" - {!territorywrp.userRolelist[ind].Name}" label=""/>
+							</td>
+						</tr>
+					</apex:repeat>
+					<tr>
+						<td></td>
+						<td colspan="5">
+							<apex:outputText value=" - {!userRoleMap[territorywrp.userTerritory.UserRoleId]['Name']}" rendered="{!territorywrp.isRoleTerritory}" label=""/>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><Strong>Name</Strong></td>
+						<td>Account Access</td>
+						<td>Contact Access</td>
+						<td>Opportunity Access</td>
+						<td>Case Access</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><Strong><apex:outputText value="{!territorywrp.territory['Name']}" label=""/></Strong></td>
+						<td><apex:outputText value="{!territorywrp.territory['AccountAccessLevel']}"/></td>
+						<td><apex:outputText value="{!territorywrp.territory['ContactAccessLevel']}"/></td>
+						<td><apex:outputText value="{!territorywrp.territory['OpportunityAccessLevel']}"/></td>
+						<td><apex:outputText value="{!territorywrp.territory['CaseAccessLevel']}"/></td>
+					</tr>
+				</apex:repeat>
+			</apex:outputPanel>
+			<apex:outputPanel rendered="{!!noSharing && !owdRW}" layout="none">
+				<tr>
+					<td> <strong>Record Sharing Settings:</strong>
+					</td>
+					<td colspan="5"></td>
+				</tr>
+				<apex:outputpanel layout="none" rendered="{!!owdRW}">
+					<apex:repeat value="{!shrObjList}" var="shrObj">
+						<tr>
+							<td></td>
+							<td><apex:outputText value="{!access1}:"/></td>
+							<td><apex:outputText value="{!shrObj[access]}"/></td>
+							<td><apex:outputText value="Row Cause:"/></td>
+							<td>
+								<apex:outputText value="{!shrObj['RowCause']}"/>
+							</td>
+							<td></td>
+						</tr>
+					</apex:repeat>
+				</apex:outputpanel>
+			</apex:outputPanel>
+			<apex:outputpanel rendered="{!isGroupShr}" layout="none" >
+				<tr>
+					<td> <strong>Public Group Sharing Settings:</strong></td>
+					<td colspan="5"></td>
+				</tr>
+				<apex:outputPanel rendered="{!isExpandGroupSharing}" layout="none">
+					<apex:repeat value="{!groupList}" var="groupItem">
+						<tr>
+							<td></td>
+							<td><strong><apex:outputText value="Group Name:"/></strong></td>
+							<td><apex:outputText value="{!groupItem.Name}"/></td>
+							<td>{!sObjLabel} Access:</td>
+							<td><apex:outputText value="{!shrGroupMap[groupItem][access]}" label="{!access}"/></td>
+							<td>{!shrGroupMap[groupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[groupItem.DeveloperName]}" rendered="{!shrGroupMap[groupItem]['RowCause']=='Rule'}"/></td>
+							<!-- <td><apex:outputText value="{!shrGroupMap[groupItem]['RowCause']}"/></td> -->
+						</tr>
+					</apex:repeat>
+					<apex:repeat value="{!roleGroupSharingMap}" var="rolePublicGroupItem">
+						<tr>
+							<td></td>
+							<td><strong><apex:outputText value="Group Name:" escape="true"/></strong></td>
+							<td><apex:outputText value="{!rolePublicGroupItem.Name}"/></td>
+							<td>{!sObjLabel} Access:</td>
+							<td><apex:outputText value="{!shrGroupMap[rolePublicGroupItem][access]}"/></td>
+							<td>{!shrGroupMap[rolePublicGroupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[rolePublicGroupItem.DeveloperName]}" rendered="{!shrGroupMap[rolePublicGroupItem]['RowCause']=='Rule'}"/></td>
+							<!--<td><apex:outputText value="{!shrGroupMap[roleGroupItem]['RowCause']}"/></td>-->
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:variable value="{!roleGroupSharingMap[rolePublicGroupItem]}" var="index"/>
+								<apex:outputText value="This group contains user : <b>{!userGroupSharingMap[rolePublicGroupItem].Name}</b> with Role : {!roleGroupSharingMap[rolePublicGroupItem][index.size - 1].Name}"  escape="true" style="font-style:italic"/>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value="Roles above:" escape="true"/>
+							</td>
+						</tr>
+						<apex:repeat value="{!roleGroupSharingMap[rolePublicGroupItem]}" var="groupUserRole">
+							<tr>
+								<td></td>
+								<td colspan="5">
+									<apex:outputText value=" - {!groupUserRole.Name}" />
+								</td>
+							</tr>
+						</apex:repeat>
+					</apex:repeat>
+					
+					<apex:repeat value="{!roleGroupMap}" var="roleGroupItem">
+						<tr>
+							<td></td>
+							<td><strong><apex:outputText value="Group Name:" rendered="{!IF(roleGroupItem.Name != '', true, false)}" escape="true"/>
+								<apex:outputText value="Group Type:" rendered="{!IF(roleGroupItem.Name != '', false, true)}" escape="true"/></strong>
+							</td>
+							<td><apex:outputText value="{!roleGroupItem.Name}" rendered="{!IF(roleGroupItem.Name != '', true, false)}"/>
+								<apex:outputText value="{!roleGroupItem.Type}" rendered="{!IF(roleGroupItem.Name != '', false, true)}"/>
+							</td>
+							<td>{!sObjLabel} Access:</td>
+							<td><apex:outputText value="{!shrGroupMap[roleGroupItem][access]}"/></td>
+							<td>{!shrGroupMap[roleGroupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[roleGroupItem.DeveloperName]}" rendered="{!shrGroupMap[roleGroupItem]['RowCause']=='Rule'}"/></td>
+							<!--<td><apex:outputText value="{!shrGroupMap[roleGroupItem]['RowCause']}"/></td>-->
+						</tr>
+						
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value="This record was shared with Role : {!userRoleMap[roleGroupItem.RelatedId]['Name']}"/>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value="Roles under:" escape="true"/>
+							</td>
+						</tr>
+						<apex:repeat value="{!roleGroupMap[roleGroupItem]}" var="groupUserRole">
+							<tr>
+								<td></td>
+								<td colspan="5">
+									<apex:outputText value=" - {!groupUserRole.Name}"/>
+								</td>
+							</tr>
+						</apex:repeat>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value=" - {!userRoleMap[roleGroupItem.RelatedId]['Name']}"/>
+							</td>
+						</tr>
+					</apex:repeat>
+					
+					<apex:repeat value="{!roleAndSubordinatesGroupMap}" var="roleAndSubordinatesGroupItem">
+						<tr>
+							<td></td>
+							<td><strong><apex:outputText value="Group Name:" rendered="{!roleAndSubordinatesGroupItem.Name != ''}" escape="true"/>
+								<apex:outputText value="Group Type:" rendered="{!roleAndSubordinatesGroupItem.Name == ''}" escape="true"/></strong>
+							</td>
+							<td><apex:outputText value="{!roleAndSubordinatesGroupItem.Name}" rendered="{!roleAndSubordinatesGroupItem.Name != ''}"/>
+								<apex:outputText value="{!roleAndSubordinatesGroupItem.Type}" rendered="{!roleAndSubordinatesGroupItem.Name == ''}" />
+							</td>
+							<td>{!sObjLabel} Access:</td>
+							<td><apex:outputText value="{!shrGroupMap[roleAndSubordinatesGroupItem][access]}"/></td>
+							<td>{!shrGroupMap[roleAndSubordinatesGroupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[roleAndSubordinatesGroupItem.DeveloperName]}" rendered="{!shrGroupMap[roleAndSubordinatesGroupItem]['RowCause']=='Rule'}"/></td>
+							<!--<td><apex:outputText value="{!shrGroupMap[roleGroupItem]['RowCause']}"/></td>-->
+						</tr>
+						
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value="This record was shared with Role : {!userRoleMap[roleAndSubordinatesGroupItem.RelatedId]['Name']}"  style="font-style:italic"/>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value="Roles under : " escape="true"/>
+							</td>
+						</tr>
+						<apex:repeat value="{!roleAndSubordinatesGroupMap[roleAndSubordinatesGroupItem]}" var="groupUserRole">
+							<tr>
+								<td></td>
+								<td colspan="5">
+									<apex:outputText value=" - {!groupUserRole.Name}"/>
+								</td>
+							</tr>
+						</apex:repeat>
+						<tr>
+							<td></td>
+							<td colspan="5">
+								<apex:outputText value=" - {!userRoleMap[user.UserRoleId]['Name']}" />
+							</td>
+						</tr>
+					</apex:repeat>
+				</apex:outputPanel>
+			</apex:outputpanel>
+			<tr>
+				<td></td>
+				<td colspan="5"><apex:outputText value="There no sharing for this record with this user" rendered="{!owdRW && !isGroupShr}"/></td>
+			</tr>
+			
+			<apex:outputpanel layout="none">
+				<tr>
+					<td colspan="6"><strong>{!existRT}</strong>
+					</td>
+				</tr>
+				<apex:repeat value="{!recTypeList}" var="rT">
+					<tr>
+						<td></td>
+						<td><strong>Name</strong></td>
+						<td><apex:outputText value="{!rT.Name}" /></td>
+						<td><apex:outputText value="{!rT.DeveloperName}" /></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</apex:repeat>
+			</apex:outputpanel>
+		</table>
+		
+		<br></br><br></br><br></br><br></br>
+		<table>
+			<tr> 
+				<td>Exported from Salesforce.com org id: </td>
+				<td><apex:outputText value="{!organization['Id']}"/></td>
+			</tr>
+			<tr>
+				<td>Company</td>
+				<td><apex:outputText value="{!organization['Name']}"/></td>
+			</tr>
+			<tr>
+				<td>Date of Export</td>
+				<td> <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+						<apex:param value="{!NOW()}" /> 
+					</apex:outputText>
+				</td>
+			</tr>
+			<tr> 
+				<td>Exported by </td>
+				<td><apex:outputText value="{!exportUser}"/></td>
+			</tr>
+		</table>
+	</apex:form>
+	</body>
+</apex:page>

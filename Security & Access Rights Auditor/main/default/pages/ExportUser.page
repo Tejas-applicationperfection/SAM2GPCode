@@ -1,0 +1,14 @@
+<apex:page Controller="RecordAccess" >
+    <apex:repeat value="{!usersAccess}" var="uT">
+
+        <tr>
+            <td width="25%"></td>
+            <td width="15%">User id:</td>
+            <td width="15%"><apex:outputText value="{!uT.userId}" />hello</td>
+            <td width="15%">User Access:</td>
+            <td width="15%"><apex:outputText value="{!uT.Access}" />hello</td>
+            <td width="15%"></td>
+        </tr>
+    </apex:repeat>
+    
+</apex:page>

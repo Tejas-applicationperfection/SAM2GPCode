@@ -1,0 +1,33 @@
+<apex:page controller="DataDictionary" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">    
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+
+<head>
+  <title>Sensitive Data</title>
+  <apex:slds />
+</head>    
+
+<body>    
+
+  <!-- REQUIRED SLDS WRAPPER -->
+  <div class="slds">    
+
+    <!-- MASTHEAD -->
+    <h1 class="slds-text-heading--label slds-m-bottom--small">
+      Page Title
+    </h1>
+    <!-- / MASTHEAD -->    
+
+    <!-- PRIMARY CONTENT WRAPPER -->
+    <div class="slds-grid">    
+
+
+    </div>
+    <!-- / PRIMARY CONTENT WRAPPER -->    
+
+  </div>
+  <!-- / REQUIRED SLDS WRAPPER -->    
+
+</body>
+</html>
+</apex:page>

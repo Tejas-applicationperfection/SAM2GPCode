@@ -1,0 +1,198 @@
+<template>
+
+
+    <template if:true={isLoaded}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <template if:true={isShowModal}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <button onclick={hideModalBox}
+                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Profile Cloned Successfully</h1>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p class="slds-text-body_regular slds-m-bottom_small"> 
+                        New PermissionSet has been created with complete permissions from the Profile:
+                    </p>
+                    <ul class="slds-list_dotted slds-m-left_large">
+                        <li>✓ Object Permissions (CRUD + View/Modify All)</li>
+                        <li>✓ Field-Level Security (Read/Edit)</li>
+                        <li>✓ System Permissions (296+ administrative permissions)</li>
+                    </ul>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_small">
+                        Note: Some permissions may be skipped if they're incompatible with PermissionSets.
+                    </p>
+                </div>
+                <div class="slds-modal__footer">
+
+                    <button onclick={hideModalBox} class="slds-button slds-button_brand">Okay</button>
+                    <button onclick={linkToPermissionSet} class="slds-button slds-button_brand" style="top:2px;">
+                        <svg style="margin: 0px 5px 2px 0;" class="slds-button__icon slds-button__icon_medium"
+                            aria-hidden="true">
+                            <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#new_window"></use>
+                        </svg> See Permission
+                    </button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+    <!-- <lightning-card title="Profile to PermissionSet Cloner" > -->
+    <article class="slds-card" style="padding-top: 68px;">
+
+        <div class="slds-box slds-theme_shade neumorphic-header">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure neumorphic-icon">
+                            <span class="slds-icon_container slds-icon-action-clone">
+                                <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                    <use xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#clone"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span>Cloner</span>
+                                        <span class="slds-page-header__title slds-truncate neumorphic-title"
+                                            title="Instant Permissions Cloner">
+                                            Instant Permissions Cloner
+                                        </span>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+
+        <div class="main-page-container">
+            <div class="content-section">
+                <div class="slds-m-top_medium slds-grid slds-gutters" style="display: flex;">
+                    <div class="slds-col slds-m-around_small neumorphic-container itemcombo" style="width: 22%;">
+                             <h2 class="combohead">Select License </h2> 
+                        <lightning-combobox class="license-filter custom-input" name="licenseFilter" 
+                            value={selectedLicense} options={licenseOptions} onchange={handleLicenseChange}
+                            disabled={isLicenseFilterDisabled}>
+                        </lightning-combobox>
+                    </div>
+
+                    <div class="slds-col slds-m-around_small neumorphic-container itemcombo">
+                        <div style="display: flex;justify-content: space-between; align-items: baseline; height: 52px;">
+                            <h2 class="combohead">Select Profile</h2>
+                            <div class="slds-form-element slds-m-bottom_small">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-checkbox">
+                                        <input type="checkbox" id="licenseFilter" name="licenseFilter"
+                                            checked={isLicenseFilterChecked} onchange={handleShowAllLicensesChange}
+                                            class="slds-checkbox__input" />
+                                        <label class="slds-checkbox__label" for="licenseFilter">
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label">
+                                                Filter by License
+                                                <div
+                                                    class="slds-text-color_weak slds-font-italic slds-text-body_small ">
+                                                    <span > Uncheck to show all profiles</span>
+                                                </div>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <lightning-combobox name="profileSelector" class="custom-input"  value={selectedProfile}
+                            options={profileOptions} onchange={handleProfileChange}>
+                        </lightning-combobox>
+                    </div>
+                </div>
+
+                <div style="max-width: 49.5%;" class="PermissionInput slds-m-around_small neumorphic-container">
+                    <h2 class="combohead">PermissionSet Name</h2>
+                    <lightning-input class="  custom-input" name="PermissionSet Name" value={permissionName}
+                        placeholder="Enter custom permissionSet Name (Optional)" onchange={handlePermissionSetChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="demo-only" role="group">
+                    <button class="slds-button slds-button_brand button-83"
+                        style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';"
+                        title="Clone Profiles" onclick={handleCloneProfilesToPermissionSets}>Clone Profiles
+                    </button>
+                    <button class="slds-button slds-button_brand button-83"
+                        style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';"
+                        title="See History" onclick={handleHistory}>
+                        See History
+                    </button>
+                    
+
+
+                </div>
+
+            </div>
+
+            <div class="cloner-section custom-input" style="width: 30vw;">
+                <c-last-cloned-profiles></c-last-cloned-profiles>
+                
+                <!-- Professional Navigation Buttons -->
+                <div class="navigation-buttons-container">
+                    <button class="nav-button-professional" 
+                            onclick={linkToObjectAccess}
+                            title="Navigate to Object Access Management Tab"
+                            aria-label="Navigate to Object Access Management Tab">
+                        <div class="nav-button-content">
+                            <div class="nav-button-title">Object Access Management</div>
+                            <div class="nav-button-description">Configure object-level permissions and access controls</div>
+                        </div>
+                        <div class="nav-button-icon" aria-hidden="true"></div>
+                    </button>
+                    
+                    <button class="nav-button-professional nav-button-secondary" 
+                            onclick={linkToObjectnFieldsAccess}
+                            title="Navigate to Fields Access Management Tab"
+                            aria-label="Navigate to Fields Access Management Tab">
+                        <div class="nav-button-content">
+                            <div class="nav-button-title">Fields Access Management</div>
+                            <div class="nav-button-description">Manage field-level security and permissions</div>
+                        </div>
+                        <div class="nav-button-icon" aria-hidden="true"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <template if:true={isHistory}>
+            <div class="slds-p-around_medium history-container"
+                style="height: 75vh; padding: 19px; padding-top: 145px; margin-bottom: 20%;">
+                <h2 class="slds-text-heading_medium slds-m-bottom_small">Cloning History</h2>
+                <button class="slds-button slds-button_brand button-83" title="Refresh"
+                    style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';margin-bottom: 12px;"
+                    onclick={refreshData}>Refresh</button>
+                <lightning-datatable class="custom-table" key-field="id" columns={columns} data={data}>
+                </lightning-datatable>
+            </div>
+
+
+        </template>
+    </article>
+    <!-- </lightning-card> -->
+
+
+
+
+
+
+
+</template>

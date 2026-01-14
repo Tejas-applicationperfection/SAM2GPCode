@@ -1,0 +1,304 @@
+<apex:page controller="ObjectAccess" language="{!currentLanguage}" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#SalesForceExport.xls">{!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+        xmlns:o="urn:schemas-microsoft-com:office:office" 
+        xmlns:x="urn:schemas-microsoft-com:office:excel"
+        xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+        xmlns:html="http://www.w3.org/TR/REC-html40">
+        
+        
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        
+        <Styles>
+            <Style ss:ID="Default" ss:Name="Normal">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders/>
+                <Font/>
+                <Interior/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="s67">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s68">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+                </Borders>
+                <Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s69">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+            <Style ss:ID="s70" ss:Name="Date">
+                <Alignment ss:Vertical="Bottom"/>
+                <DateFormat ss:Format="MM/DD/YYYY"/>
+            </Style>
+            <Style ss:ID="sNO">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10" />
+                <Interior ss:Color="#FFC7CE" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="sYES">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10"/>
+                <Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/>
+            </Style>
+        </Styles>
+        <apex:outputPanel rendered="{!selectedLog == '-- Please select --'}" layout="none">
+            <apex:repeat value="{!objectProfileWListMap}" var="selObj">
+                <Worksheet ss:Name="{!HTMLENCODE(selObj)}">
+                    <Table x:FullColumns="1" x:FullRows="1" >
+                        <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="250"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                        <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                        <Row ss:Height="30"></Row>
+                        <Row ss:Height="30">
+                            <Cell></Cell>
+                            <Cell>
+                                <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/>
+                            </Cell>
+                            <Cell ss:MergeAcross="2"></Cell>
+                            <Cell>
+                                <apex:image id="theImage" value="{!$Resource.logo}" width="200" height="50"/>
+                            </Cell>
+                        </Row>
+                        <Row ss:Height="30">
+                            <Cell></Cell>
+                            <Cell ss:StyleID="s67" ss:MergeAcross="8"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(objectsNameMap[selObj])}" escape="true"/> &nbsp; Access</Data></Cell>
+                        </Row>
+                        <Row ss:Height="25">
+                            <Cell></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Profile or Permission Set Name</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Type</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Profile License</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Read</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Create</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Edit</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Delete</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">View All</Data></Cell>
+                            <Cell ss:StyleID="s68"><Data ss:Type="String">Modify All</Data></Cell>
+                        </Row>
+                        <apex:repeat value="{!objectProfileWListMap[selObj]}" var="p">
+                            <Row>
+                                <Cell ></Cell>
+                                <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(profileMap[p.profId])}" escape="true"/></Data></Cell>
+                                <Cell ss:StyleID="s69"><Data ss:Type="String" > {!IF(CONTAINS(p.profId,'00e'),'Profile','PermissionSet')} </Data></Cell>
+                                                                                            
+                                <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!userLicenseMap[p.profUserLicenseId].Name}" rendered="{!userLicenseNotAccessible}"/></Data></Cell>
+                                <Cell ss:StyleID="{!If(p.objPerm.R,'sYES','sNO')}"><Data ss:Type="String" >{!IF(p.objPerm.R,'YES','NO')}</Data></Cell>
+                                <Cell ss:StyleID="{!If(p.objPerm.C,'sYES','sNO')}"><Data ss:Type="String" >{!IF(p.objPerm.C,'YES','NO')}</Data></Cell>
+                                <Cell ss:StyleID="{!If(p.objPerm.E,'sYES','sNO')}"><Data ss:Type="String" >{!IF(p.objPerm.E,'YES','NO')}</Data></Cell>
+                                <Cell ss:StyleID="{!If(p.objPerm.D,'sYES','sNO')}"><Data ss:Type="String" >{!IF(p.objPerm.D,'YES','NO')}</Data></Cell>
+                                <Cell ss:StyleID="{!If(p.objPerm.V,'sYES','sNO')}"><Data ss:Type="String" >{!IF(p.objPerm.V,'YES','NO')}</Data></Cell>
+                                <Cell ss:StyleID="{!If(p.objPerm.M,'sYES','sNO')}"><Data ss:Type="String" >{!IF(p.objPerm.M,'YES','NO')}</Data></Cell>
+                            </Row>
+                        </apex:repeat>
+                        <Row ss:Height="30"></Row>
+                        <Row>
+                            <Cell></Cell>
+                            <Cell><Data ss:Type="String" >Exported from Salesforce.com org id: </Data></Cell>
+                            <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Id}" rendered="{!OrgIsAccessible}"/></Data></Cell>
+                        </Row>
+                        <Row>
+                            <Cell></Cell>
+                            <Cell><Data ss:Type="String">Company </Data></Cell>
+                            <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Name}" rendered="{!OrgIsAccessible}"/> </Data></Cell>
+                        </Row>
+                        <Row>
+                            <Cell></Cell>
+                            <Cell><Data ss:Type="String">Date of Export </Data></Cell>
+                            <Cell ss:StyleID="">
+                                <Data ss:Type="String" >
+                                    <apex:outputText value="{!NOW()}"/>
+                                </Data>
+                            </Cell>
+                        </Row>
+                        <Row>
+                            <Cell></Cell>
+                            <Cell><Data ss:Type="String">Exported by : </Data></Cell>
+                            <Cell><Data ss:Type="String"><apex:outputText value="{!exportUser}"/></Data></Cell>
+                        </Row>
+                    </Table>
+                </Worksheet>
+            </apex:repeat>
+        </apex:outputPanel>
+        
+<!-- ---------------------- ROLLBACK SECTION ---------------------------- -->
+        
+        <apex:outputPanel rendered="{!selectedLog != '-- Please select --'}" layout="none">
+            <Worksheet ss:Name="{!HTMLENCODE(objectsNameMap[selectedObject])}">
+                <Table x:FullColumns="1" x:FullRows="1" >
+                    <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="40"/>
+                    <Row ss:Height="30"></Row>
+                    <Row ss:Height="30">
+                        <Cell></Cell>
+                        <Cell>
+                            <apex:image id="theLogoImage1" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/>
+                        </Cell>
+                        <Cell ss:MergeAcross="2"></Cell>
+                        <Cell>
+                            <apex:image id="theImage1" value="{!$Resource.logo}" width="200" height="50"/>
+                        </Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s67" ss:MergeAcross="5"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(objectsNameMap[selectedObject])}" escape="true"/> &nbsp; Access</Data></Cell>
+                        <Cell ss:StyleID="s67" ss:MergeAcross="7"><Data ss:Type="String">LOG : <apex:outputText value="{!selectedLogValue}" escape="true"/></Data></Cell>
+                    </Row>
+                    <Row ss:Height="25">
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">Profile or Permission Set Name</Data></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">Profile License</Data></Cell>
+                        <Cell ss:StyleID="s68" ss:MergeAcross="1"><Data ss:Type="String">Read</Data></Cell>
+                        <Cell ss:StyleID="s68" ss:MergeAcross="1"><Data ss:Type="String">Create</Data></Cell>
+                        <Cell ss:StyleID="s68" ss:MergeAcross="1"><Data ss:Type="String">Edit</Data></Cell>
+                        <Cell ss:StyleID="s68" ss:MergeAcross="1"><Data ss:Type="String">Delete</Data></Cell>
+                        <Cell ss:StyleID="s68" ss:MergeAcross="1"><Data ss:Type="String">View All</Data></Cell>
+                        <Cell ss:StyleID="s68" ss:MergeAcross="1"><Data ss:Type="String">Modify All</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s69"></Cell>
+                        <Cell ss:StyleID="s69"></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">NOW</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">LOG</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">NOW</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">LOG</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">NOW</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">LOG</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">NOW</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">LOG</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">NOW</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">LOG</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">NOW</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">LOG</Data></Cell>
+                    </Row>
+                    <apex:variable var="index" value="{!0}" />
+                    <apex:repeat value="{!profileWList}" var="p">
+                        <Row>
+                            <Cell ></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(profileMap[p.profId])}" escape="true"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!IF(p.profUserLicenseId != null,userLicenseMap[p.profUserLicenseId].Name, '')}" rendered="{!userLicenseNotAccessible}"/></Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.R != profileWSaveList[index].objPerm.R,'sNO','sYES')}"><Data ss:Type="String" >{!IF(p.objPerm.R,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.R != profileWSaveList[index].objPerm.R,'sNO','sYES')}"><Data ss:Type="String" >{!IF(profileWSaveList[index].objPerm.R,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.C != profileWSaveList[index].objPerm.C,'sNO','sYES')}"><Data ss:Type="String" >{!IF(p.objPerm.C,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.C != profileWSaveList[index].objPerm.C,'sNO','sYES')}"><Data ss:Type="String" >{!IF(profileWSaveList[index].objPerm.C,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.E != profileWSaveList[index].objPerm.E,'sNO','sYES')}"><Data ss:Type="String" >{!IF(p.objPerm.E,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.E != profileWSaveList[index].objPerm.E,'sNO','sYES')}"><Data ss:Type="String" >{!IF(profileWSaveList[index].objPerm.E,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.D != profileWSaveList[index].objPerm.D,'sNO','sYES')}"><Data ss:Type="String" >{!IF(p.objPerm.D,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.D != profileWSaveList[index].objPerm.D,'sNO','sYES')}"><Data ss:Type="String" >{!IF(profileWSaveList[index].objPerm.D,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.V != profileWSaveList[index].objPerm.V,'sNO','sYES')}"><Data ss:Type="String" >{!IF(p.objPerm.V,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.V != profileWSaveList[index].objPerm.V,'sNO','sYES')}"><Data ss:Type="String" >{!IF(profileWSaveList[index].objPerm.V,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.M != profileWSaveList[index].objPerm.M,'sNO','sYES')}"><Data ss:Type="String" >{!IF(p.objPerm.M,'YES','NO')}</Data></Cell>
+                            <Cell ss:StyleID="{!If(p.objPerm.M != profileWSaveList[index].objPerm.M,'sNO','sYES')}"><Data ss:Type="String" >{!IF(profileWSaveList[index].objPerm.M,'YES','NO')}</Data></Cell>
+                        </Row>
+                        <apex:variable var="index" value="{!index+1}" />
+                    </apex:repeat>
+                    <Row ss:Height="30"></Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String" >Exported from Salesforce.com org id: </Data></Cell>
+                        <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Id}" rendered="{!OrgIsAccessible}"/></Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Company </Data></Cell>
+                        <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Name}" rendered="{!OrgIsAccessible}"/> </Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">User that made the changes : </Data></Cell>
+                        <Cell><Data ss:Type="String"><apex:outputText value="{!userSavedLog}"/></Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Date of Export </Data></Cell>
+                        <Cell ss:StyleID="">
+                            <Data ss:Type="String" >
+                                <apex:outputText value="{!NOW()}"/>
+                            </Data>
+                        </Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Date of Log </Data></Cell>
+                        <Cell ss:StyleID="">
+                            <Data ss:Type="String" >
+                                <apex:outputText value="{!selectedLogValue}"/>
+                            </Data>
+                        </Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Exported by : </Data></Cell>
+                        <Cell><Data ss:Type="String"><apex:outputText value="{!exportUser}"/></Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Description Log : </Data></Cell>
+                        <Cell><Data ss:Type="String"><apex:outputText value="{!description}"/></Data></Cell>
+                    </Row>
+                </Table>
+            </Worksheet>
+        </apex:outputPanel>
+    </Workbook>
+</apex:page>

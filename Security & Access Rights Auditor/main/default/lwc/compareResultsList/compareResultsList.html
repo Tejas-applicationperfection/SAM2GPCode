@@ -1,0 +1,108 @@
+<template>
+    <div class="compare-results-list">
+        <template if:true={hasItems}>
+            <div class="results-container">
+                <template for:each={filteredItems} for:item="item">
+                    <div key={item.id} class={item.statusClass} data-item-id={item.id}>
+                        <!-- Simplified Comparison Item -->
+                        <div class="comparison-item">
+                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <!-- Status and Item Info -->
+                                <div class="slds-col slds-grow">
+                                    <div class="slds-grid slds-grid_align-start slds-grid_vertical-align-center slds-gutters_small">
+                                        <!-- Status Icon -->
+                                        <div class="slds-col slds-no-flex">
+                                            <lightning-icon 
+                                                icon-name={item.statusIcon} 
+                                                size="small" 
+                                                class={item.statusIconClass}
+                                                title={item.statusLabel}>
+                                            </lightning-icon>
+                                        </div>
+                                        
+                                        <!-- Item Name and Description -->
+                                        <div class="slds-col slds-grow">
+                                            <div class="item-info">
+                                                <h4 class="item-name">{item.name}</h4>
+                                                <template if:true={item.label}>
+                                                    <p class="item-label">{item.label}</p>
+                                                </template>
+                                                <template if:true={item.description}>
+                                                    <p class="item-description">{item.description}</p>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Status Badge -->
+                                        <div class="slds-col slds-no-flex">
+                                            <span class={item.statusBadgeClass}>
+                                                {item.statusLabel}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Comparison Details -->
+                            <template if:true={item.showComparison}>
+                                <div class="comparison-details">
+                                    <!-- Value Changes -->
+                                    <template if:true={item.hasValueChange}>
+                                        <div class="value-change">
+                                            <div class="change-row">
+                                                <div class="change-label">From:</div>
+                                                <div class="change-value from-value">{item.fromValue}</div>
+                                            </div>
+                                            <div class="change-row">
+                                                <div class="change-label">To:</div>
+                                                <div class="change-value to-value">{item.toValue}</div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    
+                                    <!-- Additional Details for Added/Removed Items -->
+                                    <template if:true={item.showDetails}>
+                                        <div class="item-details-simple">
+                                            <template if:true={item.details.apiName}>
+                                                <div class="detail-row">
+                                                    <span class="detail-label">API Name:</span>
+                                                    <span class="detail-value">{item.details.apiName}</span>
+                                                </div>
+                                            </template>
+                                            <template if:true={item.details.type}>
+                                                <div class="detail-row">
+                                                    <span class="detail-label">Type:</span>
+                                                    <span class="detail-value">{item.details.type}</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+        
+        <!-- Empty State -->
+        <template if:false={hasItems}>
+            <div class="empty-state">
+                <div class="empty-state-content">
+                    <lightning-icon 
+                        icon-name="utility:info" 
+                        size="medium" 
+                        variant="inverse" 
+                        class="empty-state-icon">
+                    </lightning-icon>
+                    <h3 class="empty-state-title">{noItemsMessage}</h3>
+                    <template if:true={searchTerm}>
+                        <p class="empty-state-description">
+                            Try adjusting your search terms or clearing filters.
+                        </p>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

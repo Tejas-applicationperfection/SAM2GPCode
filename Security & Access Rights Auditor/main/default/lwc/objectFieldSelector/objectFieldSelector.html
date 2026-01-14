@@ -1,0 +1,400 @@
+<template>
+    <!-- Access Denied Message (mirrors intelRedesign styling) -->
+    <template if:false={hasAccess}>
+        <div class="slds-align_absolute-center" style="margin-top: 100px;">
+            <div class="slds-text-align_center">
+                <lightning-icon icon-name="utility:lock" size="large" class="slds-m-bottom_medium"></lightning-icon>
+                <h1 class="slds-text-heading_large slds-text-color_error slds-m-bottom_medium">
+                    Sorry, you do not have access to User Data Dictionary App 
+                </h1>
+                <p class="slds-text-body_regular slds-m-bottom_small">
+                    It looks like your current subscription does not include access to User Data Dictionary App.
+                </p>
+                <p class="slds-text-body_regular slds-m-bottom_medium">
+                    To gain access, please purchase the feature by contacting our support team or visiting 
+                    <a href="https://applicationperfection.com/contact/" target="_blank" class="slds-text-link">ApplicationPerfection.com</a>.
+                </p>
+                <p class="slds-text-body_small">
+                    If you believe you should have access, please reach out to support for assistance.
+                </p>
+            </div>
+        </div>
+    </template>
+    <template if:true={hasAccess}>
+    <!-- Admin Panel Section (visible only to system admins) -->
+    <template if:true={isSystemAdmin}>
+        <lightning-card title="Administration Panel" icon-name="standard:settings" class="slds-m-bottom_large">
+            <div class="slds-p-around_medium">
+                <details class="admin-collapsible">
+                    <summary class="admin-collapsible__summary">Administration settings</summary>
+                    <div class="admin-collapsible__content">
+                        <div class="slds-notify slds-notify_alert slds-theme_info" role="alert">
+                            <span class="slds-assistive-text">Info</span>
+                            <h2><strong>System Admin:</strong> Configure which columns are visible to different users, profiles, or permission sets.</h2>
+                        </div>
+                        
+                        <!-- Configuration Type Selection -->
+                        <div class="slds-form-element slds-m-top_medium slds-m-bottom_medium">
+                            <label class="slds-form-element__label">
+                                Configuration Type
+                            </label>
+                            <div class="slds-form-element__control">
+                                <lightning-radio-group
+                                    name="configurationType"
+                                    options={configurationTypeOptions}
+                                    value={selectedConfigurationType}
+                                    onchange={handleConfigurationTypeChange}
+                                    type="button">
+                                </lightning-radio-group>
+                            </div>
+                        </div>
+
+                        <!-- Target Selection -->
+                        <template if:true={availableTargets.length}>
+                            <div class="slds-form-element slds-m-bottom_medium">
+                                <label class="slds-form-element__label" for="target-select">
+                                    Select {selectedConfigurationType}
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <template if:true={isLoadingTargets}>
+                                        <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+                                    </template>
+                                    <template if:false={isLoadingTargets}>
+                                        <lightning-combobox
+                                            id="target-select"
+                                            name="targetSelect"
+                                            placeholder="Choose {selectedConfigurationType}..."
+                                            options={availableTargets}
+                                            value={selectedConfigetId}
+                                            onchange={handleTargetChange}>
+                                        </lightning-combobox>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Column Visibility Configuration -->
+                        <template if:true={hasSelectedTarget}>
+                            <div class="slds-form-element slds-m-bottom_large">
+                                <label class="slds-form-element__label">
+                                    <strong>Column Visibility Settings for: {selectedTargetName}</strong>
+                                </label>
+                                <div class="slds-form-element__control slds-m-top_small">
+                                    <div class="slds-grid slds-wrap slds-gutters">
+                                        <!-- First Column -->
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Field Name Column"
+                                                        name="showFieldName"
+                                                        checked={adminConfig.showFieldName}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Field Type Column"
+                                                        name="showFieldType"
+                                                        checked={adminConfig.showFieldType}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Description Column"
+                                                        name="showDescription"
+                                                        checked={adminConfig.showDescription}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Help Text Column"
+                                                        name="showHelpText"
+                                                        checked={adminConfig.showHelpText}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Second Column -->
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Sensitivity Column"
+                                                        name="showSensitivity"
+                                                        checked={adminConfig.showSensitivity}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Field Usage Column"
+                                                        name="showFieldUsage"
+                                                        checked={adminConfig.showFieldUsage}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Data Owner Column"
+                                                        name="showDataOwner"
+                                                        checked={adminConfig.showDataOwner}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+
+                                            <div class="slds-form-element slds-m-bottom_small">
+                                                <div class="slds-form-element__control">
+                                                    <lightning-input
+                                                        type="checkbox"
+                                                        label="Show Compliance Categorization Column"
+                                                        name="showComplianceCategorizaton"
+                                                        checked={adminConfig.showComplianceCategorizaton}
+                                                        onchange={handleAdminColumnChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Save Configuration Buttons -->
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <lightning-button
+                                        variant="brand"
+                                        label="Save Configuration"
+                                        title="Save column visibility settings"
+                                        onclick={handleSaveConfiguration}
+                                        disabled={isSaving}
+                                        class="slds-m-right_small">
+                                    </lightning-button>
+                                    <lightning-button
+                                        variant="neutral"
+                                        label="Reset to Default"
+                                        title="Reset to default visibility"
+                                        onclick={handleResetConfiguration}
+                                        class="slds-m-right_small">
+                                    </lightning-button>
+                                    <template if:true={isSaving}>
+                                        <lightning-spinner alternative-text="Saving..." size="small" class="slds-m-left_small"></lightning-spinner>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- No Target Selected Message intentionally removed as requested -->
+                    </div>
+                </details>
+            </div>
+        </lightning-card>
+    </template>
+
+    <!-- Main Object Field Selector -->
+    <lightning-card title="Object Field Selector" icon-name="standard:object">
+        <div class="slds-p-around_medium ofs-card-body">
+            
+            <!-- Permission Information -->
+            <div class="slds-notify slds-notify_alert slds-theme_info slds-m-bottom_medium" role="alert">
+                <span class="slds-assistive-text">Info</span>
+                <h2><strong>Note:</strong> Only objects and fields you have permission to access are displayed.</h2>
+            </div>
+            
+            <!-- Object Type Selection -->
+            <div class="slds-form-element slds-m-bottom_large">
+                <label class="slds-form-element__label ofs-field-label" for="object-type">
+                    <abbr class="slds-required" title="required">*</abbr> Object Type
+                </label>
+                <div class="slds-form-element__control">
+                    <lightning-combobox
+                        id="object-type"
+                        name="objectType"
+                        placeholder="Choose Object Type..."
+                        options={objectTypeOptions}
+                        value={selectedObjectType}
+                        onchange={handleObjectTypeChange}
+                        required>
+                    </lightning-combobox>
+                </div>
+            </div>
+
+            <!-- Object Selection -->
+            <template if:true={hasSelectedObjectType}>
+                <div class="slds-form-element slds-m-bottom_large">
+                    <label class="slds-form-element__label ofs-field-label" for="object">
+                        <abbr class="slds-required" title="required">*</abbr> Select Object
+                    </label>
+                    <div class="slds-form-element__control">
+                        <template if:true={isLoadingObjects}>
+                            <lightning-spinner alternative-text="Loading objects..." size="small"></lightning-spinner>
+                        </template>
+                        <template if:false={isLoadingObjects}>
+                            <lightning-combobox
+                                id="object"
+                                name="object"
+                                placeholder="Choose Object..."
+                                options={objectOptions}
+                                value={selectedObject}
+                                onchange={handleObjectChange}
+                                required>
+                            </lightning-combobox>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Field Information Display -->
+            <template if:true={hasSelectedObject}>
+                <template if:true={isLoadingFields}>
+                    <div class="slds-p-around_medium slds-text-align_center">
+                        <lightning-spinner alternative-text="Loading fields..." size="medium"></lightning-spinner>
+                        <p class="slds-text-body_regular slds-m-top_small">Loading field information...</p>
+                    </div>
+                </template>
+                
+                <template if:false={isLoadingFields}>
+                    <template if:true={hasFields}>
+                        <div class="slds-m-top_large">
+                            <h3 class="slds-text-heading_medium slds-m-bottom_medium">
+                                Field Information for {selectedObject}
+                            </h3>
+                            
+                            <!-- Field Information Table -->
+                            <div class="slds-table_header-fixed_container">
+                                <div class="slds-scrollable_y" style="height: 500px;">
+                                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th if:true={columnConfig.showFieldName} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">Field Name</div>
+                                                </th>
+                                                <th if:true={columnConfig.showFieldType} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">Field Type</div>
+                                                </th>
+                                                <th if:true={columnConfig.showDescription} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Description">Description</div>
+                                                </th>
+                                                <th if:true={columnConfig.showHelpText} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Help Text">Help Text</div>
+                                                </th>
+                                                <th if:true={columnConfig.showSensitivity} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Sensitivity">Sensitivity</div>
+                                                </th>
+                                                <th if:true={columnConfig.showFieldUsage} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Field Usage">Field Usage</div>
+                                                </th>
+                                                <th if:true={columnConfig.showDataOwner} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Data Owner">Data Owner</div>
+                                                </th>
+                                                <th if:true={columnConfig.showComplianceCategorizaton} class="slds-text-title_caps" scope="col">
+                                                    <div class="slds-truncate" title="Compliance Categorization">Compliance Categorization</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={objectFields} for:item="field">
+                                                <tr key={field.name}>
+                                                    <td if:true={columnConfig.showFieldName}>
+                                                        <div class="slds-truncate" title={field.label}>
+                                                            <strong>{field.label}</strong>
+                                                            <br/>
+                                                            <span class="slds-text-body_small slds-text-color_weak">({field.name})</span>
+                                                        </div>
+                                                    </td>
+                                                    <td if:true={columnConfig.showFieldType}>
+                                                        <div class="slds-truncate" title={field.type}>
+                                                            {field.type}
+                                                        </div>
+                                                    </td>
+                                                    <td if:true={columnConfig.showDescription}>
+                                                        <div class="slds-truncate" title={field.description}>
+                                                            {field.description}
+                                                        </div>
+                                                    </td>
+                                                    <td if:true={columnConfig.showHelpText}>
+                                                        <div class="slds-truncate" title={field.inlineHelpText}>
+                                                            {field.inlineHelpText}
+                                                        </div>
+                                                    </td>
+                                                    <td if:true={columnConfig.showSensitivity}>
+                                                        <div class="slds-truncate" title={field.dataSensitivityLevel}>
+                                                            <span class={field.sensitivityClass}>{field.dataSensitivityLevelDisplay}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td if:true={columnConfig.showFieldUsage}>
+                                                        <div class="slds-truncate" title={field.fieldUsage}>
+                                                            <span class={field.usageClass}>{field.fieldUsageDisplay}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td if:true={columnConfig.showDataOwner}>
+                                                        <div class="slds-truncate" title={field.dataOwner}>
+                                                            {field.dataOwner}
+                                                        </div>
+                                                    </td>
+                                                    <td if:true={columnConfig.showComplianceCategorizaton}>
+                                                        <div class="slds-truncate" title={field.complianceDisplay}>
+                                                            {field.complianceDisplay}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-m-top_medium slds-text-align_center">
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    Total Fields: {objectFields.length}
+                                </p>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <template if:false={hasFields}>
+                        <div class="slds-notify slds-notify_alert slds-theme_info" role="alert">
+                            <span class="slds-assistive-text">Info</span>
+                            <h2>No fields found for the selected object.</h2>
+                        </div>
+    </template>
+</template>
+            </template>
+
+            <!-- Instructions -->
+            <template if:false={hasSelectedObjectType}>
+                <div class="slds-notify slds-notify_alert slds-theme_info" role="alert">
+                    <span class="slds-assistive-text">Info</span>
+                    <h2>Please select an object type to begin.</h2>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

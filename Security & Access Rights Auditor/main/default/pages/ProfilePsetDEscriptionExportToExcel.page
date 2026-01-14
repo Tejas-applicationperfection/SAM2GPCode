@@ -1,0 +1,125 @@
+<apex:page controller="ProfilePsetDescription" language="{!currentLanguage}" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#ProfilePsetDescriptionExport.xls">
+    {!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        
+        <Styles>
+            <Style ss:ID="Default" ss:Name="Normal">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders/>
+                <Font/>
+                <Interior/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="s67">
+                <Alignment style="word-wrap: break-word;" ss:WrapText="1" ss:Vertical="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s68">
+                <Alignment style="word-wrap: break-word;" ss:WrapText="1" ss:Vertical="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+                </Borders>
+                <Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s69">
+                <Alignment style="word-wrap: break-word;" ss:WrapText="1" ss:Vertical="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+        </Styles>
+        <!--if added any special character in ss:Name it shows corrupt file -->
+        <Worksheet ss:Name="profilePset Descriptions">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="20"/>
+                <Column ss:Width="300"/>
+                <Column ss:Width="500"/>
+                <Row ss:Height="30"></Row>
+                <Row ss:Height="30"></Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell ss:StyleID="s67"><Data ss:Type="String">Profile Name</Data></Cell>
+                    <Cell ss:StyleID="s67"><Data ss:Type="String">Description</Data></Cell>
+                </Row>
+                
+                <apex:repeat value="{!profileDescriptions}" var="profileDesc">
+                    <Row>
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">{!profileDesc.profileName}</Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String">{!profileDesc.description}</Data></Cell>
+                    </Row>
+                </apex:repeat>
+                <Row ss:Height="15"></Row>
+                <Row>
+                    <Cell ></Cell>
+                    <Cell><Data ss:Type="String" >Exported from Salesforce.com org id: </Data></Cell>
+                    <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Id}" rendered="{!OrgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Company </Data></Cell>
+                    <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Name}" rendered="{!OrgIsAccessible}"/> </Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Date of Export </Data></Cell>
+                    <Cell ss:StyleID="">
+                        <Data ss:Type="String" >
+                            <apex:outputText value="{!NOW()}"/>
+                        </Data>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported by : </Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!exportUser}"/></Data></Cell>
+                </Row>
+                
+                
+            </Table>
+        </Worksheet>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </Workbook>
+</apex:page>

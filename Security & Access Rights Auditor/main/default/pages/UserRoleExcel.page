@@ -1,0 +1,165 @@
+<!--
+Author/Modified Code By : Himanshu Kr. Varshney
+-->
+<apex:page controller="UserRoleExcelController" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#UserRolesReport.xls">
+    {!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40"
+              xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="Default" ss:Name="Normal">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders/>
+                <Font/>
+                <Interior/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="s67">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s68">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+                </Borders>
+                <Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s69">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+            <Style ss:ID="s70" ss:Name="Date">
+                <Alignment ss:Vertical="Bottom"/>
+                <DateFormat ss:Format="MM/DD/YYYY"/>
+            </Style>
+            <Style ss:ID="sNO">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10"/>
+                <Interior ss:Color="#FFC7CE" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="sYES">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10"/>
+                <Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/>
+            </Style>
+        </Styles>
+        <!--<apex:repeat value="{!ddWList}" var="ddW">-->
+        <Worksheet ss:Name="User Roles">
+            <Table x:FullColumns="1" x:FullRows="1" >
+                <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                <Column ss:AutoFitWidth="0" ss:Width="350"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Row ss:Height="30"></Row>
+                <Row ss:Height="30">
+                    <Cell></Cell>
+                    <Cell>
+                        <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/>
+                    </Cell>
+                    <Cell ss:MergeAcross="2"></Cell>
+                    <Cell>
+                        <apex:image id="theImage" value="{!$Resource.logo}" width="200" height="50"/>
+                    </Cell>
+                </Row>
+                <Row ss:Height="25">
+                    <Cell></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">User Name</Data></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">User ID</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Role Name</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Role Id</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Last Login Date</Data></Cell>
+                </Row>
+                <apex:repeat value="{!allUserRoles}" var="list">
+                    <apex:repeat value="{!list}" var="item">
+                        <Row>
+                            <Cell></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.Name)}" escape="true"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.Id)}"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.UserRole.Name)}"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.UserRoleId)}"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!(item.LastLoginDate)}"/></Data></Cell>
+                        </Row>
+                    </apex:repeat>
+                </apex:repeat>
+                <Row ss:Height="30"></Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported from Salesforce.com org id:</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.org.Id}" rendered="{!reportInfos.OrgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Filter by:</Data></Cell>
+                    <Cell ss:StyleID="">
+                        <Data ss:Type="String">
+                            <apex:outputText value="Active users, role assigned"/>
+                        </Data>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Company</Data></Cell>
+                    <Cell><Data ss:Type="String" ><apex:outputText value="{!reportInfos.org.Name}" rendered="{!reportInfos.OrgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Date of Export</Data></Cell>
+                    <Cell ss:StyleID="">
+                        <Data ss:Type="String">
+                            <apex:outputText value="{!NOW()}"/>
+                        </Data>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported by :</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.exportUser}"/></Data></Cell>
+                </Row>
+            </Table>
+        </Worksheet>
+        <!--</apex:repeat>-->
+    </Workbook>
+</apex:page>

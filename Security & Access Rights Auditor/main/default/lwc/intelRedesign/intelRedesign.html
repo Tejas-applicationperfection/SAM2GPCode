@@ -1,0 +1,1532 @@
+<template>
+    <!-- Loading State - Checking Feature Access -->
+    <template if:true={isCheckingAccess}>
+        <div class="slds-align_absolute-center" style="height: 200px;">
+            <lightning-spinner alternative-text="Checking access" size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    <!-- Access Granted - Show Main Content -->
+    <template if:true={hasAccess}>
+    <div class="dashboard-container">
+        <!-- Main Panel -->
+        <div class="main-panel">
+            <!-- Header Bar -->
+            <div class="header-bar">
+                <div class="header-title">
+                    <span class="header-icon">
+                        <lightning-icon icon-name="utility:setup" size="medium"></lightning-icon>
+                    </span>
+                    <span>Security & Access Manager</span>
+                </div>
+                <div class="header-controls">
+                    <lightning-button-icon icon-name="utility:rows" variant="bare" size="medium"></lightning-button-icon>
+                </div>
+            </div>
+            
+            <!-- Home Screen View -->
+            <template if:true={isHomeScreen}>
+                <div class="content-container">
+                    <div class="slds-text-heading_large slds-p-bottom_medium page-header">Security & Access Manager</div>
+                    
+                    <!-- Enhanced Search Container 
+                    <div class="search-container">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-grid slds-gutters slds-has-flexi-truncate">
+                                    <div class="slds-col slds-size_11-of-12">
+                                        <div class="slds-combobox_container">
+                                            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left">
+                                                    <lightning-icon icon-name="utility:search" size="x-small" class="slds-input__icon slds-input__icon_left"></lightning-icon>
+                                                    <input type="text" placeholder="Search for intel cards, reports, or features..." class="slds-input slds-combobox__input search-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12 slds-grid slds-grid_align-end">
+                                        <lightning-button 
+                                            variant="brand" 
+                                            label="Search" 
+                                            icon-name="utility:search" 
+                                            icon-position="left"
+                                            class="search-button">
+                                        </lightning-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    
+                    <div class="slds-grid slds-wrap card-grid">
+                        <!-- First row of cards -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="intel-card slds-box" data-id="user" onclick={handleCardClick}>
+                                <div class="card-header">
+                                    <lightning-icon icon-name="utility:user" size="small" class="user-icon"></lightning-icon>
+                                    <span class="card-title">User Intel</span>
+                                    <div class="chevron">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="icon-container">
+                                        <lightning-icon icon-name="standard:user" size="medium"></lightning-icon>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="detail-label">User intel</p>
+                                        <p class="detail-text">View user data and status</p>
+                                        <p class="detail-text">Monitor permissions</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="footer-row">
+                                        <span>customize report</span>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <span>click to view</span>
+                                        <lightning-icon icon-name="utility:down" size="xx-small"></lightning-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="intel-card slds-box" data-id="config" onclick={handleCardClick}>
+                                <div class="card-header">
+                                    <lightning-icon icon-name="utility:settings" size="small" class="config-icon"></lightning-icon>
+                                    <span class="card-title">Config Intel</span>
+                                    <div class="chevron">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="icon-container">
+                                        <lightning-icon icon-name="standard:document" size="medium"></lightning-icon>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="detail-label">Config intel</p>
+                                        <p class="detail-text">View Validation Rules</p>
+                                        <p class="detail-text">Monitor statuses</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="footer-row">
+                                        <span>customize report</span>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <span>click to view</span>
+                                        <lightning-icon icon-name="utility:down" size="xx-small"></lightning-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="intel-card slds-box" data-id="sharing" onclick={handleCardClick}>
+                                <div class="card-header">
+                                    <lightning-icon icon-name="utility:user" size="small" class="user-icon"></lightning-icon>
+                                    <span class="card-title">Sharing Intel</span>
+                                    <div class="chevron">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="icon-container">
+                                        <lightning-icon icon-name="standard:question" size="medium"></lightning-icon>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="detail-label">Sharing intel</p>
+                                        <p class="detail-text">View sharing settings and OWD</p>
+                                        <p class="detail-text">Monitor Public Groups and members</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="footer-row">
+                                        <span>customize report</span>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <span>click to view</span>
+                                        <lightning-icon icon-name="utility:down" size="xx-small"></lightning-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Second row of cards -->
+                        
+                        
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="intel-card slds-box" data-id="reporting" onclick={handleCardClick}>
+                                <div class="card-header">
+                                    <lightning-icon icon-name="utility:report" size="small" class="reporting-icon"></lightning-icon>
+                                    <span class="card-title">Reporting Intel</span>
+                                    <div class="chevron">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="icon-container">
+                                        <lightning-icon icon-name="standard:report" size="medium"></lightning-icon>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="detail-label">Reporting Intel</p>
+                                        <p class="detail-text">View report and dashboard sharing</p>
+                                        <p class="detail-text">Access and permissions</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="footer-row">
+                                        <span>customize report</span>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <span>click to view</span>
+                                        <lightning-icon icon-name="utility:down" size="xx-small"></lightning-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add this after the Reporting Intel card -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="intel-card slds-box" data-id="profileAssignment" onclick={handleCardClick}>
+                                <div class="card-header">
+                                    <lightning-icon icon-name="utility:profile" size="small" class="profile-icon"></lightning-icon>
+                                    <span class="card-title">Profile Assignment Intel</span>
+                                    <div class="chevron">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="icon-container">
+                                        <lightning-icon icon-name="standard:user_role" size="medium"></lightning-icon>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="detail-label">Profile Assignment Intel</p>
+                                        <p class="detail-text">View profile assignments and types</p>
+                                        <p class="detail-text">Monitor user license usage</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="footer-row">
+                                        <span>customize report</span>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <span>click to view</span>
+                                        <lightning-icon icon-name="utility:down" size="xx-small"></lightning-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- For Config Intel card -->
+                        <template if:true={isConfigCard}>
+                            <template for:each={currentFilterOptions} for:item="parentOption">
+                                <div key={parentOption.value} class="slds-p-bottom_small">
+                                    <!-- Parent filter checkbox -->
+                                    <div class="slds-form-element__control">
+                                        <span class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   value={parentOption.value} 
+                                                   id={parentOption.value}
+                                                   onchange={handleParentFilterChange} />
+                                            <label class="slds-checkbox__label" for={parentOption.value}>
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">{parentOption.label}</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Sub-filters -->
+                                    <div class="slds-p-left_large">
+                                        <template for:each={parentOption.subFilters} for:item="subOption">
+                                            <div key={subOption.value} class="slds-form-element__control">
+                                                <span class="slds-checkbox">
+                                                    <input type="checkbox" 
+                                                           value={subOption.value} 
+                                                           id={subOption.value}
+                                                           data-parent={parentOption.value}
+                                                           onchange={handleSubFilterChange} />
+                                                    <label class="slds-checkbox__label" for={subOption.value}>
+                                                        <span class="slds-checkbox_faux"></span>
+                                                        <span class="slds-form-element__label">{subOption.label}</span>
+                                                    </label>
+                                                </span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+
+                        <!-- Add this after the Profile Assignment Intel card -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="intel-card slds-box" data-id="permissions" onclick={handleCardClick}>
+                                <div class="card-header">
+                                    <lightning-icon icon-name="utility:key" size="small" class="permissions-icon"></lightning-icon>
+                                    <span class="card-title">Permissions Intel</span>
+                                    <div class="chevron">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="icon-container">
+                                        <lightning-icon icon-name="standard:permission_set" size="medium"></lightning-icon>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="detail-label">Permissions Intel</p>
+                                        <p class="detail-text">View roles and territories</p>
+                                        <p class="detail-text">Manage permission sets</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="footer-row">
+                                        <span>customize report</span>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <span>click to view</span>
+                                        <lightning-icon icon-name="utility:down" size="xx-small"></lightning-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add this after the Permissions Intel card -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="intel-card slds-box" data-id="other" onclick={handleCardClick}>
+                                <div class="card-header">
+                                    <lightning-icon icon-name="utility:setup" size="small" class="other-icon"></lightning-icon>
+                                    <span class="card-title">Other Intel</span>
+                                    <div class="chevron">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="icon-container">
+                                        <lightning-icon icon-name="standard:custom" size="medium"></lightning-icon>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="detail-label">Other Intel</p>
+                                        <p class="detail-text">View installed packages and list views</p>
+                                        <p class="detail-text">Monitor Apex code</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="footer-row">
+                                        <span>customize report</span>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <span>click to view</span>
+                                        <lightning-icon icon-name="utility:down" size="xx-small"></lightning-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                    <!-- Pagination dots -->
+                    <div class="pagination-dots">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    
+                    <!-- Action buttons 
+                    <div class="action-buttons slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral action-button">View Data</button>
+                        </div>
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral action-button">Export to Excel</button>
+                        </div>
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral action-button">Export to Excel</button>
+                        </div>
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_neutral action-button">Export O Record</button>
+                        </div>
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_brand action-button">Export All Reports</button>
+                        </div>
+                        <div class="slds-col">
+                            <button class="slds-button slds-button_brand action-button">Export All Reports</button>
+                        </div>
+                    </div>-->
+                </div>
+            </template>
+            
+            <!-- Dashboard View -->
+            <template if:false={isHomeScreen}>
+                <div class="content-container">
+                    <div class="dashboard-header slds-grid slds-gutters slds-p-bottom_medium">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="slds-text-heading_large page-header">
+                                <lightning-button-icon icon-name="utility:back" variant="bare" size="large" alternative-text="Back" class="slds-m-right_small" onclick={goBackToHome}></lightning-button-icon>
+                                {activeDashboardTitle} Intel
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <!-- Filter Section Card -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-right_medium">
+                            <lightning-card title="Filters" icon-name="utility:filter">
+                                <div class="slds-p-horizontal_medium">
+                                    <div class="filter-section">
+                                        <div class="filter-title slds-text-heading_small slds-p-vertical_small slds-grid slds-grid_align-spread">
+                                            <span>Filter Queries</span>
+                                            
+                                        </div>
+                                        
+                                        <!-- Loading state for filters -->
+                                        <template if:false={userFieldsLoaded}>
+                                            <div class="slds-is-relative slds-p-vertical_large">
+                                                <lightning-spinner alternative-text="Loading filters..." size="small"></lightning-spinner>
+                                                <div class="slds-text-align_center slds-p-top_small">
+                                                    <p class="slds-text-body_small text-muted">Loading available filters...</p>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        
+                                        <div class="slds-form-element">
+                                            <!-- Toggle for filtering by field values (User Intel only) -->
+                                            <template if:true={isUserIntelCard}>
+                                                <div class="slds-p-bottom_medium">
+                                                    <div class="slds-form-element">
+                                                        <div class="slds-form-element__control">
+                                                            <lightning-input 
+                                                                type="toggle" 
+                                                                label="Filter users by field values"
+                                                                checked={filterByFieldValues}
+                                                                onchange={handleFilterToggleChange}
+                                                                message-toggle-active="Enabled" 
+                                                                message-toggle-inactive="Disabled"
+                                                                class="slds-m-bottom_x-small">
+                                                            </lightning-input>
+                                                        </div>
+                                                        <div class="slds-form-element__help slds-text-color_weak slds-text-body_small">
+                                                            <template if:false={filterByFieldValues}>
+                                                                Shows ALL active Salesforce users regardless of field values
+                                                            </template>
+                                                            <template if:true={filterByFieldValues}>
+                                                                Shows ONLY users with populated values for selected fields
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            
+                                            <!-- Conditional rendering based on active card -->
+                                            <template if:true={currentFilterOptions}>
+                                                <div class="filter-options-container">
+                                               
+                                                <!-- For Config Intel card -->
+                                                <template if:true={isConfigCard}>
+                                                    <template for:each={currentFilterOptions} for:item="parentOption">
+                                                        <div key={parentOption.value} class="slds-p-bottom_small">
+                                                            <!-- Parent filter checkbox -->
+                                                            <div class="slds-form-element__control">
+                                                                <span class="slds-checkbox">
+                                                                    <input type="checkbox" 
+                                                                           value={parentOption.value} 
+                                                                           id={parentOption.value}
+                                                                           onchange={handleParentFilterChange} />
+                                                                    <label class="slds-checkbox__label" for={parentOption.value}>
+                                                                        <span class="slds-checkbox_faux"></span>
+                                                                        <span class="slds-form-element__label">{parentOption.label}</span>
+                                                                    </label>
+                                                                </span>
+                                                            </div>
+                                                            
+                                                            <!-- Sub-filters -->
+                                                            <div class="slds-p-left_large">
+                                                                <template for:each={parentOption.subFilters} for:item="subOption">
+                                                                    <div key={subOption.value} class="slds-form-element__control">
+                                                                        <span class="slds-checkbox">
+                                                                            <input type="checkbox" 
+                                                                                   value={subOption.value} 
+                                                                                   id={subOption.value}
+                                                                                   data-parent={parentOption.value}
+                                                                                   onchange={handleSubFilterChange} />
+                                                                            <label class="slds-checkbox__label" for={subOption.value}>
+                                                                                <span class="slds-checkbox_faux"></span>
+                                                                                <span class="slds-form-element__label">{subOption.label}</span>
+                                                                            </label>
+                                                                        </span>
+                                                                    </div>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                                
+                                                <!-- For Sharing Intel card -->
+                                                <template if:true={isSharingCard}>
+                                                    <template for:each={currentFilterOptions} for:item="parentOption">
+                                                        <div key={parentOption.value} class="slds-p-bottom_small">
+                                                            <!-- Parent filter checkbox -->
+                                                            <div class="slds-form-element__control">
+                                                                <span class="slds-checkbox">
+                                                                    <input type="checkbox" 
+                                                                           value={parentOption.value} 
+                                                                           id={parentOption.value}
+                                                                           onchange={handleParentFilterChange} />
+                                                                    <label class="slds-checkbox__label" for={parentOption.value}>
+                                                                        <span class="slds-checkbox_faux"></span>
+                                                                        <span class="slds-form-element__label">{parentOption.label}</span>
+                                                                    </label>
+                                                                </span>
+                                                            </div>
+                                                            
+                                                            <!-- Help text for filters - will be controlled by JS -->
+                                                            <div class="slds-p-left_large slds-text-body_small sharingSettingsHelp" style="display:none;">
+                                                                <p class="slds-text-color_weak slds-m-vertical_x-small">
+                                                                    Displays all sharing rules configured in your organization.
+                                                                </p>
+                                                            </div>
+                                                            <div class="slds-p-left_large slds-text-body_small orgWideDefaultsHelp" style="display:none;">
+                                                                <p class="slds-text-color_weak slds-m-vertical_x-small">
+                                                                    Displays all Organization Wide Defaults in your organization.
+                                                                </p>
+                                                            </div>
+                                                            
+                                                            <!-- Show sub-filters only if the parent option has them -->
+                                                            <template if:true={parentOption.value}>
+                                                                <div class="slds-p-left_large">
+                                                                    <template for:each={parentOption.subFilters} for:item="subOption">
+                                                                        <div key={subOption.value} class="slds-form-element__control">
+                                                                            <span class="slds-checkbox">
+                                                                                <input type="checkbox" 
+                                                                                       value={subOption.value} 
+                                                                                       id={subOption.value}
+                                                                                       data-parent={parentOption.value}
+                                                                                       onchange={handleSubFilterChange} />
+                                                                                <label class="slds-checkbox__label" for={subOption.value}>
+                                                                                    <span class="slds-checkbox_faux"></span>
+                                                                                    <span class="slds-form-element__label">{subOption.label}</span>
+                                                                                </label>
+                                                                            </span>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                                
+                                                <!-- For Reporting Intel card -->
+                                                <template if:true={isReportingCard}>
+                                                    <template for:each={currentFilterOptions} for:item="option">
+                                                        <div key={option.value} class="slds-form-element__control">
+                                                            <span class="slds-checkbox">
+                                                                <input type="checkbox" 
+                                                                       value={option.value} 
+                                                                       id={option.value}
+                                                                       onchange={handleParentFilterChange} />
+                                                                <label class="slds-checkbox__label" for={option.value}>
+                                                                    <span class="slds-checkbox_faux"></span>
+                                                                    <span class="slds-form-element__label">{option.label}</span>
+                                                                </label>
+                                                            </span>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                                
+                                                <!-- For Profile Assignment Intel card -->
+                                                <template if:true={isProfileAssignmentCard}>
+                                                    <div class="slds-p-bottom_medium">
+                                                        <p class="slds-text-body_regular slds-p-bottom_small">Profiles with or without users assigned</p>
+                                                        <template for:each={currentFilterOptions} for:item="option">
+                                                            <div key={option.value} class="slds-form-element__control">
+                                                                <span class="slds-checkbox">
+                                                                    <input type="checkbox" 
+                                                                           value={option.value} 
+                                                                           id={option.value}
+                                                                           onchange={handleCheckboxChange} />
+                                                                    <label class="slds-checkbox__label" for={option.value}>
+                                                                        <span class="slds-checkbox_faux"></span>
+                                                                        <span class="slds-form-element__label">{option.label}</span>
+                                                                    </label>
+                                                                </span>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+
+                                                <!-- Update the isOtherCard template condition -->
+                                                <template if:true={isOtherCard}>
+                                                    <!-- Only show this for non-user cards -->
+                                                    <template if:false={isUserIntelCard}>
+                                                        <template for:each={currentFilterOptions} for:item="option">
+                                                            <div key={option.value} class="slds-form-element__control">
+                                                                <span class="slds-checkbox">
+                                                                    <input type="checkbox" value={option.value} id={option.value} onchange={handleCheckboxChange} />
+                                                                    <label class="slds-checkbox__label" for={option.value}>
+                                                                        <span class="slds-checkbox_faux"></span>
+                                                                        <span class="slds-form-element__label">{option.label}</span>
+                                                                    </label>
+                                                                </span>
+                                                            </div>
+                                                        </template>
+                                                    </template>
+                                                </template>
+
+                                                <!-- For User Intel card with clean expandable sections -->
+                                                <template if:true={isUserIntelCard}>
+                                                    <!-- Basic User Information Section -->
+                                                    <div class="expandable-section slds-m-bottom_medium">
+                                                        <div class="section-header" onclick={handleUserDetailsToggle}>
+                                                            <lightning-icon 
+                                                                icon-name={userDetailsChevronIcon}
+                                                                size="x-small" 
+                                                                class="section-chevron">
+                                                            </lightning-icon>
+                                                            <lightning-icon 
+                                                                icon-name="utility:user" 
+                                                                size="x-small" 
+                                                                class="section-icon">
+                                                            </lightning-icon>
+                                                            <span class="section-title">User Information</span>
+                                                            <span class="section-count">({selectedUserDetailsCount})</span>
+                                                        </div>
+                                                        <template if:true={userDetailsExpanded}>
+                                                            <div class="section-content">
+                                                                <!-- Search input for user details -->
+                                                                <div class="slds-form-element slds-m-bottom_small">
+                                                                    <div class="slds-form-element__control">
+                                                                        <div class="slds-input-has-icon slds-input-has-icon_left">
+                                                                            <lightning-icon icon-name="utility:search" size="x-small" class="slds-input__icon slds-input__icon_left slds-icon-text-default"></lightning-icon>
+                                                                            <input type="text" 
+                                                                                   placeholder="Search user information fields..." 
+                                                                                   class="slds-input" 
+                                                                                   value={userDetailsSearchTerm}
+                                                                                   oninput={handleUserDetailsSearch} />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="checkbox-group">
+                                                                    <template for:each={userDetailsFields} for:item="field">
+                                                                        <div key={field.value} class="slds-form-element__control">
+                                                                            <span class="slds-checkbox">
+                                                                                <input type="checkbox" 
+                                                                                       value={field.value} 
+                                                                                       id={field.value}
+                                                                                       data-parent="userData"
+                                                                                       onchange={handleSubFilterChange} />
+                                                                                <label class="slds-checkbox__label" for={field.value}>
+                                                                                    <span class="slds-checkbox_faux"></span>
+                                                                                    <span class="slds-form-element__label">{field.label}</span>
+                                                                                </label>
+                                                                            </span>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+
+                                                    <!-- Permissions Section -->
+                                                    <div class="expandable-section slds-m-bottom_medium">
+                                                        <div class="section-header" onclick={handlePermissionsToggle}>
+                                                            <lightning-icon 
+                                                                icon-name={permissionsChevronIcon}
+                                                                size="x-small" 
+                                                                class="section-chevron">
+                                                            </lightning-icon>
+                                                            <lightning-icon 
+                                                                icon-name="utility:lock" 
+                                                                size="x-small" 
+                                                                class="section-icon">
+                                                            </lightning-icon>
+                                                            <span class="section-title">Permissions & Access</span>
+                                                            <span class="section-count">({selectedPermissionsCount})</span>
+                                                        </div>
+                                                        <template if:true={permissionsExpanded}>
+                                                            <div class="section-content">
+                                                                <!-- Search input for permissions -->
+                                                                <div class="slds-form-element slds-m-bottom_small">
+                                                                    <div class="slds-form-element__control">
+                                                                        <div class="slds-input-has-icon slds-input-has-icon_left">
+                                                                            <lightning-icon icon-name="utility:search" size="x-small" class="slds-input__icon slds-input__icon_left slds-icon-text-default"></lightning-icon>
+                                                                            <input type="text" 
+                                                                                   placeholder="Search permissions fields..." 
+                                                                                   class="slds-input" 
+                                                                                   value={permissionsSearchTerm}
+                                                                                   oninput={handlePermissionsSearch} />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="checkbox-group">
+                                                                    <template for:each={permissionsFields} for:item="field">
+                                                                        <div key={field.value} class="slds-form-element__control">
+                                                                            <span class="slds-checkbox">
+                                                                                <input type="checkbox" 
+                                                                                       value={field.value} 
+                                                                                       id={field.value}
+                                                                                       data-parent="userData"
+                                                                                       onchange={handleSubFilterChange} />
+                                                                                <label class="slds-checkbox__label" for={field.value}>
+                                                                                    <span class="slds-checkbox_faux"></span>
+                                                                                    <span class="slds-form-element__label">{field.label}</span>
+                                                                                </label>
+                                                                            </span>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+
+                                                <!-- For Permissions Intel card -->
+                                                <template if:true={isPermissionsCard}>
+                                                    <template for:each={currentFilterOptions} for:item="parentOption">
+                                                        <div key={parentOption.value} class="slds-p-bottom_small">
+                                                            <!-- Parent filter checkbox -->
+                                                            <div class="slds-form-element__control">
+                                                                <span class="slds-checkbox">
+                                                                    <input type="checkbox" 
+                                                                           value={parentOption.value} 
+                                                                           id={parentOption.value}
+                                                                           onchange={handleParentFilterChange} />
+                                                                    <label class="slds-checkbox__label" for={parentOption.value}>
+                                                                        <span class="slds-checkbox_faux"></span>
+                                                                        <span class="slds-form-element__label">{parentOption.label}</span>
+                                                                    </label>
+                                                                </span>
+                                                            </div>
+                                                            
+                                                            <!-- Sub-filters -->
+                                                            <div class="slds-p-left_large">
+                                                                <template for:each={parentOption.subFilters} for:item="subOption">
+                                                                    <div key={subOption.value} class="slds-form-element__control">
+                                                                        <span class="slds-checkbox">
+                                                                            <input type="checkbox" 
+                                                                                   value={subOption.value} 
+                                                                                   id={subOption.value}
+                                                                                   data-parent={parentOption.value}
+                                                                                   onchange={handleSubFilterChange} />
+                                                                            <label class="slds-checkbox__label" for={subOption.value}>
+                                                                                <span class="slds-checkbox_faux"></span>
+                                                                                <span class="slds-form-element__label">{subOption.label}</span>
+                                                                            </label>
+                                                                        </span>
+                                                                    </div>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </template>
+
+                                <!-- Add this inside the filter section, after the Permissions Intel template -->
+                                <!-- For Other Intel card -->
+                                <template if:true={isOtherIntelCard}>
+                                    <template for:each={currentFilterOptions} for:item="parentOption">
+                                        <div key={parentOption.value} class="slds-p-bottom_small">
+                                            <!-- Parent filter checkbox -->
+                                            <div class="slds-form-element__control">
+                                                <span class="slds-checkbox">
+                                                    <input type="checkbox" 
+                                                           value={parentOption.value} 
+                                                           id={parentOption.value}
+                                                           onchange={handleParentFilterChange} />
+                                                    <label class="slds-checkbox__label" for={parentOption.value}>
+                                                        <span class="slds-checkbox_faux"></span>
+                                                        <span class="slds-form-element__label">{parentOption.label}</span>
+                                                    </label>
+                                                </span>
+                                            </div>
+                                            
+                                            <!-- Sub-filters -->
+                                            <div class="slds-p-left_large">
+                                                <template for:each={parentOption.subFilters} for:item="subOption">
+                                                    <div key={subOption.value} class="slds-form-element__control">
+                                                        <!-- For regular sub-filters -->
+                                                        <template if:false={subOption.nestedFilters}>
+                                                            <span class="slds-checkbox">
+                                                                <input type="checkbox" 
+                                                                       value={subOption.value} 
+                                                                       id={subOption.value}
+                                                                       data-parent={parentOption.value}
+                                                                       onchange={handleSubFilterChange} />
+                                                                <label class="slds-checkbox__label" for={subOption.value}>
+                                                                    <span class="slds-checkbox_faux"></span>
+                                                                    <span class="slds-form-element__label">{subOption.label}</span>
+                                                                </label>
+                                                            </span>
+                                                        </template>
+                                                        <!-- For nested filters (Apex Classes and Triggers) -->
+                                                        <template if:true={subOption.nestedFilters}>
+                                                            <div class="slds-p-bottom_x-small">
+                                                                <span class="slds-checkbox">
+                                                                    <input type="checkbox" 
+                                                                           value={subOption.value} 
+                                                                           id={subOption.value}
+                                                                           data-parent={parentOption.value}
+                                                                           onchange={handleSubFilterChange} />
+                                                                    <label class="slds-checkbox__label" for={subOption.value}>
+                                                                        <span class="slds-checkbox_faux"></span>
+                                                                        <span class="slds-form-element__label">{subOption.label}</span>
+                                                                    </label>
+                                                                </span>
+                                                                <!-- Nested filters -->
+                                                                <div class="slds-p-left_large">
+                                                                    <template for:each={subOption.nestedFilters} for:item="nestedOption">
+                                                                        <div key={nestedOption.value} class="slds-form-element__control">
+                                                                            <span class="slds-checkbox">
+                                                                                <input type="checkbox" 
+                                                                                       value={nestedOption.value} 
+                                                                                       id={nestedOption.value}
+                                                                                       data-parent={subOption.value}
+                                                                                       onchange={handleSubFilterChange} />
+                                                                                <label class="slds-checkbox__label" for={nestedOption.value}>
+                                                                                    <span class="slds-checkbox_faux"></span>
+                                                                                    <span class="slds-form-element__label">{nestedOption.label}</span>
+                                                                                </label>
+                                                                            </span>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                                                                </template>
+                                                </div> <!-- Close filter-options-container -->
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </lightning-card>
+                        </div>
+                        
+                        <!-- Enhanced Report Preview Card -->
+                        <div class="slds-col slds-size_2-of-3">
+                            <lightning-card icon-name="utility:table">
+                                <div slot="title" class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                        <h2 class="slds-text-heading_small">Report Preview</h2>
+                                        <template if:true={reportData}>
+                                            <lightning-badge label={recordCount} variant="inverse" class="slds-m-left_small"></lightning-badge>
+                                        </template>
+                                    </div>
+                                    <template if:true={reportData}>
+                                        <div class="slds-grid slds-grid_align-end">
+                                            <lightning-button-icon 
+                                                icon-name="utility:refresh" 
+                                                variant="border-filled" 
+                                                size="small" 
+                                                alternative-text="Refresh Data"
+                                                onclick={refreshData}
+                                                class="slds-m-right_x-small">
+                                            </lightning-button-icon>
+                                            <lightning-button-icon 
+                                                icon-name="utility:download" 
+                                                variant="border-filled" 
+                                                size="small" 
+                                                alternative-text="Export Data"
+                                                onclick={exportData}>
+                                            </lightning-button-icon>
+                                        </div>
+                                    </template>
+                                </div>
+                                
+                                <div class="slds-p-horizontal_medium slds-p-bottom_medium report-container">
+                                    <template if:true={selectedFilters.length}>
+                                        <div class="selected-filters slds-p-bottom_medium">
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-p-bottom_x-small">
+                                                <p class="slds-text-title">Active Filters:</p>
+                                                <lightning-button 
+                                                    label="Clear All" 
+                                                    variant="destructive-text" 
+                                                    size="small"
+                                                    onclick={clearAllFilters}
+                                                    class="clear-filters-btn">
+                                                </lightning-button>
+                                            </div>
+                                            <div class="filter-badges-scroll-container">
+                                                <div class="filter-badges-row">
+                                                    <template for:each={selectedFilters} for:item="f">
+                                                        <span key={f} class="slds-badge filter-badge-horizontal">
+                                                            {f}
+                                                            <button class="slds-button slds-button_icon slds-button_icon-small" title="Remove" onclick={removeFilter} data-value={f}>
+                                                                <lightning-icon icon-name="utility:close" size="xx-small" alternative-text="Remove"></lightning-icon>
+                                                            </button>
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Enhanced Loading State -->
+                                        <template if:true={isLoading}>
+                                            <div class="slds-is-relative slds-p-around_x-large slds-text-align_center">
+                                                <lightning-spinner alternative-text="Loading report data..." size="large"></lightning-spinner>
+                                                <div class="slds-p-top_medium">
+                                                    <h3 class="slds-text-heading_small">Generating Report</h3>
+                                                    <p class="slds-text-body_small text-muted">Please wait while we fetch your data...</p>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Enhanced Error State -->
+                                        <template if:true={error}>
+                                            <div class="slds-illustration slds-illustration_small slds-p-around_medium">
+                                                <div class="slds-text-align_center">
+                                                    <lightning-icon icon-name="utility:error" size="large" variant="error"></lightning-icon>
+                                                    <h3 class="slds-text-heading_small slds-p-top_small">Something went wrong</h3>
+                                                    <div class="slds-notify slds-notify_alert slds-alert_error slds-m-top_small" role="alert">
+                                                        <span class="slds-assistive-text">error</span>
+                                                        <p>{error}</p>
+                                                    </div>
+                                                    <lightning-button 
+                                                        label="Try Again" 
+                                                        variant="brand" 
+                                                        onclick={retryOperation}
+                                                        class="slds-m-top_small">
+                                                    </lightning-button>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <!-- Report Data -->
+                                        <template if:true={reportData}>
+                                            <template if:true={reportData.isComparisonReport}>
+                                                <div class="slds-text-heading_medium slds-p-bottom_medium">
+                                                    User Permissions Comparison
+                                                </div>
+                                                <div class="slds-table_container comparison-table-container">
+                                                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                                        <thead>
+                                                            <tr class="slds-line-height_reset">
+                                                                <template for:each={reportData.headers} for:item="header">
+                                                                    <th key={header.value} scope="col">
+                                                                        <div class="slds-truncate" title={header.label}>{header.label}</div>
+                                                                    </th>
+                                                                </template>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <template for:each={reportData.rows} for:item="row">
+                                                                <tr key={row.id} class={row.rowClass}>
+                                                                    <template for:each={row.cells} for:item="cell" for:index="index">
+                                                                        <td key={cell.id}>
+                                                                            <template if:true={cell.isCategory}>
+                                                                                <div class="slds-text-title_caps slds-p-vertical_x-small slds-border-bottom" title={cell.value}>
+                                                                                    {cell.value}
+                                                                                </div>
+                                                                            </template>
+                                                                            
+                                                                            <template if:true={cell.isProfileInfo}>
+                                                                                <div class="slds-text-heading_small slds-p-vertical_x-small" title={cell.value}>
+                                                                                    {cell.value}
+                                                                                </div>
+                                                                            </template>
+                                                                            
+                                                                            <template if:false={cell.isCategory}>
+                                                                                <template if:false={cell.isProfileInfo}>
+                                                                                    <template if:true={index}>
+                                                                                        <div class="permission-value">
+                                                                                            <template if:true={cell.hasPermission}>
+                                                                                                <lightning-icon 
+                                                                                                    icon-name="utility:check"
+                                                                                                    size="small"
+                                                                                                    class="slds-icon-text-success">
+                                                                                                </lightning-icon>
+                                                                                                <span class="permission-text permission-yes">YES</span>
+                                                                                            </template>
+                                                                                            <template if:false={cell.hasPermission}>
+                                                                                                <lightning-icon 
+                                                                                                    icon-name="utility:close"
+                                                                                                    size="small"
+                                                                                                    class="slds-icon-text-error">
+                                                                                                </lightning-icon>
+                                                                                                <span class="permission-text permission-no">NO</span>
+                                                                                            </template>
+                                                                                        </div>
+                                                                                    </template>
+                                                                                    <template if:false={index}>
+                                                                                        <div class="slds-truncate" title={cell.value}>{cell.value}</div>
+                                                                                    </template>
+                                                                                </template>
+                                                                            </template>
+                                                                        </td>
+                                                                    </template>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </template>
+                                            <template if:false={reportData.isComparisonReport}>
+                                                <template if:true={isSharingCard}>
+                                                    <!-- For Public Groups and Public Group Members, use standard table format -->
+                                                    <template if:true={isPublicGroupsSelected}>
+                                                        <div class="slds-table_container">
+                                                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                                                                <thead>
+                                                                    <tr class="slds-line-height_reset">
+                                                                        <template for:each={reportData.headers} for:item="header">
+                                                                            <th key={header.value} scope="col">
+                                                                                <div class="slds-truncate" title={header.label}>{header.label}</div>
+                                                                            </th>
+                                                                        </template>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <template for:each={reportData.rows} for:item="row">
+                                                                        <tr key={row.id} class="slds-hint-parent">
+                                                                            <template for:each={row.cells} for:item="cell">
+                                                                                <td key={cell.id}>
+                                                                                    <div class="slds-truncate" title={cell.value}>{cell.value}</div>
+                                                                                </td>
+                                                                            </template>
+                                                                        </tr>
+                                                                    </template>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </template>
+                                                    <!-- For Sharing Settings and OWD, use sections format -->
+                                                    <template if:false={isPublicGroupsSelected}>
+                                                        <template if:true={reportData.sections}>
+                                                            <template if:true={reportData.sections.length}>
+                                                                <template for:each={reportData.sections} for:item="section">
+                                                                    <div key={section.title} class="slds-m-bottom_large">
+                                                                        <div class="slds-text-title_caps slds-m-bottom_x-small sharing-rules-header">
+                                                                            {section.title}
+                                                                        </div>
+                                                                        <template if:true={section.rows}>
+                                                                            <template if:true={section.rows.length}>
+                                                                                <div class="slds-scrollable_x sharing-rules-container">
+                                                                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout sharing-rules-table" style="table-layout: fixed; width: 100%;">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <template for:each={section.headers} for:item="header">
+                                                                                                    <th key={header} scope="col">
+                                                                                                        <div class="slds-truncate slds-hyphenate" title={header}>{header}</div>
+                                                                                                    </th>
+                                                                                                </template>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <template for:each={section.rows} for:item="row" for:index="rowIndex">
+                                                                                                <tr key={row.key}>
+                                                                                                    <template for:each={row.values} for:item="cell" for:index="cellIndex">
+                                                                                                        <td key={cell} data-row-key={row.key} data-cell-index={cellIndex}>
+                                                                                                            <div class="slds-hyphenate" title={cell}>{cell}</div>
+                                                                                                        </td>
+                                                                                                    </template>
+                                                                                                </tr>
+                                                                                            </template>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </template>
+                                                                            <template if:false={section.rows.length}>
+                                                                                <div class="slds-illustration slds-illustration_small slds-p-around_medium">
+                                                                                    <div class="slds-text-longform">
+                                                                                        <p class="slds-text-body_regular">No data found in this section.</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </template>
+                                                            </template>
+                                                            <template if:false={reportData.sections.length}>
+                                                                <div class="slds-illustration slds-illustration_small" style="margin-top: 2rem;">
+                                                                    <div class="slds-text-longform">
+                                                                        <p class="slds-text-body_regular">No sharing rules sections found in your organization.</p>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </template>
+                                                        <template if:false={reportData.sections}>
+                                                            <div class="slds-illustration slds-illustration_small" style="margin-top: 2rem;">
+                                                                <div class="slds-text-longform">
+                                                                    <p class="slds-text-body_regular">No sharing rules found in your organization.</p>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </template>
+                                                </template>
+                                                <template if:false={isSharingCard}>
+                                                    <div class="slds-table_container">
+                                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                                                            <thead>
+                                                                <tr class="slds-line-height_reset">
+                                                                    <template for:each={reportData.headers} for:item="header">
+                                                                        <th key={header.value} scope="col">
+                                                                            <div class="slds-truncate" title={header.label}>{header.label}</div>
+                                                                        </th>
+                                                                    </template>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <template for:each={reportData.rows} for:item="row">
+                                                                    <tr key={row.id} class="slds-hint-parent">
+                                                                        <template for:each={row.cells} for:item="cell">
+                                                                            <td key={cell.id}>
+                                                                                <template if:true={cell.isMultiLine}>
+                                                                                    <div class="slds-hyphenate multi-line-cell" title={cell.value} style="white-space: pre-line; word-wrap: break-word; max-width: 300px;">{cell.value}</div>
+                                                                                </template>
+                                                                                <template if:false={cell.isMultiLine}>
+                                                                                    <div class="slds-truncate" title={cell.value}>{cell.value}</div>
+                                                                                </template>
+                                                                            </td>
+                                                                        </template>
+                                                                    </tr>
+                                                                </template>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </template>
+                                            </template>
+                                        </template>
+
+                                        <!-- Pagination Controls -->
+                                        <template if:true={reportData}>
+                                            <!-- Debug info -->
+                                            <div class="slds-m-top_small slds-text-body_small">
+                                                Debug: Total Records: {totalRecords}, Total Pages: {totalPages}, Current Page: {currentPage}
+                                            </div>
+                                            
+                                            <template if:true={totalRecords}>
+                                                <div class="slds-grid slds-grid_align-spread slds-m-top_medium">
+                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                        <div class="slds-form-element slds-m-right_small">
+                                                            <label class="slds-form-element__label" for="page-size-select">Records per page:</label>
+                                                            <div class="slds-form-element__control">
+                                                                <lightning-combobox
+                                                                    name="pageSize"
+                                                                    label=""
+                                                                    value={pageSize}
+                                                                    placeholder="Select page size"
+                                                                    options={pageOptions}
+                                                                    onchange={handlePageSizeChange}
+                                                                    variant="label-hidden">
+                                                                </lightning-combobox>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-text-body_small slds-text-color_weak">
+                                                            {pageInfo}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="slds-grid slds-grid_vertical-align-center">
+                                                        <lightning-button-icon
+                                                            icon-name="utility:chevronleft"
+                                                            variant="border-filled"
+                                                            alternative-text="First Page"
+                                                            title="First Page"
+                                                            onclick={handleFirstPage}
+                                                            disabled={showFirstButton}
+                                                            class="slds-m-right_xx-small">
+                                                        </lightning-button-icon>
+                                                        
+                                                        <lightning-button-icon
+                                                            icon-name="utility:left"
+                                                            variant="border-filled"
+                                                            alternative-text="Previous Page"
+                                                            title="Previous Page"
+                                                            onclick={handlePreviousPage}
+                                                            disabled={showPreviousButton}
+                                                            class="slds-m-right_small">
+                                                        </lightning-button-icon>
+                                                        
+                                                        <span class="slds-text-body_small slds-m-horizontal_medium">
+                                                            Page {currentPage} of {totalPages}
+                                                        </span>
+                                                        
+                                                        <lightning-button-icon
+                                                            icon-name="utility:right"
+                                                            variant="border-filled"
+                                                            alternative-text="Next Page"
+                                                            title="Next Page"
+                                                            onclick={handleNextPage}
+                                                            disabled={showNextButton}
+                                                            class="slds-m-left_small">
+                                                        </lightning-button-icon>
+                                                        
+                                                        <lightning-button-icon
+                                                            icon-name="utility:chevronright"
+                                                            variant="border-filled"
+                                                            alternative-text="Last Page"
+                                                            title="Last Page"
+                                                            onclick={handleLastPage}
+                                                            disabled={showLastButton}
+                                                            class="slds-m-left_xx-small">
+                                                        </lightning-button-icon>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </template>
+
+                                        <!-- No Data State -->
+                                        <template if:true={showNoDataMessage}>
+                                            <div class="slds-illustration slds-illustration_small" style="margin-top: 2rem;">
+                                                <div class="slds-text-longform">
+                                                    <p class="slds-text-body_regular">Click "Run Report" to generate the report based on selected filters</p>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+
+                                    <!-- Enhanced Empty State -->
+                                    <template if:false={selectedFilters.length}>
+                                        <div class="slds-illustration slds-illustration_large slds-p-around_x-large">
+                                            <div class="slds-text-align_center">
+                                                <lightning-icon icon-name="utility:filter" size="large" class="slds-icon-text-light"></lightning-icon>
+                                                <h3 class="slds-text-heading_medium slds-p-top_medium">No Filters Selected</h3>
+                                                <div class="slds-text-longform slds-p-top_small">
+                                                    <p class="slds-text-body_regular text-muted">
+                                                        Choose one or more filters from the left panel to generate your report preview.
+                                                    </p>
+                                                    <p class="slds-text-body_small text-muted slds-p-top_small">
+                                                        💡 Tip: Start by selecting a category like "Name,Address,etc." options Or select and load a template.
+                                                    </p>
+                                                </div>
+                                                 
+                                                <lightning-button 
+                                                label="Load Template" 
+                                                icon-name="utility:download" 
+                                                variant="neutral" 
+                                                onclick={handleLoadTemplatesClick} 
+                                                class="get-started-btn"
+                                                disabled={isTemplateButtonDisabled}>
+                                            </lightning-button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div slot="footer" class="slds-grid slds-gutters">
+                                    <!-- Add User Intel Template buttons here -->
+                                    <template if:true={isUser}>
+                                        <div class="slds-col slds-size_1-of-2 slds-grid slds-grid_align-start">
+                                            <lightning-button 
+                                                label="Save as Template" 
+                                                icon-name="utility:save" 
+                                                variant="neutral" 
+                                                onclick={handleSaveTemplateClick} 
+                                                disabled={isReportButtonDisabled}>
+                                            </lightning-button>
+                                            <lightning-button 
+                                                label="Load Template" 
+                                                icon-name="utility:download" 
+                                                variant="neutral" 
+                                                onclick={handleLoadTemplatesClick} 
+                                                class="slds-m-left_x-small"
+                                                disabled={isTemplateButtonDisabled}>
+                                            </lightning-button>
+                                        </div>
+                                    </template>
+                                    
+                                    <div class="slds-col slds-size_1-of-2 slds-grid slds-grid_align-end">
+                                        <lightning-button 
+                                            label="Run Report" 
+                                            variant="brand" 
+                                            onclick={handleRunReport} 
+                                            disabled={isReportButtonDisabled}>
+                                        </lightning-button>
+                                        <lightning-button 
+                                            label="Export Data" 
+                                            variant="neutral" 
+                                            onclick={handleExportData} 
+                                            disabled={isExportButtonDisabled} 
+                                            class="slds-m-left_x-small">
+                                        </lightning-button>
+                                    </div>
+                                </div>
+                            </lightning-card>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <!-- Template buttons - Only show for User Intel -->
+    <template if:false={isHomeScreen}>
+        <template if:true={activeCardId}>
+            <template if:true={isUser}>
+                <div class="slds-col slds-size_1-of-1 slds-m-top_medium slds-text-align_right">
+                    <lightning-button 
+                        label="Save as Template" 
+                        icon-name="utility:save" 
+                        variant="brand" 
+                        onclick={handleSaveTemplateClick} 
+                        class="slds-m-right_x-small">
+                    </lightning-button>
+                    <lightning-button 
+                        label="Load Template" 
+                        icon-name="utility:download" 
+                        variant="neutral" 
+                        onclick={handleLoadTemplatesClick} 
+                        class="slds-m-left_x-small"
+                        disabled={isTemplateButtonDisabled}>
+                    </lightning-button>
+                </div>
+            </template>
+        </template>
+    </template>
+
+    <!-- Add these modal components at the end of the template -->
+    <!-- Save Template Modal -->
+    <template if:true={showTemplateModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleTemplateModalClose}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        {templateModalTitle}
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning-input 
+                        label="Template Name" 
+                        value={newTemplateName} 
+                        onchange={handleTemplateNameChange} 
+                        required>
+                    </lightning-input>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={handleTemplateModalClose}>Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={saveTemplate}>Save</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Load Template Modal -->
+    <template if:true={showLoadTemplateModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleLoadTemplateModalClose}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Load Template</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <template if:true={filteredTemplates.length}>
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Name">Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Created Date">Created Date</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Modified Date">Last Modified</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Actions">Actions</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={filteredTemplates} for:item="template">
+                                    <tr key={template.id} class="slds-hint-parent">
+                                        <td data-label="Name">
+                                            <div class="slds-truncate" title={template.name}>{template.name}</div>
+                                        </td>
+                                        <td data-label="Created Date">
+                                            <div class="slds-truncate" title={template.createdDate}>
+                                                <lightning-formatted-date-time value={template.createdDate}></lightning-formatted-date-time>
+                                            </div>
+                                        </td>
+                                        <td data-label="Modified Date">
+                                            <div class="slds-truncate" title={template.lastModifiedDate}>
+                                                <lightning-formatted-date-time value={template.lastModifiedDate}></lightning-formatted-date-time>
+                                            </div>
+                                        </td>
+                                        <td data-label="Actions">
+                                            <div class="slds-grid slds-grid_align-center">
+                                                <lightning-button 
+                                                    label="Load" 
+                                                    variant="brand" 
+                                                    onclick={loadTemplate} 
+                                                    data-id={template.id}
+                                                    class="slds-m-right_x-small">
+                                                </lightning-button>
+                                                <lightning-button 
+                                                    label="Edit" 
+                                                    variant="neutral" 
+                                                    onclick={handleEditTemplateClick} 
+                                                    data-id={template.id}
+                                                    class="slds-m-right_x-small">
+                                                </lightning-button>
+                                                <lightning-button 
+                                                    label="Delete" 
+                                                    variant="destructive" 
+                                                    onclick={handleDeleteTemplateClick} 
+                                                    data-id={template.id}>
+                                                </lightning-button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                    <template if:false={filteredTemplates.length}>
+                        <div class="slds-p-around_medium slds-text-align_center">
+                            No saved templates found.
+                        </div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={handleLoadTemplateModalClose}>Close</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Delete Confirmation Modal -->
+    <template if:true={showDeleteConfirmation}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03" aria-modal="true" aria-describedby="modal-content-id-3" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleDeleteConfirmationClose}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-03" class="slds-modal__title slds-hyphenate">Confirm Delete</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                    <p>Are you sure you want to delete the template "{templateToDelete.name}"?</p>
+                    <p class="slds-m-top_small">This action cannot be undone.</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={handleDeleteConfirmationClose}>Cancel</button>
+                    <button class="slds-button slds-button_destructive" onclick={deleteTemplate}>Delete</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Add this after the other modals -->
+    <!-- User Selection Modal for Compare Settings on Users -->
+    <template if:true={showUserSelectionModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true" aria-describedby="modal-content-id-4" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleUserSelectionModalClose}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-04" class="slds-modal__title slds-hyphenate">Select Users to Compare (Max: {maxUserSelection})</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+                    <div class="slds-text-body_regular slds-m-bottom_medium">
+                        Please select the users you want to compare. You can select up to {maxUserSelection} users.
+                    </div>
+                    
+                    <!-- User selection picklist -->
+                    <template if:true={availableUsers.length}>
+                        <div class="slds-table_container">
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Select">Select</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="User Name">User Name</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="Profile">Profile</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={availableUsers} for:item="user">
+                                        <tr key={user.id} class="slds-hint-parent">
+                                            <td data-label="Select">
+                                                <div class="slds-checkbox">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        id={user.id} 
+                                                        data-id={user.id} 
+                                                        checked={user.selected} 
+                                                        onchange={handleUserSelection} />
+                                                    <label class="slds-checkbox__label" for={user.id}>
+                                                        <span class="slds-checkbox_faux"></span>
+                                                        <span class="slds-assistive-text">Select user</span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                            <td data-label="User Name">
+                                                <div class="slds-truncate" title={user.name}>{user.name}</div>
+                                            </td>
+                                            <td data-label="Profile">
+                                                <div class="slds-truncate" title={user.profile}>{user.profile}</div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                    <template if:false={availableUsers.length}>
+                        <div class="slds-p-around_medium slds-text-align_center">
+                            No users found.
+                        </div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={handleUserSelectionModalClose}>Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={showPermissionsComparison}>Show Permissions</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    </template>
+    <!-- End Access Granted Content -->
+
+    <!-- Access Denied Message -->
+    <template if:false={hasAccess}>
+        <template if:false={isCheckingAccess}>
+            <div class="slds-align_absolute-center" style="margin-top: 100px;">
+                <div class="slds-text-align_center">
+                    <lightning-icon icon-name="utility:lock" size="large" class="slds-m-bottom_medium"></lightning-icon>
+                    <h1 class="slds-text-heading_large slds-text-color_error slds-m-bottom_medium">
+                        Sorry, you do not have access to Intel App.
+                    </h1>
+                    <p class="slds-text-body_regular slds-m-bottom_small">
+                        It looks like your current subscription does not include access to Intel App.
+                    </p>
+                    <p class="slds-text-body_regular slds-m-bottom_medium">
+                        To gain access, please purchase the feature by contacting our support team or visiting 
+                        <a href="https://applicationperfection.com/contact/" target="_blank" class="slds-text-link">ApplicationPerfection.com</a>.
+                    </p>
+                    <p class="slds-text-body_small">
+                        If you believe you should have access, please reach out to support for assistance.
+                    </p>
+                </div>
+            </div>
+        </template>
+    </template>
+</template>

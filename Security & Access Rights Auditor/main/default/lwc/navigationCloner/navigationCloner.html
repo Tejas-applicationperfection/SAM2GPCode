@@ -1,0 +1,108 @@
+<template>
+    <!-- Loading State - Checking Feature Access -->
+    <template if:true={isCheckingAccess}>
+        <div class="slds-align_absolute-center" style="height: 200px;">
+            <lightning-spinner alternative-text="Checking access" size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    <!-- Access Granted - Show Main Content -->
+    <template if:true={hasAccess}>
+    <div class="navigationCloner slds-m-around_large">
+        <!-- Header Section-->
+        <div class="slds-box slds-theme_default slds-m-bottom_large">
+            <div class="slds-media slds-media_center">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="custom:custom63" size="large"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h1 class="slds-text-heading_large slds-text-color_brand">Cloner Suite</h1>
+                    <p class="slds-text-title slds-m-top_x-small">Streamlined permission/user management tools</p>
+                </div>
+            </div>
+        </div> 
+
+        <!-- Tool Selector Cards -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_xx-large">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                <div class="slds-card slds-card_boundary tool-card" onclick={handleProfileClick}>
+                    <div class="slds-card__header slds-grid slds-grid_vertical-align-center" >
+                        <lightning-icon icon-name="custom:custom19" size="medium"></lightning-icon>
+                        <h2 class="slds-text-heading_small slds-m-left_small">Instant Permissions Cloner
+                            <span class="click-indicator">Click to start →</span>
+                        </h2>
+                    </div>
+                    <div class="slds-card__body">Convert profile permissions to reusable permission sets</div>
+                </div>
+            </div>
+            
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                <div class="slds-card slds-card_boundary tool-card" onclick={handleUserCloneClick}>
+                    <div class="slds-card__header slds-grid slds-grid_vertical-align-center" >
+                        <lightning-icon icon-name="standard:user" size="medium"></lightning-icon>
+                        <h2 class="slds-text-heading_small slds-m-left_small">Instant User Cloner
+                            <span class="click-indicator">Click to start →</span>
+                        </h2>
+                    </div>
+                    <div class="slds-card__body">Clone user with associated permissions to new user</div>
+                </div>
+            </div>
+
+             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3"> 
+                <div class="slds-card slds-card_boundary tool-card" onclick={handleUserAnalyticsClick}>
+                    <div class="slds-card__header slds-grid slds-grid_vertical-align-center" >
+                        <lightning-icon icon-name="custom:custom19" size="medium"></lightning-icon>
+                        <h2 class="slds-text-heading_small slds-m-left_small"> Users with Critical Access
+                            <span class="click-indicator">Click to start →</span>
+                        </h2>
+                    </div>
+                    <div class="slds-card__body">Analyze user access patterns and permissions</div>
+                </div>
+            </div><!-- -->
+        </div>
+
+         
+
+        <!-- Component Container -->
+        <div class="component-container slds-m-top_x-large" id="componentAnchor">
+            <template if:true={showProfileComponent}>
+                <c-permissions-Cloner></c-permissions-Cloner>
+            </template>
+            
+             <template if:true={showUserCloneComponent}>
+                <c-user-clone></c-user-clone>
+            </template>
+             
+            <template if:true={showUserAnalyticsComponent}>
+                <c-user-analytics-banner></c-user-analytics-banner>
+            </template>/
+            <!--  -->
+        </div>
+    </div>
+    </template>
+    <!-- End Access Granted Content -->
+
+    <!-- Access Denied Message -->
+    <template if:false={hasAccess}>
+        <template if:false={isCheckingAccess}>
+            <div class="slds-align_absolute-center" style="margin-top: 100px;">
+                <div class="slds-text-align_center">
+                    <lightning-icon icon-name="utility:lock" size="large" class="slds-m-bottom_medium"></lightning-icon>
+                    <h1 class="slds-text-heading_large slds-text-color_error slds-m-bottom_medium">
+                        Sorry, you do not have access to Cloner Suite.
+                    </h1>
+                    <p class="slds-text-body_regular slds-m-bottom_small">
+                        It looks like your current subscription does not include access to Cloner Suite.
+                    </p>
+                    <p class="slds-text-body_regular slds-m-bottom_medium">
+                        To gain access, please purchase the feature by contacting our support team or visiting 
+                        <a href="https://applicationperfection.com/contact/" target="_blank" class="slds-text-link">ApplicationPerfection.com</a>.
+                    </p>
+                    <p class="slds-text-body_small">
+                        If you believe you should have access, please reach out to support for assistance.
+                    </p>
+                </div>
+            </div>
+        </template>
+    </template>
+</template>

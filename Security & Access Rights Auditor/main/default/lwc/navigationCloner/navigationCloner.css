@@ -1,0 +1,171 @@
+/* Add component scope */
+.navigationCloner .container {
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+}
+
+.navigationCloner .nav-btn {
+    padding: 0.75rem 1.5rem;
+    margin-right: 1rem;
+    background: #0176d3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.navigationCloner .nav-btn:hover {
+    background: #014486;
+}
+
+.navigationCloner .slds-nav {
+    background-color: var(--slds-g-color-neutral-base-95, #f3f3f3);
+    padding: 1rem;
+    border-radius: var(--sds-c-card-radius-border, 0.25rem);
+}
+
+button.slds-button_neutral[aria-pressed="true"] {
+    background-color: var(--slds-c-button-neutral-color-background-active, #0176d3);
+    border-color: var(--slds-c-button-neutral-color-border-active, #0176d3);
+    color: var(--slds-c-button-text-color, white);
+}
+
+button.slds-button_neutral:hover {
+    background-color: #005fb2;
+    color: white;
+}
+
+.navigationCloner .tool-card {
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.navigationCloner .tool-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Ad Cards */
+.navigationCloner .ad-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #ecebea;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.navigationCloner .ad-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+
+.acontainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.acontainer > div {
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.05);
+}
+
+.acontainer img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid #f3f2f2;
+}
+
+.acontent {
+    padding: 1rem;
+}
+
+.atitle {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.adescription {
+    font-size: 0.875rem;
+    color: #706e6b;
+}
+
+/* Heading Styles */
+.navigationCloner .heading {
+    font-size: 1.25rem;
+    color: #2b2826;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #dddbda;
+    padding-bottom: 0.5rem;
+}
+
+/* Add hover effects */
+.navigationCloner .ad-card:hover {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.navigationCloner .component-container {
+    border-top: 2px solid #dddbda;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    scroll-margin-top: 2rem;
+    transition: scroll-margin-top 0.3s ease;
+}
+
+.navigationCloner .slds-card__body {
+    color: #444;
+    font-size: 0.9rem;
+    padding: 1rem;
+}
+
+.navigationCloner .acontainer img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    display: block;
+    border-bottom: 1px solid #f3f2f2;
+    background-color: #f8fafc;
+}
+
+/* Add click indicator */
+.click-indicator {
+    font-size: 0.75rem;
+    color: #0176d3;
+    margin-left: 0.5rem;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.tool-card:hover .click-indicator {
+    opacity: 1;
+}
+
+/* Add subtle animation */
+@keyframes pulse {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+
+.tool-card:hover .click-indicator {
+    animation: pulse 1s infinite;
+}

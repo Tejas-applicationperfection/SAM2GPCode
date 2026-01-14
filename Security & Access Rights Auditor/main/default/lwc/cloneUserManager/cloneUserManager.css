@@ -1,0 +1,4854 @@
+@font-face {
+    font-family: 'Kanit';
+    src: url('/resource/CustomFont/Kanit/Kanit-Light.ttf') format('truetype');
+     
+    font-style: normal;
+}
+
+.custom-container {
+    color: black;
+}
+
+.section-container {
+    border: 1px solid #dddbda;
+    border-radius: 0.5rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--lwc-colorBackgroundAlt, #ffffff);
+}
+
+/* Risky Users Button Styling */
+.risky-users-button {
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.risky-users-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Risky Users Modal Styling */
+.risky-users-modal {
+    z-index: 9002;
+}
+
+.risky-users-modal .slds-modal__container {
+    max-width: 90vw;
+    width: 1200px;
+}
+
+.risky-users-modal .slds-modal__header {
+    background: linear-gradient(135deg, #c23934 0%, #e74c3c 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.risky-users-modal .slds-modal__header h2 {
+    color: white;
+    font-weight: 600;
+}
+
+.risky-users-modal .slds-modal__header p {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.risky-users-modal .slds-modal__close {
+    color: white;
+}
+
+.risky-users-modal .slds-modal__close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Risky Users Content */
+.risky-users-content {
+    min-height: 400px;
+}
+
+.risky-users-table {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.risky-users-table .slds-table {
+    margin-bottom: 0;
+}
+
+/* Risk Score Cell Styling */
+.risk-score-cell {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Risk Level Badge Styling */
+.risky-users-table .slds-badge {
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.risky-users-table .slds-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.risky-users-table .slds-badge:hover::before {
+    left: 100%;
+}
+
+.risky-users-table .slds-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Duplicate rules removed - alpha-style rules are defined later in the file */
+
+/* Pagination Controls for Risky Users */
+.risky-users-modal .slds-button-group {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.risky-users-modal .slds-button-group .slds-button {
+    border: none;
+    border-radius: 0;
+}
+
+.risky-users-modal .slds-button-group .slds-button:not(:last-child) {
+    border-right: 1px solid #dddbda;
+}
+
+/* Loading State */
+.risky-users-modal .slds-spinner_container {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Error State */
+.risky-users-modal .slds-notify_alert {
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+/* Empty State */
+.risky-users-modal .slds-text-align_center {
+    color: #706e6b;
+}
+
+.risky-users-modal .slds-text-align_center .slds-icon {
+    fill: #706e6b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .risky-users-modal .slds-modal__container {
+        max-width: 95vw;
+        margin: 1rem;
+    }
+    
+    .risky-users-button {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .risky-users-table {
+        font-size: 0.875rem;
+    }
+}
+
+/* Animation for modal appearance */
+.risky-users-modal.slds-fade-in-open {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.section-container {
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    box-shadow: var(--lwc-shadowDropDown, 0 2px 3px 0 rgba(0, 0, 0, 0.16));
+}
+
+.modern-table {
+    --lwc-tableCellSpacing: 0.8rem;
+    height: 50vh;
+    display: block;
+    font-size: medium;
+    font-family: 'Salesforce Sans', 'Segoe UI', Roboto, sans-serif;
+}
+
+.user-picker {
+    max-width: 300px;
+}
+
+.page-info {
+    color: #706e6b;
+    font-size: 0.875rem;
+}
+
+.loading-spinner {
+    height: 100px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.slds-text-heading_small {
+    font-weight: 600;
+    color: #080707;
+}
+
+.slds-badge {
+    margin-left: 0.5rem;
+    vertical-align: text-top;
+}
+
+.slds-button_brand {
+    background-color: #0176d3;
+    border-color: #0176d3;
+}
+
+.slds-button_brand:hover {
+    background-color: #014486;
+    border-color: #014486;
+}
+
+.slds-nav-vertical {
+    position: sticky;
+    top: 1rem;
+}
+
+.modern-container {
+    --primary-color: #0176d3;
+    --sidebar-width: 280px;
+    --transition-speed: 0.3s;
+    height: 100vh;
+}
+
+.app-layout {
+    display: flex;
+    height: 100%;
+}
+
+/* Modern Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--lwc-colorBackgroundAltInverse, #032d60);
+    color: white;
+    padding: 1rem;
+    position: fixed;
+    height: 100%;
+    transition: var(--transition-speed);
+}
+
+.sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.logo {
+    background: white;
+    margin-bottom: 1rem;
+}
+
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toggle-item {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.toggle-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-item.active {
+    background: var(--primary-color);
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    background: var(--lwc-colorBackgroundAlt, #f3f6f9);
+    min-height: 100vh;
+}
+
+.app-header {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background:white;
+    border-bottom: 2px solid #032D60;
+    /*box-shadow: 0 4px 12px rgba(3, 45, 96, 0.15);*/
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.app-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    pointer-events: none;
+}
+
+.app-title {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.app-title-icon {
+    --slds-c-icon-color-foreground: #032D60;
+    --slds-c-icon-color-foreground-default: #032D60;
+}
+
+.app-title lightning-icon {
+    --sds-c-icon-color-background: rgba(255, 255, 255, 0.2);
+    --sds-c-icon-color-foreground-default: white;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.app-title .slds-text-heading_large {
+    font-size: 1.6rem;
+    margin-left: 0.4rem;
+    letter-spacing: -0.02em;
+    /* text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); */
+    position: relative;
+    z-index: 1;
+    color: #032D60;
+    font-weight: 600;
+}
+
+.license-type-selector {
+    width: 100%;
+    margin-bottom: 12px;
+    position: relative;
+    border-radius: 8px;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border: 2px solid #6c757d;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10010;
+}
+
+.license-type-selector-combobox {
+    --sds-c-input-radius-border: 4px;
+    --sds-c-input-color-border: #6c757d;
+    --sds-c-input-color-background: white;
+    --sds-c-input-shadow-focus: 0 0 3px #6c757d;
+    font-weight: 600;
+    position: relative;
+    z-index: 10010;
+}
+
+.license-type-selector-combobox .slds-form-element__label {
+    color: #1a1a1a;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.user-selector {
+    width: 100%;
+    margin-bottom: 12px;
+    position: relative;
+    border-radius: 8px;
+    padding: 0.75rem;
+    background-color: #f3fcff;
+    border: 2px solid #0070d2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: pulse-highlight 2s infinite;
+    z-index: 10009;
+}
+
+.user-selector::before {
+    content: "Select User";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: #0070d2;
+    color: white;
+    font-weight: bold;
+    padding: 0 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    z-index: 1;
+}
+
+.user-selector-combobox {
+    --sds-c-input-radius-border: 4px;
+    --sds-c-input-color-border: #0070d2;
+    --sds-c-input-color-background: white;
+    --sds-c-input-shadow-focus: 0 0 3px #0176d3;
+    font-weight: 600;
+    position: relative;
+    z-index: 10009;
+}
+
+.user-selector-combobox .slds-form-element__label {
+    color: #1a1a1a;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Ensure dropdown menus appear on top */
+.license-type-selector .slds-dropdown,
+.license-type-selector .slds-listbox,
+.license-type-selector .slds-combobox__dropdown,
+.license-type-selector .slds-dropdown_fluid {
+    z-index: 10011 !important;
+    position: relative;
+}
+
+.user-selector .slds-dropdown,
+.user-selector .slds-listbox,
+.user-selector .slds-combobox__dropdown,
+.user-selector .slds-dropdown_fluid {
+    z-index: 10010 !important;
+    position: relative;
+}
+
+/* Global override for combobox dropdowns in this component */
+:host .slds-dropdown,
+:host .slds-listbox,
+:host .slds-combobox__dropdown,
+:host .slds-dropdown_fluid {
+    z-index: 10015 !important;
+}
+
+/* Specific targeting for license and user selector dropdowns */
+.license-type-selector-combobox .slds-dropdown,
+.license-type-selector-combobox .slds-listbox,
+.license-type-selector-combobox .slds-combobox__dropdown {
+    z-index: 10011 !important;
+}
+
+.user-selector-combobox .slds-dropdown,
+.user-selector-combobox .slds-listbox,
+.user-selector-combobox .slds-combobox__dropdown {
+    z-index: 10010 !important;
+}
+
+.content-area {
+    padding: 2rem;
+}
+
+.card {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+}
+
+.card-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--lwc-colorBorder, #dddbda);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Add to existing styles */
+.search-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-info {
+    color: var(--lwc-colorTextLabel, #706e6b);
+    font-size: 0.875rem;
+}
+
+/*
+
+lightning-datatable.modern-table th {
+    background: var(--lwc-colorBackgroundAlt, #f3f6f9);
+    font-weight: 700;
+}*/
+
+.toggle-option {
+    margin-bottom: 0.75rem;
+    --lwc-formLabelFontSize: 0.875rem;
+}
+
+/* Enhanced sticky headers for all tables */
+.data-table-container {
+    max-height: 65vh;
+    overflow-y: auto;
+    position: relative;
+    padding-top: 40px;
+    /* Match header height */
+}
+
+.data-table-container thead th {
+    position: sticky;
+    top: -40px;
+    /* Negative of padding-top */
+    z-index: 2;
+    background: var(--lwc-colorBackgroundAlt, #ffffff);
+    border-bottom: 2px solid var(--lwc-colorBorder, #dddbda);
+}
+
+
+
+.data-table-container th .slds-truncate {
+    font-weight: 600;
+    color: var(--lwc-colorTextLabel, #514f4d);
+}
+
+.data-table-container td {
+    color: var(--lwc-colorTextDefault, #080707);
+}
+
+/* Header Shadow */
+.data-table-container thead th {
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Object Permissions Table Specific */
+.object-permissions-table .slds-th__action {
+    padding: 0.5rem 1rem;
+}
+
+.object-permissions-table .slds-text-title_caps {
+    font-weight: 700;
+}
+
+/* Enhanced Granular Permission Cells */
+.granular-permission-cell {
+    font-weight: 500;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* Enhanced permission styling for Yes/No values */
+.slds-table tbody td .granular-permission-cell:contains("Yes") {
+    color: #2e844a;
+    background-color: #f3f9f4;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-weight: 600;
+}
+
+.slds-table tbody td .granular-permission-cell:contains("No") {
+    color: #c23934;
+    background-color: #fef7f7;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-weight: 600;
+}
+
+/* Enhanced permission column headers */
+.slds-table thead th:nth-child(6),
+.slds-table thead th:nth-child(7),
+.slds-table thead th:nth-child(8) {
+    background-color: #f8f9fa;
+    border-left: 2px solid #e0e5ee;
+    font-weight: 600;
+    color: #032D60;
+    font-size: 0.875rem;
+}
+
+/* Enhanced permission column styling */
+.slds-table tbody td:nth-child(6),
+.slds-table tbody td:nth-child(7),
+.slds-table tbody td:nth-child(8) {
+    border-left: 1px solid #e0e5ee;
+    background-color: #fafbfc;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--lwc-colorTextHeading, #2b2826);
+    margin: 0;
+}
+
+/* Fix for object table scroll */
+.object-permissions-table.data-table-container {
+    max-height: 65vh;
+    overflow-y: auto;
+    position: relative;
+    padding-top: 40px;
+    /* Match header height */
+}
+
+/* Ensure all tables have consistent styling */
+[class$="-table"].data-table-container {
+    max-height: 65vh;
+    overflow-y: auto;
+    position: relative;
+    padding-top: 40px;
+}
+
+/* Header position fix */
+.data-table-container thead th {
+    top: 0;
+    z-index: 2;
+    margin-top: -40px;
+    /* Compensate for container padding */
+}
+
+/* Unified table styling */
+.slds-table {
+    background-color: #1b233d !important;
+    color: #000000 !important;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Header styling */
+lightning-base-formatted-text {
+    background-color: #2a3655 !important;
+    color: #9fa8da !important;
+    font-size: 1.2rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid #3a4a6b;
+}
+
+/* Cell styling 
+.slds-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #3a4a6b;
+}*/
+
+/* Hover effects 
+.slds-table tbody tr:hover {
+    background-color: #2a3655 !important;
+    transition: background-color 0.3s ease;
+}*/
+
+/* Boolean icons */
+.slds-icon-utility-check {
+    fill: #4caf50 !important;
+}
+
+.slds-icon-utility-close {
+    fill: #f44336 !important;
+}
+
+/* Pagination controls */
+.slds-p-around_medium {
+    background-color: #2a3655;
+    border-radius: 8px;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+.InstructionChild{
+    background-color: white;
+    border-radius: 8px;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+/* Section headers */
+.slds-section__title {
+    font-size: 1.3rem !important;
+    color: #9fa8da !important;
+    padding: 1rem;
+    background-color: #2a3655;
+    border-radius: 8px;
+}
+
+/* Search inputs */
+.slds-input {
+    background-color: #2a3655 !important;
+    border-color: #3a4a6b !important;
+    color: #ffffff !important;
+    font-size: 1.1rem;
+}
+
+/* Buttons */
+.slds-button_neutral {
+    background-color: #3a4a6b !important;
+    color: #ffffff !important;
+    border: none;
+    padding: 0.8rem 1.5rem;
+}
+
+.slds-button:disabled {
+    opacity: 0.6;
+}
+
+/* Add to existing pagination styles */
+.pagination-controls {
+    background-color: #2a3655 !important;
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.pagination-controls button {
+    background-color: #3a4a6b !important;
+    color: #e4e7f4 !important;
+    border: 1px solid #4a5a7b !important;
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+    background-color: #4a5a7b !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #2a3655 !important;
+    border-color: #3a4a6b !important;
+}
+
+.page-info {
+    color: #9fa8da !important;
+    margin: 0 1rem;
+    font-size: 1.1rem;
+}
+
+
+/* Header styling 
+.modern-table .slds-th__action {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #2c3e50;
+    text-transform: uppercase;
+}*/
+
+/* Modern table body styling 
+.modern-table .slds-cell-wrap {
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    color: #4a5568;
+    line-height: 1.7;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f4f8;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+*/
+/* Cell content spacing 
+.modern-table td {
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+}
+*/
+/* Boolean cells styling 
+.modern-table .slds-checkbox [type=checkbox] + .slds-checkbox_faux {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.modern-table .slds-checkbox [type=checkbox]:checked + .slds-checkbox_faux:after {
+    width: 0.5rem;
+    height: 1rem;
+}
+*/
+/* Text cells styling */
+.modern-table .slds-truncate {
+    padding: 0.5rem 0;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+}
+
+/* Add to your component's CSS file */
+.slds-table td {
+    font-size: 0.875rem;
+    /* Standard Salesforce table font size */
+}
+
+/* Target specific columns by their header labels */
+.slds-table thead th[title="Object"]+th[title="Field"] {
+    --lwc-tableCellFontSize: 0.875rem;
+}
+
+/* Style object cells specifically */
+.slds-table td[data-label="Object"] {
+    font-size: 14px !important;
+    /* Fallback */
+    font-weight: bold !important;
+    color: #181818 !important;
+}
+
+
+
+/* For field names */
+.slds-table td[data-label="Field"] {
+    font-size: 0.9rem;
+    color: #080707;
+}
+
+/* Hover effects 
+.modern-table tr:hover td {
+    background-color: #f8fafc !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+}*/
+
+/* Status badges 
+.modern-table lightning-badge {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+*/
+/* Column spacing 
+.modern-table th:first-child,
+.modern-table td:first-child {
+    padding-left: 2rem;
+}
+
+.modern-table th:last-child,
+.modern-table td:last-child {
+    padding-right: 2rem;
+}
+*/
+/* Subtle animations 
+@keyframes rowEnter {
+    0% { transform: translateY(5px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.modern-table tr {
+    animation: rowEnter 0.3s ease-out;
+}
+
+/* Boolean alignment */
+.modern-table .slds-cell-checkbox {
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* Text contrast 
+.modern-table .slds-text-title_bold {
+    color: #2d3748;
+    font-weight: 600;
+}
+*/
+/* Compact view for mobile */
+@media (max-width: 768px) {
+    .modern-table .slds-cell-wrap {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .modern-table th:first-child,
+    .modern-table td:first-child {
+        padding-left: 1.2rem;
+    }
+
+    .modern-table th:last-child,
+    .modern-table td:last-child {
+        padding-right: 1.2rem;
+    }
+}
+
+/* Subtle row separators */
+.modern-table tr:not(:last-child) td {
+    border-bottom: 1px solid #edf2f7;
+}
+
+/* Active row highlight */
+.modern-table tr.slds-is-selected td {
+    background-color: #f0f9ff !important;
+}
+
+/* Toggle container */
+.slds-checkbox_toggle.slds-grid {
+    display: flex !important;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Toggle label */
+.slds-checkbox_toggle .slds-form-element__label {
+    color: #fff !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    order: 1;
+    margin: 0;
+}
+
+/* Toggle track */
+.slds-checkbox_faux {
+    background-color: #5a6872 !important;
+    order: 2;
+    transition: all 0.2s ease;
+}
+
+/* Checked state */
+.slds-checkbox_toggle [type=checkbox]:checked~.slds-checkbox_faux_container .slds-checkbox_faux {
+    background-color: #4bca81 !important;
+}
+
+/* Toggle button */
+.slds-checkbox_faux:after {
+    background-color: white !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Status text */
+.slds-checkbox_on,
+.slds-checkbox_off {
+    color: #fff !important;
+    font-size: 0.9rem;
+    order: 3;
+    margin-left: 0.5rem;
+}
+
+/* Hover state */
+.slds-checkbox_toggle:hover .slds-checkbox_faux {
+    background-color: #485563 !important;
+}
+
+/* Remove default boolean styling */
+.slds-checkbox {
+    display: none !important;
+}
+
+/* Custom icon styling */
+.slds-icon-check {
+    --slds-c-icon-color-foreground-default: #4CAF50;
+}
+
+.slds-icon-cross {
+    --slds-c-icon-color-foreground-default: #F44336;
+}
+
+/* Center align icons */
+.slds-table td.slds-cell-edit .slds-grid {
+    justify-content: center;
+}
+
+/* Hide default boolean checkboxes */
+.slds-checkbox [type=checkbox]+.slds-checkbox_faux {
+    display: none;
+}
+
+/* Show custom icons */
+.slds-checkbox .slds-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Color the icons */
+.slds-icon-utility-check {
+    --slds-c-icon-color-foreground-default: #4CAF50;
+}
+
+.slds-icon-utility-close {
+    --slds-c-icon-color-foreground-default: #F44336;
+}
+
+.perm-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    /* 20-80 split */
+    gap: 1.5rem;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.toggle-sidebar {
+    background-color: #f3f6f9;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.main-content {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+}
+
+/* Toggle specific styling */
+.toggle-sidebar lightning-input {
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+    .perm-grid-container {
+        grid-template-columns: 1fr;
+    }
+
+    .toggle-sidebar {
+        order: -1;
+        /* Move toggles above content on mobile */
+    }
+}
+
+.slds-modal {
+    z-index: 9001 !important;
+    /* Higher than default 9000 */
+}
+
+.slds-backdrop {
+    z-index: 9000 !important;
+}
+
+/* Ensure main content is below modal */
+lightning-card {
+    position: relative;
+    z-index: 1;
+}
+
+lightning-datatable {
+    display: block;
+    height: 50vh;
+}
+
+.custom-tableload{
+    font-size: 0.875rem;
+    display: flex;
+    height: 50vh;
+
+}
+.custom-table .slds-cell-wrap[data-label="Object"] {
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+.custom-table .slds-cell-wrap[data-label="Field"] {
+    font-size: 0.9rem;
+}
+
+:host .slds-table td[data-label="Object"] {
+    font-size: 0.875rem !important;
+}
+
+.ToggleBar-form {
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+}
+
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: -9999px;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #0176d3;
+}
+
+input:checked+.slider:before {
+    transform: translateX(16px);
+}
+
+.toggle-label {
+    font-weight: 500;
+    color: #181818;
+}
+
+.header {
+
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.headerSidebar {
+
+    font-size: 1.25rem;
+    color: black;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+.header-container {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 black;
+    position: relative;
+}
+
+.headerSidebar {
+    margin: 0;
+    line-height: 1;
+}
+
+/* Optional: Add hover effect */
+lightning-button-icon[icon-name="utility:info"] {
+    --sds-c-button-color-border: #0176d3;
+    --sds-c-button-color-background: transparent;
+}
+
+lightning-button-icon[icon-name="utility:info"]:hover {
+    --sds-c-button-color-border: #014486;
+}
+
+.risk-meter {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    border: 1px solid #dddbda;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.risk-progress {
+    --lwc-progressColorBackground: #f3f3f3;
+    --lwc-progressColorBackgroundFill: var(--risk-color);
+    height: 12px;
+    border-radius: 6px;
+}
+
+/* Lightning Badge Alpha-Style Customization */
+.risk-level-badge {
+    --slds-c-badge-text-transform: uppercase;
+    --slds-c-badge-font-weight: 600;
+    --slds-c-badge-font-size: 0.75rem;
+    --slds-c-badge-spacing-inline: 0.75rem;
+    --slds-c-badge-spacing-block: 0.375rem;
+    --slds-c-badge-radius-border: 1rem;
+    --slds-c-badge-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.risk-level-badge:hover {
+    transform: translateY(-1px);
+    --slds-c-badge-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Lightning Badge Theme Colors with Alpha-Style Gradients */
+.risk-level-badge.slds-theme_critical {
+    --slds-c-badge-color-background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    --slds-c-badge-text-color: white;
+    --slds-c-badge-color-border: rgba(231, 76, 60, 0.3);
+}
+
+.risk-level-badge.slds-theme_high {
+    --slds-c-badge-color-background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    --slds-c-badge-text-color: white;
+    --slds-c-badge-color-border: rgba(243, 156, 18, 0.3);
+}
+
+.risk-level-badge.slds-theme_medium {
+    --slds-c-badge-color-background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+    --slds-c-badge-text-color: #2c3e50;
+    --slds-c-badge-color-border: rgba(241, 196, 15, 0.3);
+}
+
+.risk-level-badge.slds-theme_low {
+    --slds-c-badge-color-background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    --slds-c-badge-text-color: white;
+    --slds-c-badge-color-border: rgba(39, 174, 96, 0.3);
+}
+
+.user-info-container {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border-left: 1px solid #dddbda;
+    margin-left: 1rem;
+}
+
+.header-container, .user-info-container {
+    flex: 1 1 auto;
+}
+
+.companion-container {
+    background: var(--lwc-colorBackgroundAlt, #ffffff);
+    border: var(--lwc-borderWidthThin, 1px) solid var(--lwc-colorBorder, #dddbda);
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+}
+
+.slds-scrollable_y::-webkit-scrollbar {
+    width: 8px;
+}
+
+.slds-scrollable_y::-webkit-scrollbar-thumb {
+    background: #dddbda;
+    border-radius: 4px;
+}
+
+.slds-scrollable_y::-webkit-scrollbar-track {
+    background: #f3f2f2;
+}
+
+.slds-card__header {
+    background-color: #fafaf9;
+    border-bottom: 1px solid #dddbda;
+}
+
+.slds-combobox-container {
+    max-width: 300px;
+}
+
+.remediation-card {
+    background-color: #ffffff;
+    border: 1px solid #dddbda;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.remediation-card .slds-text-heading_small {
+    color: #2b2826;
+    font-weight: 600;
+}
+
+.combobox-width {
+    width: 90%;
+}
+
+.slds-button_stretch {
+    width: 95%;
+    margin-left: auto;
+     
+}
+
+.slds-grid_align-end {
+    gap: 0.5rem;
+}
+/* Target badges specifically in source type column */
+.source-type-badge .slds-badge {
+    padding: 0.15rem 0.35rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    border-radius: 10px;
+    min-width: 60px;
+    text-align: center;
+    display: inline-block;
+    transform: scale(0.9);
+    vertical-align: middle;
+}
+.slds-cell-wrap {
+    white-space: normal !important;
+    word-break: break-word;
+}
+/*copied the css from the schema viewer*/
+
+
+
+
+
+/* Optional: Add hover effect */
+lightning-button-icon[icon-name="utility:info"] {
+    --sds-c-button-color-border: #0176d3;
+    --sds-c-button-color-background: transparent;
+}
+
+lightning-button-icon[icon-name="utility:info"]:hover {
+    --sds-c-button-color-border: #014486;
+}
+
+.schema-container {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--light-bg);
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.cy-container {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    background-image: radial-gradient(#f3f3f3 1px, transparent 1px);
+    background-size: 20px 20px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Add styles for node labels to ensure they fit within the nodes */
+.cy-container text {
+    text-overflow: ellipsis;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-weight: 500;
+}
+
+/* Improve the appearance of edges */
+.cy-container edge {
+    transition: width 0.2s ease, opacity 0.2s ease;
+    opacity: 0.7;
+}
+
+.cy-container edge:hover {
+    opacity: 1;
+    width: 3px;
+}
+
+.cy-container:active {
+    cursor: grabbing;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s;
+}
+
+.legend-item:hover {
+    background-color: #f3f3f3;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.legend-line {
+    display: inline-block;
+    width: 20px;
+    height: 3px;
+    margin-right: 5px;
+}
+
+.legend-line.dashed {
+    border-top: 3px dashed;
+    height: 0;
+}
+
+.schema-controls {
+    margin-top: 24px; /* Align with comboboxes */
+}
+
+.graph-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.graph-controls .slds-button {
+    margin: 0 2px;
+}
+
+.graph-controls .slds-button:hover {
+    background-color: #f3f3f3;
+}
+/* Add these modern color variables */
+:host {
+    --primary-color: #6200EA;       /* Deep purple */
+    --secondary-color: #00BFA5;     /* Teal accent */
+    --accent-color: #FF4081;        /* Pink accent */
+    --success-color: #00C853;       /* Green accent */
+    --warning-color: #FFAB00;       /* Amber accent */
+    --error-color: #FF1744;         /* Red accent */
+    --neutral-color: #455A64;       /* Blue grey */
+    --light-bg: #F5F5F5;            /* Light grey background */
+}
+
+/* Update schema container styling */
+.schema-container {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--light-bg);
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Add empty graph message styling */
+.empty-graph-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--neutral-color);
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Update legend styling */
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.legend-item:hover {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.div-objectList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.objectList {
+    width: 100%;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.slds-form-element__label a {
+    color: #0070d2;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.slds-form-element__label a:hover {
+    text-decoration: underline;
+}
+
+/* Legend styles */
+.legend-item {
+    display: inline-block;
+    margin-right: 15px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border-radius: 2px;
+    vertical-align: middle;
+}
+
+/* Schema container styles */
+.schema-container {
+    position: relative;
+}
+
+.schema-controls {
+    margin-bottom: 10px;
+}
+
+.cy-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Custom table styles */
+.custom-table {
+    --lwc-colorBorder: #dddbda;
+    --lwc-tableBorderRadius: 4px;
+}
+
+.modern-table {
+    --lwc-colorBorder: #dddbda;
+    --lwc-tableBorderRadius: 4px;
+}
+
+/* Toggle switch styles 
+.toggle-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+*/
+.toggle-label {
+    margin-left: 10px;
+    font-size: 0.875rem;
+}
+
+
+ 
+
+/* Header styles */
+.header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+ 
+
+/* Page info styles */
+.page-info {
+    font-size: 0.8125rem;
+    color: #706e6b;
+}
+
+/* Custom loading indicator */
+.custom-tableload {
+    color: #706e6b;
+    font-size: 0.875rem;
+}
+
+/* Improve button interactions */
+.schema-controls .slds-button {
+    cursor: pointer;
+}
+
+/* Improve zoom controls */
+lightning-button-icon {
+    cursor: pointer;
+}
+
+/* Full screen mode for schema viewer */
+.schema-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999;
+    background: white;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.fullscreen-header {
+    position: relative;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #032D60;
+    color: white;
+    border-bottom: 1px solid #dddbda;
+    z-index: 10000;
+    height: 3rem;
+    min-height: 3rem;
+    max-height: 3rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.fullscreen-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.schema-fullscreen .cy-container {
+    flex: 1 1 auto;
+    height: auto !important;
+    width: 100% !important;
+    min-height: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Ensure Cytoscape canvas fills the container in full-screen */
+.schema-fullscreen .cy-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+}
+
+/* Force proper sizing for the schema container */
+.schema-fullscreen .schema-container {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+.schema-fullscreen .slds-grid {
+    position: absolute;
+    top: 9rem;
+    right: 2.5rem;
+    z-index: 10001;
+    background: white;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.schema-fullscreen .slds-grid lightning-button-group {
+    margin-bottom: 0.5rem;
+}
+
+.schema-fullscreen .legend-item {
+    position: relative;
+    z-index: 10001;
+}
+
+.exit-fullscreen-btn {
+    position: relative;
+    z-index: 10002;
+    color: white;
+}
+
+/* Modal Header */
+.slds-modal__header {
+    background-color: #f8f9fb;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.slds-modal__header .slds-media__figure {
+    margin-right: 0.75rem;
+}
+
+.slds-modal__header .slds-text-heading_medium {
+    color: #032D60;
+    font-weight: 600;
+}
+
+.slds-modal__header .slds-text-body_small {
+    color: #706e6b;
+    margin-top: 0.25rem;
+}
+
+/* Modal Content */
+.slds-modal__content {
+    padding: 1.5rem;
+    background-color: #ffffff;
+}
+
+/* Access Summary and Permission Sources */
+.access-summary, .permission-sources {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9;
+}
+
+/* Permission Sources Header */
+.permission-sources h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: #0070d2;
+}
+
+/* Close Button */
+.slds-modal__footer .slds-button {
+    background-color: #0070d2;
+    color: white;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+}
+
+.slds-modal__footer .slds-button:hover {
+    background-color: #005bb5;
+}
+
+/* Add styles for relationship edges to indicate they are clickable */
+.cy-container edge {
+    cursor: pointer !important;
+    transition: width 0.2s, overlay-opacity 0.2s;
+}
+
+.cy-container edge:hover {
+    width: 4px !important;
+    overlay-opacity: 0.7 !important;
+    overlay-color: #4285F4 !important;
+    z-index: 999 !important;
+}
+
+/* Add a tooltip-like style for edge labels on hover */
+.cy-container edge:hover > node {
+    font-weight: bold !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    text-background-opacity: 1 !important;
+    text-background-padding: 4px !important;
+    z-index: 1000 !important;
+}
+
+/* Style the relationship modal */
+.relationship-modal .slds-modal__header {
+    border-bottom: 2px solid #032D60;
+    background-color: #032D60;
+    color: white;
+    padding: 1rem;
+}
+
+.relationship-modal .slds-text-heading_medium {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.relationship-modal .slds-text-body_small {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.9rem;
+}
+
+.relationship-modal .slds-section__title {
+    background-color: #f3f3f3;
+    border-left: 4px solid #032D60;
+    padding: 8px 0;
+    color: #032D60;
+    font-weight: bold;
+}
+
+.relationship-modal .slds-truncate {
+    font-size: 1rem;
+}
+
+.relationship-modal .slds-item {
+    padding: 0.75rem;
+    transition: background-color 0.2s;
+    color: #16325c;
+}
+
+.relationship-modal .slds-col {
+    color: #16325c;
+}
+
+.relationship-modal .slds-item strong {
+    color: #032D60;
+    font-weight: bold;
+}
+
+.relationship-modal .slds-text-color_weak {
+    color: #54698d;
+}
+
+/* Style for code elements in the relationship modal */
+.relationship-modal code {
+    background-color: rgba(3, 45, 96, 0.1);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #032D60;
+    font-weight: bold;
+}
+
+/* Enhance the info box in the relationship modal */
+.relationship-modal .slds-theme_info {
+    background-color: #f8fcff;
+    border-color: #032D60;
+    color: #16325c;
+}
+
+.relationship-modal .slds-theme_info .slds-media__figure {
+    color: #032D60;
+}
+
+.relationship-modal .slds-theme_info .slds-media__body {
+    color: #16325c;
+}
+
+.relationship-modal .slds-theme_info .slds-media__body strong {
+    color: #032D60;
+    font-weight: bold;
+}
+
+/* Enhance the badge styling */
+.relationship-modal .slds-badge {
+    background-color: #032D60;
+    color: white;
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Improve the modal close button visibility */
+.relationship-modal .slds-modal__close {
+    color: white;
+}
+
+.relationship-modal .slds-modal__close:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Improve the footer button styling */
+.relationship-modal .slds-modal__footer .slds-button {
+    background-color: #032D60;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+}
+
+/* Add visual indicators for relationship types */
+.relationship-type-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.relationship-type-indicator.master-detail {
+    background-color: #e53935;
+}
+
+.relationship-type-indicator.lookup {
+    background-color: #4285F4;
+    border: 1px dashed #1565C0;
+}
+
+/* Enhance the relationship fields box */
+.relationship-modal .slds-box {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Add hover effect to relationship field items */
+.relationship-modal .slds-box .slds-item {
+    transition: background-color 0.2s;
+    border-radius: 4px;
+}
+
+.relationship-modal .slds-box .slds-item:hover {
+    background-color: rgba(3, 45, 96, 0.05);
+}
+
+.relationship-modal .slds-modal__content {
+    padding: 1.5rem;
+}
+
+/* Styles for hidden elements in the graph */
+.cy-container .hidden {
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+/* Styles for highlighted elements */
+.cy-container .highlighted {
+    opacity: 1;
+    z-index: 999;
+    transition: opacity 0.3s ease;
+}
+
+/* Styles for faded elements */
+.cy-container .faded {
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+/* Enhance the node filter buttons */
+.schema-container lightning-button-group {
+    margin-bottom: 8px;
+}
+
+.schema-container lightning-button {
+    font-size: 0.8rem;
+}
+
+/* Ensure buttons are visible in fullscreen mode */
+.schema-fullscreen lightning-button-group {
+    position: relative;
+    z-index: 10001;
+}
+
+.schema-container lightning-button-group {
+    margin-right: 0.5rem;
+}
+
+.schema-container lightning-button {
+    margin-left: 0.25rem;
+}
+
+.fullscreen-button {
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.fullscreen-button:hover {
+    background-color: #f3f3f3;
+}
+
+.schema-fullscreen .fullscreen-button {
+    background-color: #032D60;
+    color: white;
+    border-color: white;
+}
+
+.schema-fullscreen .fullscreen-button:hover {
+    background-color: #01235A;
+}
+
+.schema-fullscreen lightning-button-group {
+}
+
+/* Pill container styling */
+.slds-pill_container {
+    padding: 0.25rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background-color: #f3f3f3;
+    min-height: 2.5rem;
+    max-height: 6rem;
+    overflow-y: auto;
+}
+@media (min-width: 48em) {
+    .slds-modal__container {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 75rem;
+        min-width: 20rem;
+    }
+}
+
+
+.slds-pill {
+    margin: 0.125rem;
+    background-color: white;
+}
+
+.slds-pill__label {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.slds-pill:hover {
+    background-color: #f4f6fe;
+}
+
+/* Selected objects container styling */
+.selected-objects-container {
+    padding: 0.5rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background-color: white;
+    min-height: 2.5rem;
+    max-height: 6rem;
+    overflow-y: auto;
+}
+
+.selected-object-badge {
+    display: inline-flex;
+    align-items: center;
+    margin: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #f3f3f3;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+}
+
+.selected-object-badge .slds-badge__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #032d60;
+}
+
+.selected-object-badge:hover {
+    background-color: #eef1f6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Object Selection Panel Styling */
+.object-selection-panel {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Primary Object Selector */
+.primary-object-selector {
+    --sds-c-input-radius-border: 4px;
+    --sds-c-input-color-border: #dddbda;
+    --sds-c-input-color-background: white;
+    --sds-c-input-shadow-focus: 0 0 3px #0176d3;
+}
+
+/* Secondary Objects Container */
+.secondary-objects-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    background-color: white;
+    height: 100%;
+}
+
+/* Secondary Object List */
+.secondary-object-list {
+    border: none !important;
+    border-radius: 4px 4px 0 0;
+    min-height: 120px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.secondary-object-list option {
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+
+.secondary-object-list option:hover {
+    background-color: #f3f3f3;
+}
+
+.secondary-object-list option:checked {
+    background-color: #eef4ff !important;
+    color: #0176d3 !important;
+    font-weight: 500;
+    border-left: 3px solid #0176d3;
+    padding-left: 0.75rem;
+}
+
+/* Selected Objects Pills */
+.selected-objects-pills {
+    border-top: 1px solid #dddbda;
+    padding: 0.5rem;
+    min-height: 50px;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.slds-pill_container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.slds-pill {
+    background-color: #eef4ff;
+    border: 1px solid #d8e6fe;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    margin: 0.125rem;
+    max-width: 100%;
+    transition: all 0.2s ease;
+}
+
+.slds-pill:hover {
+    background-color: #d8e6fe;
+}
+
+.slds-pill__label {
+    font-size: 0.75rem;
+    color: #0176d3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.slds-pill__remove {
+    margin-left: 0.25rem;
+}
+
+/* Form Element Label */
+.slds-form-element__label {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.slds-text-link {
+    color: #0176d3;
+    font-size: 0.75rem;
+    font-weight: normal;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.slds-text-link:hover {
+    text-decoration: underline;
+}
+
+.slds-float_right {
+    float: right;
+    margin-left: auto;
+}
+
+/* Search Filter Container */
+.search-filter-container {
+    background-color: #f8f9fb;
+    border-bottom: 2px solid #eef1f6;
+    padding: 0.75rem;
+}
+
+.object-filter-input {
+    margin-bottom: 0;
+}
+
+.object-filter-input lightning-input {
+    --sds-c-input-radius-border: 4px;
+    --sds-c-input-color-border: #f0f0f0;
+    --sds-c-input-color-background: white;
+    --sds-c-input-shadow-focus: 0 0 3px #0176d3;
+}
+
+.schema-loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 100;
+}
+
+.empty-schema-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #706e6b;
+    padding: 2rem;
+}
+
+.empty-schema-message lightning-icon {
+    --sds-c-icon-color-foreground-default: #706e6b;
+}
+
+/* Schema loading overlay */
+.schema-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 4px;
+}
+
+.schema-loading-overlay .slds-spinner_container {
+    text-align: center;
+}
+
+.schema-loading-overlay .slds-text-heading_small {
+    color: #032d60;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.schema-loading-overlay .slds-text-body_small {
+    color: #706e6b;
+    margin-top: 0.5rem;
+}
+
+/* Permission Sources Styling */
+.permission-sources-header {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #032D60;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.permission-sources-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.permission-source-card {
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+}
+
+.permission-source-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.permission-source-header {
+    padding: 0.75rem;
+    border-bottom: 2px solid #eef1f6;
+    background-color: #f8f9fb;
+    border-radius: 8px 8px 0 0;
+}
+
+.permission-source-type {
+    display: flex;
+    align-items: center;
+}
+
+.permission-source-name {
+    font-weight: 600;
+    color: #032D60;
+    font-size: 0.875rem;
+}
+
+.permission-source-body {
+    padding: 0.75rem;
+    background-color: #ffffff;
+}
+
+.permission-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.permission-badges > div {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.permission-badge-allowed {
+    background-color: #ebf5ee;
+    color: #2e844a;
+    border: 1px solid #2e844a;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+
+.permission-badge-denied {
+    background-color: #fbe9e7;
+    color: #c23934;
+    border: 1px solid #c23934;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Scrollbar styling for permission sources container */
+.permission-sources-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.permission-sources-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.permission-sources-container::-webkit-scrollbar-thumb {
+    background: #c9c9c9;
+    border-radius: 3px;
+}
+
+.permission-sources-container::-webkit-scrollbar-thumb:hover {
+    background: #a7a7a7;
+}
+
+/* Access Summary Styling */
+.access-summary-header {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #032D60;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.access-summary-card {
+    background-color: #f8f9fb;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.access-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.2s ease;
+}
+
+.access-item:hover {
+    background-color: #f8faff;
+}
+
+.access-item:last-child {
+    border-bottom: none;
+}
+
+/* Status badges for access summary */
+.access-status-allowed {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #eefbee;
+    color: #2e844a;
+    font-weight: 500;
+}
+
+.access-status-denied {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #fef1ee;
+    color: #ea001e;
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+/* Modal header styling */
+.slds-modal__header {
+    background-color: #f9f9f9;
+    border-bottom: 2px solid #dddbda;
+}
+
+.slds-modal__header .slds-media__figure {
+    margin-right: 0.75rem;
+}
+
+.slds-modal__header .slds-text-heading_medium {
+    color: #032D60;
+    font-weight: 600;
+}
+
+.slds-modal__header .slds-text-body_small {
+    color: #706e6b;
+    margin-top: 0.25rem;
+}
+
+/* User Summary Card Styling */
+.user-summary-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+}
+
+.user-summary-header {
+    background-color: #f8f9fb;
+    padding: 1rem;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.user-summary-header .slds-avatar {
+    background-color: #032D60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-summary-header .slds-avatar lightning-icon {
+    --sds-c-icon-color-foreground-default: white;
+}
+
+.user-summary-header .slds-text-heading_medium {
+    color: #032D60;
+    font-weight: 600;
+}
+
+.user-summary-body {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+.user-details-list {
+    margin-bottom: 1.5rem;
+}
+
+.user-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.2s ease;
+}
+
+.user-detail-item:hover {
+    background-color: #f8faff;
+}
+
+.user-detail-item:last-child {
+    border-bottom: none;
+}
+
+.user-detail-label {
+    display: flex;
+    align-items: center;
+    color: #706e6b;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.user-detail-value {
+    font-weight: 400;
+    color: #032D60;
+}
+
+.permission-sets-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.permission-sets-header {
+    background-color: #f8f9fb;
+    padding: 0.75rem;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.permission-sets-container {
+    padding: 0.75rem;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 200px;
+    background-color: #ffffff;
+}
+
+.permission-sets-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.permission-set-pill {
+    display: inline-flex;
+    align-items: center;
+    background-color: #eef4ff;
+    border: 1px solid #d8e6fe;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    margin: 0.125rem;
+    transition: all 0.2s ease;
+}
+
+.permission-set-pill:hover {
+    background-color: #d8e6fe;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.permission-set-icon {
+    margin-right: 0.25rem;
+}
+
+.permission-set-label {
+    font-size: 0.75rem;
+    color: #032D60;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+/* Risk Meter Card Styling */
+.risk-meter-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+}
+
+.risk-meter-header {
+    background-color: #f8f9fb;
+    padding: 1rem;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.risk-meter-header .slds-media__figure lightning-icon {
+    --sds-c-icon-color-foreground-default: #032D60;
+}
+
+.risk-meter-header .slds-text-heading_medium {
+    color: #032D60;
+    font-weight: 600;
+}
+
+.risk-meter-body {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.risk-score-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 1.5rem auto;
+    width: 200px;
+    height: 130px;
+}
+
+.risk-score-value {
+    position: absolute;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #032D60;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.risk-score-value::after {
+    content: "%";
+    font-size: 1rem;
+    margin-left: 2px;
+    margin-top: -10px;
+}
+
+.risk-chart {
+    width: 100%;
+    height: 100%;
+}
+
+.critical-findings-section {
+    margin-bottom: 1.5rem;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.critical-findings-header {
+    display: flex;
+    align-items: center;
+    background-color: #fff8e6;
+    padding: 0.75rem;
+    border-bottom: 2px solid #ffe3b0;
+}
+
+.critical-findings-header lightning-icon {
+    --sds-c-icon-color-foreground-default: #b76e00;
+}
+
+.critical-findings-header .slds-text-heading_small {
+    color: #b76e00;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.critical-findings-list {
+    padding: 0.75rem;
+    background-color: #ffffff;
+}
+
+.critical-finding-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.2s ease;
+}
+
+.critical-finding-item:hover {
+    background-color: #fff8e6;
+}
+
+.critical-finding-item:last-child {
+    border-bottom: none;
+}
+
+.finding-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.finding-main {
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+    gap: 0.5rem;
+}
+
+.finding-icon {
+    --sds-c-icon-color-foreground-default: #b76e00;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}
+
+.finding-message {
+    font-weight: 500;
+    flex: 1;
+    line-height: 1.4;
+    color: #333;
+}
+
+.source-info {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.finding-source {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.finding-source .system {
+    --sds-c-badge-color-background: #1b96ff;
+    --sds-c-badge-text-color: white;
+}
+
+.finding-source .object {
+    --sds-c-badge-color-background: #00d924;
+    --sds-c-badge-text-color: white;
+}
+
+.finding-source lightning-badge {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.remediation-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.remediation-header {
+    background-color: #f8f9fb;
+    padding: 0.75rem;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.remediation-header lightning-icon {
+    --sds-c-icon-color-foreground-default: #c23934;
+}
+
+.remediation-header .slds-text-heading_small {
+    color: #c23934;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.remediation-controls {
+    padding: 0.75rem;
+    background-color: #ffffff;
+}
+
+.remediation-combobox {
+    --sds-c-input-radius-border: 4px;
+    --sds-c-input-color-border: #f0f0f0;
+    --sds-c-input-color-background: white;
+    --sds-c-input-shadow-focus: 0 0 3px #0176d3;
+}
+
+.remediation-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.undo-button {
+    --sds-c-button-neutral-color-background: #f3f3f3;
+    --sds-c-button-neutral-color-border: #dddbda;
+}
+
+.remediation-note {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f8fbfe;
+    border: 1px solid #d8e6fe;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+}
+
+.remediation-note lightning-icon {
+    --sds-c-icon-color-foreground-default: #0176d3;
+    margin-top: 0.125rem;
+}
+
+.risk-level-badge {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+}
+
+.risk-level-badge lightning-icon {
+    margin-right: 0.25rem;
+}
+
+/* Modern Data Table Styling */
+.modern-datatable {
+    --lwc-colorBorderRow: transparent;
+    --lwc-tableCellSpacing: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+}
+
+.modern-datatable .slds-table {
+    background-color: #ffffff;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.modern-datatable .slds-table thead th {
+    background-color: #f8f9fb;
+    color: #032D60;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.03rem;
+    padding: 0.75rem;
+    border-bottom: 2px solid #eef1f6;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.modern-datatable .slds-table tbody tr {
+    transition: background-color 0.2s ease;
+    color: #f8f9fb;
+}
+
+/* Remove any hover effects from the modern-datatable that might be affecting our modal */
+.modern-datatable .slds-table tbody tr:hover {
+    background-color: transparent !important;
+}
+
+/* Ensure the permission sets table rows maintain dark background */
+.permission-sets-table tr,
+.permission-sets-table tr:hover,
+.permission-sets-table tbody tr,
+.permission-sets-table tbody tr:hover,
+.permission-sets-table tr td,
+.permission-sets-table tr td:hover {
+    background-color: transparent !important;
+    color: #000000 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    cursor: default !important;
+}
+
+/* Override any SLDS hover styles */
+.slds-table tbody tr:hover th,
+.slds-table tbody tr:hover td,
+.slds-table--bordered tbody tr:hover th,
+.slds-table--bordered tbody tr:hover td,
+.slds-table_bordered tbody tr:hover th,
+.slds-table_bordered tbody tr:hover td,
+.slds-table_cell-buffer tbody tr:hover th,
+.slds-table_cell-buffer tbody tr:hover td {
+    background-color: transparent !important;
+}
+
+
+/* Ensure the modal content has proper styling */
+.slds-modal__content {
+    background-color: #1b233d;
+}
+
+/* Style for the info box in dark theme */
+.slds-box.slds-theme_info {
+    background-color: #2a3655;
+    border-color: #3a4a6b;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.slds-box.slds-theme_info lightning-icon {
+    --sds-c-icon-color-foreground-default: #9fa8da;
+}
+
+/* Ensure modal header and footer match the dark theme */
+.slds-modal__header {
+    background-color: #2a3655;
+    border-bottom: 2px solid #3a4a6b;
+    color: #ffffff;
+}
+
+.slds-modal__footer {
+    background-color: #2a3655;
+    border-top: 1px solid #3a4a6b;
+    color: #ffffff;
+}
+
+.slds-modal__header .slds-text-heading_medium {
+    color: #ffffff;
+}
+
+.slds-modal__header .slds-text-body_small {
+    color: #9fa8da;
+}
+
+.slds-text-heading_small {
+    color: #ffffff;
+}
+
+/* Checkmark and X icons styling */
+.modern-datatable .slds-icon-utility-check svg {
+    fill: #04844b;
+}
+
+.modern-datatable .slds-icon-utility-close svg {
+    fill: #c23934;
+}
+
+/* Pagination controls styling */
+.pagination-controls-modern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.pagination-controls-modern .page-info {
+    margin: 0 1rem;
+    font-size: 0.875rem;
+    color: #54698d;
+}
+
+.pagination-controls-modern lightning-button-icon {
+    --sds-c-button-radius-border: 4px;
+    --sds-c-icon-color-foreground-default: #0176d3;
+}
+
+/* Search input styling */
+.search-controls-modern {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-controls-modern lightning-input {
+    --sds-c-input-radius-border: 4px;
+    --sds-c-input-color-border: #f0f0f0;
+    --sds-c-input-shadow-focus: 0 0 3px #0176d3;
+}
+
+/* Action buttons styling */
+.action-buttons-modern {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-buttons-modern lightning-button {
+    --sds-c-button-neutral-color-background: #ffffff;
+    --sds-c-button-neutral-color-border: #f0f0f0;
+    --sds-c-button-radius-border: 4px;
+    --sds-c-button-text-color: #0176d3;
+}
+
+.action-buttons-modern lightning-button:hover {
+    --sds-c-button-neutral-color-background-hover: #f4f6fe;
+    --sds-c-button-text-color-hover: #014486;
+}
+
+/* Badge styling */
+.modern-badge {
+    --sds-c-badge-color-background: #f2f6fc;
+    --sds-c-badge-color-border: #cfd9e8;
+    --sds-c-badge-text-color: #054ada;
+    --sds-c-badge-radius-border: 12px;
+    padding: 0.25rem 0.75rem;
+    font-weight: 500;
+}
+
+/* Section container styling */
+.section-container-modern {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+}
+
+.section-header-modern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fb;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.section-header-modern h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #032D60;
+    display: flex;
+    align-items: center;
+}
+
+.section-header-modern h2 lightning-icon {
+    margin-right: 0.5rem;
+}
+
+.section-content-modern {
+    padding: 1rem;
+    background-color: #ffffff;
+}
+
+/* Empty state styling */
+.empty-state-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.empty-state-modern lightning-icon {
+    --sds-c-icon-color-foreground-default: #b0adab;
+    margin-bottom: 1rem;
+}
+
+.empty-state-modern .empty-state-heading {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #3e3e3c;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-modern .empty-state-message {
+    font-size: 0.875rem;
+    color: #706e6b;
+    max-width: 300px;
+}
+
+/* Tour Styling */
+.tour-button {
+    --sds-c-button-brand-color-background: #003459;
+    --sds-c-button-brand-color-border: #003459;
+    --sds-c-button-text-color: #ffffff;
+    --sds-c-button-radius-border: 4px;
+    --sds-c-button-brand-color-background-hover: #005fb2;
+    --sds-c-button-brand-color-border-hover: #005fb2;
+    position: relative;
+    animation: attention-pulse 2s ease-in-out 3;
+    min-width: max-content;
+    margin-top: 22px;
+}
+.grant_access-btn{
+    background-color: #003459;  
+    color: #ffffff;
+}
+.grant_access-btn:hover{
+    background-color: #003459;
+    color: #ffffff;
+}
+
+@keyframes attention-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 112, 210, 0.4);
+    }
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(0, 112, 210, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 112, 210, 0);
+    }
+}
+
+.tour-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9000;
+    pointer-events: none;
+}
+
+.tour-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9001;
+    pointer-events: auto;
+}
+
+.tour-tooltip {
+    position: absolute;
+    width: 350px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9002;
+    pointer-events: auto;
+    overflow: hidden;
+    border: 1px solid #dddbda;
+    transition: all 0.3s ease;
+}
+
+.tour-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #dddbda;
+}
+
+.tour-step-indicator {
+    font-size: 0.875rem;
+    color: #706e6b;
+    font-weight: 500;
+}
+
+.tour-step-count {
+    font-weight: 700;
+    color: #032D60;
+}
+
+.tour-close-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.tour-close-button:hover {
+    background-color: #e1e1e1;
+}
+
+.tour-content {
+    padding: 20px;
+}
+
+.tour-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #032D60;
+    margin-bottom: 12px;
+}
+
+.tour-description {
+    font-size: 0.9375rem;
+    color: #3e3e3c;
+    line-height: 1.5;
+}
+
+.tour-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 16px;
+    border-top: 1px solid #dddbda;
+    gap: 12px;
+    background-color: #f9f9f9;
+}
+
+.tour-previous-button {
+    --sds-c-button-neutral-color-background: #ffffff;
+    --sds-c-button-neutral-color-border: #dddbda;
+    --sds-c-button-text-color: #0070d2;
+    --sds-c-button-neutral-color-background-hover: #f4f6fe;
+    --sds-c-button-text-color-hover: #014486;
+    --sds-c-button-radius-border: 4px;
+}
+
+.tour-next-button {
+    --sds-c-button-brand-color-background: #0070d2;
+    --sds-c-button-brand-color-border: #0070d2;
+    --sds-c-button-brand-color-background-hover: #005fb2;
+    --sds-c-button-brand-color-border-hover: #005fb2;
+    --sds-c-button-radius-border: 4px;
+    font-weight: 600;
+}
+
+.tour-highlight {
+    position: relative;
+    z-index: 9003;
+    box-shadow: 0 0 0 4px rgba(21, 137, 238, 0.5);
+    border-radius: 4px;
+    pointer-events: auto;
+    animation: pulse-highlight 1.5s infinite alternate;
+}
+
+@keyframes pulse-highlight {
+    from {
+        box-shadow: 0 0 0 4px rgba(21, 137, 238, 0.5);
+    }
+    to {
+        box-shadow: 0 0 0 8px rgba(21, 137, 238, 0.3);
+    }
+}
+
+/* Ensure permission sets section is properly highlighted */
+.permission-sets-section.tour-highlight {
+    z-index: 9003;
+    overflow: visible;
+}
+
+/* Permission Set Revocation Modal Styling */
+.permission-sets-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.permission-sets-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: #1b233d;
+    table-layout: fixed;
+}
+
+.permission-sets-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #2a3655;
+    color: #9fa8da;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.03rem;
+    padding: 0.75rem;
+    border-bottom: 2px solid #3a4a6b;
+}
+
+/* Column width specifications */
+.permission-sets-table th:nth-child(1) {
+    width: 60px; /* Checkbox column */
+}
+
+.permission-sets-table th:nth-child(2) {
+    width: 25%; /* Permission Set Name column */
+}
+
+.permission-sets-table th:nth-child(3) {
+    width: 15%; /* Risk Level column */
+}
+
+.permission-sets-table th:nth-child(4) {
+    width: calc(60% - 60px); /* Recommendation column */
+}
+
+.permission-sets-table td {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    vertical-align: top;
+    border-bottom: 1px solid #3a4a6b;
+    color: #ffffff;
+    background-color: #1b233d;
+}
+
+.permission-sets-table tr {
+    background-color: #1b233d;
+}
+
+.permission-sets-table tr.high-risk {
+    background-color: #1b233d;
+    border-left: 4px solid #c23934;
+}
+
+.permission-sets-table tr.medium-risk {
+    background-color: #1b233d;
+    border-left: 4px solid #ff9900;
+}
+
+.risk-level-high {
+    color: #ff8a80;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.risk-level-medium {
+    color: #ffd180;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.risk-level-low {
+    color: #80cbc4;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.recommendation-cell {
+    max-width: none;
+    padding-right: 1rem;
+}
+
+.recommendation-cell ul {
+    margin-top: 0.5rem;
+    margin-left: 1.5rem;
+    list-style-type: disc;
+}
+
+.recommendation-cell li {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+    color: #ffffff;
+}
+
+/* Style for permission set name column */
+.permission-sets-table td:nth-child(2) {
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.permission-sets-table .slds-text-body_small {
+    color: #9fa8da;
+}
+
+.permission-sets-table .slds-text-color_weak {
+    color: #9fa8da;
+}
+
+.permission-sets-table .slds-text-color_error {
+    color: #ff8a80;
+}
+
+.permission-sets-table lightning-icon {
+    --sds-c-icon-color-foreground-default: #9fa8da;
+}
+
+.permission-sets-table lightning-input[type="checkbox"] {
+    --sds-c-checkbox-color-background-checked: #0070d2;
+    --sds-c-checkbox-color-border-checked: #0070d2;
+    --sds-c-checkbox-color-border: #9fa8da;
+    --sds-c-checkbox-radius-border: 3px;
+    --sds-c-checkbox-shadow-focus: 0 0 3px #0070d2;
+}
+
+.slds-modal__footer lightning-button[variant="neutral"] {
+    --sds-c-button-neutral-color-background: #ffffff;
+    --sds-c-button-neutral-color-border: #dddbda;
+    --sds-c-button-neutral-color-background-hover: #f4f6fe;
+    --sds-c-button-text-color: #0070d2;
+    --sds-c-button-text-color-hover: #014486;
+    --sds-c-button-radius-border: 4px;
+}
+
+.slds-modal__footer lightning-button[variant="destructive"] {
+    --sds-c-button-destructive-color-background: #c23934;
+    --sds-c-button-destructive-color-border: #c23934;
+    --sds-c-button-destructive-color-background-hover: #a61a14;
+    --sds-c-button-destructive-color-border-hover: #a61a14;
+    --sds-c-button-text-color: #ffffff;
+    --sds-c-button-radius-border: 4px;
+}
+
+/* Style for the selection count in the footer */
+.slds-modal__footer .slds-text-body_small {
+    color: #54698d;
+    font-size: 0.875rem;
+}
+
+.slds-modal__footer .slds-text-body_small strong {
+    color: #032D60;
+    font-weight: 600;
+}
+
+/* Selection buttons at the top of the modal */
+.permission-sets-table-container + div lightning-button-group {
+    margin-bottom: 1rem;
+}
+
+.permission-sets-table-container + div lightning-button {
+    --sds-c-button-neutral-color-background: #ffffff;
+    --sds-c-button-neutral-color-border: #dddbda;
+    --sds-c-button-neutral-color-background-hover: #f4f6fe;
+    --sds-c-button-text-color: #0070d2;
+    --sds-c-button-text-color-hover: #014486;
+    --sds-c-button-radius-border: 4px;
+    font-size: 0.875rem;
+}
+
+/* Style for the info box */
+.slds-box.slds-theme_info {
+    background-color: #f2f6fc;
+    border-color: #d8e6fe;
+    color: #032D60;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.slds-box.slds-theme_info lightning-icon {
+    --sds-c-icon-color-foreground-default: #0070d2;
+}
+
+/* Modal backdrop */
+.slds-backdrop {
+    background-color: rgba(43, 40, 38, 0.6);
+}
+
+/* Modal close button */
+.slds-modal__close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    margin: 0;
+    transform: scale(1.2);
+}
+
+.slds-modal__close:hover {
+    color: #0070d2;
+}
+
+/* Modal title */
+.slds-modal__header .slds-text-heading_medium {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #032D60;
+}
+
+.slds-modal__header .slds-text-body_small {
+    color: #54698d;
+    margin-top: 0.25rem;
+}
+
+/* Modal section title */
+.slds-text-heading_small {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #032D60;
+    margin-bottom: 0.5rem;
+}
+
+/* Access Configuration Card Styling */
+.access-config-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+    margin-bottom: 1rem;
+}
+
+.access-config-header {
+    background-color: #f8f9fb;
+    padding: 1rem;
+    border-bottom: 2px solid #eef1f6;
+}
+
+.access-config-header .slds-media__figure lightning-icon {
+    --sds-c-icon-color-background: #032D60;
+    --sds-c-icon-color-foreground-default: white;
+}
+
+.access-config-header .slds-text-heading_medium {
+    color: #032D60;
+    font-weight: 600;
+}
+
+/* Update toggle group styling */
+.toggle-group {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+   
+    gap: 0.5rem;
+}
+
+.toggle-container lightning-icon {
+    --sds-c-icon-color-background: #032D60;
+    --sds-c-icon-color-foreground-default: white;
+}
+
+.toggle-label {
+    margin-left: 0.75rem;
+    font-size: 0.875rem;
+    color: #032D60;
+    font-weight: 500;
+}
+
+/* Update switch styling to match the theme */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin: 0 0.5rem;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #dddbda;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #0070d2;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Permission Modal Styles */
+.slds-modal__container {
+    max-width: 85%;
+    width: 85%;
+}
+
+.slds-modal__content {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Improve contrast for the permission modal */
+.permission-sources-header,
+.access-summary-header {
+    color: #000000;
+    font-weight: 600;
+    padding: 8px 0;
+    border-bottom: 1px solid #dddbda;
+}
+
+.permission-sources-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 10px;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    padding: 8px;
+    background-color: #f8f8f8;
+}
+
+.permission-source-card {
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    padding: 8px;
+    background-color: white;
+}
+
+.permission-source-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+}
+
+.permission-source-type {
+    font-weight: 600;
+    color: #000000;
+}
+
+.permission-source-name {
+    color: #000000;
+}
+
+.permission-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.permission-badges div {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #000000;
+    background-color: #f3f3f3;
+    border: 1px solid #dddbda;
+}
+
+.access-summary-card {
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    padding: 12px;
+    background-color: #f8f8f8;
+}
+
+.access-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.access-item:last-child {
+    border-bottom: none;
+}
+
+/* Status colors with improved visibility */
+.status-allowed {
+    color: #2e844a;
+    font-weight: 600;
+}
+
+.status-denied {
+    color: #c23934;
+    font-weight: 600;
+}
+
+/* Modal header and footer */
+.slds-modal__header {
+    background-color: #f3f3f3;
+    border-bottom: 2px solid #dddbda;
+}
+
+.slds-modal__footer {
+    background-color: #f3f3f3;
+    border-top: 2px solid #dddbda;
+}
+
+/* Modal close button */
+.slds-modal__close {
+    color: #000000;
+}
+
+/* Make sure backdrop is dark enough */
+.slds-backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Access status classes */
+.access-allowed {
+    color: #2e844a;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.access-denied {
+    color: #c23934;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+/* Add this at the end of the file */
+.duplicate-access-highlight {
+    background-color: #fffde7 !important; /* Light yellow background */
+    border-left: 3px solid #fbc02d !important; /* Gold border */
+}
+
+/* Add this styling for action visibility */
+.hide-actions lightning-primitive-cell-factory {
+    visibility: hidden;
+}
+
+.show-actions lightning-primitive-cell-factory {
+    visibility: visible;
+}
+
+/* Improve the duplicate access highlighting */
+.duplicate-access-highlight {
+    background-color: #fffde7 !important; /* Light yellow background */
+    border-left: 3px solid #fbc02d !important; /* Gold border */
+}
+
+.duplicate-access-highlight:hover {
+    background-color: #fff8c4 !important; /* Lighter yellow on hover */
+}
+
+/* Add badge styling for multiple sources */
+.multiple-sources-badge {
+    background-color: #0070d2;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+/* Update the permission-sources-table class */
+.permission-sources-table {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.permission-sources-table .slds-th__action {
+    padding: 0.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #444;
+    background-color: #f3f3f3;
+    text-align: center;
+}
+
+.permission-sources-table .slds-cell-fixed {
+    background-color: #f3f3f3;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.permission-sources-table .slds-table td {
+    padding: 0.5rem;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.permission-sources-table .slds-table tr:hover td {
+    background-color: #f8f8f8;
+}
+
+.permission-sources-table .slds-icon-utility-check svg {
+    fill: #04844b;
+}
+
+.permission-sources-table .slds-icon-utility-close svg {
+    fill: #c23934;
+}
+
+/* Make the source name column text-aligned left for readability */
+.permission-sources-table .slds-table th:first-child .slds-th__action,
+.permission-sources-table .slds-table td:first-child {
+    text-align: left;
+}
+
+/* Improve modal styling */
+.slds-modal__container {
+    max-width: 85%;
+  /* width: 800px;*/
+}
+.sldsth {
+    color: white;
+}
+.slds-modal__content {
+    overflow: auto;
+    max-height: 70vh;
+}
+
+/* Add badge styling for source types */
+.source-type-profile {
+    background-color: #04844b;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+.source-type-permset {
+    background-color: #ffb75d;
+    color: #262626;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+/* Permission indicator styling */
+.permission-cell.allowed lightning-icon {
+    --sds-c-icon-color-foreground-default: #4caf50;
+}
+
+.permission-cell.denied lightning-icon {
+    --sds-c-icon-color-foreground-default: #f44336;
+}
+
+/* Hide the text "Allowed" when icon is present */
+.permission-cell.allowed .slds-truncate:not(:empty) {
+    font-size: 0;
+}
+
+.permission-cell.allowed .slds-truncate:not(:empty)::before {
+    content: "✓";
+    font-size: 1rem;
+    color: #4caf50;
+}
+
+/* Fix for crud permissions display */
+.permission-sources-table td[data-permissions="true"] {
+    color: #4caf50;
+}
+
+.permission-sources-table td[data-permissions="true"] .slds-truncate::before {
+    content: "✓";
+    font-weight: bold;
+}
+
+.permission-sources-table td[data-permissions="false"] {
+    color: #f44336;
+}
+
+.permission-sources-table td[data-permissions="false"] .slds-truncate::before {
+    content: "✕";
+    font-weight: bold;
+}
+
+/* Hide duplicate text for permission indicators */
+.permission-sources-table td[data-permissions="true"] .slds-truncate span,
+.permission-sources-table td[data-permissions="false"] .slds-truncate span {
+    display: none;
+}
+
+/* Styling for permission icons */
+.permission-sources-table lightning-icon[icon-name="utility:check"] svg {
+    fill: #4caf50;
+}
+
+.permission-sources-table lightning-icon[icon-name="utility:close"] svg {
+    fill: #f44336;
+}
+
+/* Center alignment for permission columns */
+.permission-sources-table td[data-label="Read"],
+.permission-sources-table td[data-label="Create"],
+.permission-sources-table td[data-label="Edit"],
+.permission-sources-table td[data-label="Delete"] {
+    text-align: center !important;
+}
+
+/* Make icons more prominent */
+.permission-sources-table .slds-icon_container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.permission-sources-table .slds-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Remove any remaining "Allowed" or "Denied" text */
+.permission-sources-table .slds-truncate span {
+    display: none;
+}
+
+/* Ensure center alignment of all permission cells */
+.permission-sources-table lightning-primitive-cell-factory {
+    display: flex;
+    justify-content: center;
+}
+
+/* Permission cell styling for the main tables */
+.permission-cell {
+    text-align: center;
+}
+
+/* Icon colors */
+.permission-cell lightning-icon[icon-name="utility:check"] {
+    --sds-c-icon-color-foreground-default: #4caf50;
+}
+
+.permission-cell lightning-icon[icon-name="utility:close"] {
+    --sds-c-icon-color-foreground-default: #f44336;
+}
+
+/* Format text and icon properly */
+.permission-cell .slds-icon_container {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+/* Hide icon label text but show permission text */
+.permission-cell .slds-truncate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Set the font for the permission text */
+.permission-cell {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: rgb(68, 68, 68);
+}
+
+/* Spacing between text and icon */
+.permission-cell .slds-truncate lightning-primitive-icon {
+    margin-left: 4px;
+}
+
+/* Permission sources table specific styling */
+.permission-sources-table .permission-cell .slds-truncate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.permission-sources-table .allowed {
+    color: #4caf50;
+}
+
+.permission-sources-table .denied {
+    color: #f44336;
+}
+
+/* Make sure the icon and text are properly aligned */
+.permission-sources-table lightning-primitive-cell-factory {
+    display: flex;
+    justify-content: center;
+}
+
+/* Ensure right spacing between text and icon */
+.permission-sources-table .slds-icon_container {
+    margin-left: 4px;
+}
+
+/* For the multiple sources modal */
+.permission-sources-table .allowed .slds-truncate {
+    color: #4caf50;
+}
+
+.permission-sources-table .denied .slds-truncate {
+    color: #f44336;
+}
+
+/* Add styles for the collapsible instructions bar */
+.instructions-bar {
+    margin-bottom: 1rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background-color: #f3f2f2;
+}
+
+.instructions-header {
+    padding: 0.75rem;
+    cursor: pointer;
+    background-color: #f3f2f2;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+}
+
+.instructions-header:hover {
+    background-color: #e8e7e7;
+}
+
+.instructions-icon {
+    --sds-c-icon-color-foreground-default: #0070d2;
+}
+
+.toggle-icon {
+    --sds-c-icon-color-foreground-default: #706e6b;
+}
+
+.instructions-content {
+    background-color: #ffffff;
+    border-top: 1px solid #dddbda;
+    border-radius: 0 0 0.25rem 0.25rem;
+    line-height: 1.5;
+    font-size: 0.875rem;
+}
+
+.instructions-content p {
+    margin-bottom: 0.5rem;
+}
+
+.instructions-content strong {
+    color: #0070d2;
+}
+
+/* Add style for tour button in the instructions bar */
+.instructions-bar .tour-button {
+    pointer-events: auto;
+}
+
+/* Override the original tour button styles */
+.tour-button {
+    --sds-c-button-brand-color-background: #0070d2;
+    --sds-c-button-brand-color-background-hover: #005fb2;
+    --sds-c-button-text-color: #ffffff;
+    font-weight: 600;
+}
+
+/* User selector highlight animation */
+@keyframes pulse-highlight {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 112, 210, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(0, 112, 210, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 112, 210, 0);
+    }
+}
+
+/* Styles for expandable field permissions table */
+.field-permissions-container {
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: rgb(243, 243, 243);
+}
+
+.field-permissions-container table {
+    border-collapse: collapse;
+    color: rgb(8, 7, 7);
+    width: 100%;
+}
+
+.field-permissions-container th {
+    background-color: rgb(243, 243, 243);
+    color: rgb(68, 68, 68);
+    font-weight: bold;
+    padding: 8px;
+    text-align: left;
+}
+
+.field-permissions-container tr.object-row {
+    background-color: rgb(243, 242, 242);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.field-permissions-container tr.object-row:hover {
+    background-color: rgb(236, 235, 234);
+    color:white;
+}
+
+.field-permissions-container tr.field-row {
+    background-color: rgb(255, 255, 255);
+    border-left: 4px solid rgb(236, 236, 236);
+}
+
+.field-permissions-container tr.field-header {
+    background-color: rgb(145 223 204) !important;
+    color: white !important;
+}
+
+.field-permissions-container tr.field-header th {
+    color: white !important;
+    font-weight: bold;
+    padding: 8px;
+    text-align: left;
+}
+
+.field-permissions-container .permission-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+}
+
+.field-permissions-container .slds-icon-utility-check {
+    --sds-c-icon-color-foreground-default: rgb(2, 126, 70);
+}
+
+.field-permissions-container .slds-icon-utility-close {
+    --sds-c-icon-color-foreground-default: rgb(234, 0, 30);
+}
+
+/* Make the field count badge more visible */
+.field-permissions-container .slds-badge_lightest {
+    background-color: rgb(27, 82, 151);
+     
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+}
+
+/* Modal styles - fix text colors */
+.permission-sets-table {
+    color: rgb(8, 7, 7) !important;
+}
+
+.permission-sets-table tr {
+    background-color: rgb(255, 255, 255) !important;
+} 
+
+.permission-sets-table th {
+    color: rgb(68, 68, 68) !important;
+    font-weight: bold;
+}
+
+.permission-sets-table td {
+    color: rgb(8, 7, 7) !important;
+}
+
+.permission-sets-table .slds-text-color_weak {
+    color: rgb(68, 68, 68) !important;
+}
+
+/* Fix modal header text */
+.slds-modal__header {
+    color: rgb(8, 7, 7) !important;
+}
+
+.slds-modal__header .slds-text-heading_medium {
+    color: rgb(8, 7, 7) !important;
+}
+
+.slds-modal__header .slds-text-body_small {
+    color: rgb(68, 68, 68) !important;
+}
+
+/* Fix modal footer text */
+.slds-modal__footer {
+    color: rgb(8, 7, 7) !important;
+}
+
+.slds-modal__footer .slds-text-body_small {
+    color: rgb(8, 7, 7) !important;
+}
+
+/* Field row styles with alternating colors */
+.field-permissions-container tr.field-row {
+    background-color: rgb(255, 255, 255);
+    border-left: 4px solid rgb(236, 236, 236);
+}
+
+.field-permissions-container tr.even-row {
+    background-color: rgb(255, 255, 255);
+}
+
+.field-permissions-container tr.odd-row {
+    background-color: rgb(248, 248, 250);
+}
+
+.field-permissions-container tr.field-row:hover {
+    background-color: rgb(243, 242, 242);
+    color: white;
+}
+
+.field-permissions-container tr.field-header th div {
+    color: white !important;
+    font-weight: bold;
+}
+
+/* Override any SLDS default styles that might be affecting the headers */
+.field-permissions-container .slds-truncate,
+.field-permissions-container .slds-p-left_large {
+    color: inherit !important;
+}
+
+/* Specifically target the field headers to override any SLDS styles */
+.field-permissions-container tr.field-header,
+.field-permissions-container tr.field-header *,
+.field-permissions-container tr.field-header th,
+.field-permissions-container tr.field-header th div,
+.field-permissions-container tr.field-header th span,
+.field-permissions-container tr.field-header th .slds-truncate,
+.field-permissions-container tr.field-header th .slds-p-left_large {
+    
+    color: black !important;
+    font-weight: bold !important;
+}
+
+/* Field permissions expanded view styling */
+.field-row {
+    background-color: #f3f9ff;
+}
+
+.field-header {
+    background-color: #eef5fd;
+    font-weight: bold;
+}
+
+/* Add indentation and styling for expanded fields section */
+.expanded-fields-container {
+    overflow: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: 0.5rem 1rem 0.5rem 2rem;
+    border-left: 1px solid #dddbda;
+    background-color: #f8f9fb;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+/* Override default table hover behavior for field permissions */
+.field-permissions-container table tbody tr:hover {
+    background-color: transparent;
+}
+
+/* Specific hover effect only for object rows */
+.field-permissions-container tr.object-row:hover {
+    background-color: #f3f9ff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* Improved hover effect for field rows */
+.field-permissions-container tr.field-row:hover {
+    background-color: #e8f1fc;
+    transition: background-color 0.2s ease;
+}
+
+/* Better spacing and alignment for nested table */
+.expanded-fields-container table {
+    margin: 0.5rem 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Remove default Salesforce hover effects that cause the blue background */
+.expanded-fields-container .slds-table_bordered tbody tr:hover th,
+.expanded-fields-container .slds-table_bordered tbody tr:hover td {
+    background-color: transparent;
+}
+
+/* Transition for expanding/collapsing */
+.field-permissions-container [aria-expanded="true"],
+.field-permissions-container [aria-expanded="false"] {
+    transition: all 0.3s ease;
+}
+
+/* Object row styling */
+.field-permissions-container tr.object-row {
+    border-bottom: 1px solid #dddbda;
+    background-color: white;
+}
+
+/* Object row hover effect */
+.field-permissions-container tr.object-row:hover {
+    background-color: #f3f9ff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+/* Object name styling */
+.field-permissions-container .object-name {
+    font-weight: 500;
+    color: #032d60;
+}
+
+/* Field count badge styling */
+.field-permissions-container .field-count {
+    border-radius: 12px;
+    background-color: #eef5fd;
+    border: 1px solid #0176d3;
+    color: #032d60;
+    padding: 0.125rem 0.5rem;
+}
+
+/* Toggle icon animation */
+.field-permissions-container .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.field-permissions-container tr[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+}
+
+/* Expand button styling */
+.field-permissions-container .expand-button {
+    transition: all 0.2s ease;
+}
+
+.field-permissions-container .expand-button:hover {
+    background-color: #f3f9ff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Fields row styling */
+.field-permissions-container .fields-row {
+    background-color: transparent;
+}
+
+ 
+
+/* Permission cell styling */
+.field-permissions-container .permission-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Field header styling */
+.field-permissions-container .field-header {
+    background-color: #eef5fd;
+    color: #032d60;
+    font-weight: bold;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03rem;
+}
+
+/* Even/odd row styling */
+.field-permissions-container .even-row {
+    background-color: #f8fbff;
+}
+
+.field-permissions-container .odd-row {
+    background-color: #ffffff;
+}
+
+/* Icon colors for permissions */
+.field-permissions-container .slds-icon-utility-check svg {
+    fill: #04844b;
+}
+
+.field-permissions-container .slds-icon-utility-close svg {
+    fill: #ea001e;
+}
+
+.field-filter-input {
+    border-radius: 4px;
+    background-color: #f3f3f3;
+    margin-bottom: 4px;
+}
+
+.field-filter-input .slds-input {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+}
+
+.field-filter-input .slds-input:focus {
+    border-color: #1589ee;
+    box-shadow: 0 0 3px #0070d2;
+}
+
+.field-filter-count {
+    font-size: 0.8rem;
+    color: #706e6b;
+    margin-top: 2px;
+    text-align: right;
+}
+
+/* Risky Users Full-Screen Interface Styles */
+.risky-users-header {
+    
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0;
+    margin-bottom: 0;
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid #34495e;
+    position: relative;
+}
+
+.risky-users-header .app-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.risky-users-header h1 {
+    color: white;
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-shadow: none;
+    letter-spacing: normal;
+    line-height: 1.3;
+}
+
+.risky-users-header lightning-icon {
+    --sds-c-icon-color-foreground-default: #ff8c00;
+    filter: none;
+}
+
+.risky-users-header lightning-button {
+    --sds-c-button-neutral-color-background: rgba(255, 255, 255, 0.1);
+    --sds-c-button-neutral-color-border: rgba(255, 255, 255, 0.3);
+    --sds-c-button-color-foreground: white;
+    border-radius: 0.25rem;
+    backdrop-filter: none;
+    transition: background-color 0.2s ease;
+}
+
+.risky-users-header lightning-button:hover {
+    --sds-c-button-neutral-color-background: rgba(255, 255, 255, 0.15);
+    transform: none;
+    box-shadow: none;
+}
+
+.risk-summary-stats {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.stat-item {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: none;
+    border: none;
+    transition: opacity 0.2s ease;
+    min-width: 80px;
+    text-align: center;
+    position: relative;
+}
+
+.stat-item:hover {
+    transform: none;
+    box-shadow: none;
+    opacity: 0.9;
+}
+
+.stat-item.critical {
+    background: #e74c3c;
+}
+
+.stat-item.high {
+    background: #f39c12;
+}
+
+.stat-item.medium {
+    background: #f1c40f;
+    color: #2c3e50;
+}
+
+.stat-item.low {
+    background: #27ae60;
+}
+
+.risky-users-main-content {
+    min-height: 60vh;
+    background: #ffffff;
+    border-radius: 0;
+    padding: 1.5rem;
+    box-shadow: none;
+    border: none;
+}
+
+/* User Detail View Styles */
+.user-detail-view {
+    min-height: 70vh;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.user-detail-header {
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    padding: 2rem;
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.user-info-header h2 {
+    margin: 0;
+    color: #1E293B;
+    font-weight: 700;
+    font-size: 1.75rem;
+}
+
+.user-info-header p {
+    margin: 0.5rem 0 0 0;
+    color: #64748B;
+    font-size: 1.1rem;
+}
+
+.user-risk-badge .risk-level-badge {
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-detail-content {
+    margin-top: 1.5rem;
+}
+
+.risk-summary-content {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.risk-score-display {
+    margin-bottom: 2rem;
+}
+
+.risk-score-large {
+    font-size: 4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    text-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+}
+
+.risk-level-text {
+    font-size: 1.5rem;
+    color: #475569;
+    margin-top: 0.75rem;
+    font-weight: 600;
+}
+
+.critical-findings {
+    text-align: left;
+    margin-top: 2rem;
+    background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.findings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.finding-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+    color: #DC2626;
+    font-weight: 600;
+}
+
+.finding-item:last-child {
+    border-bottom: none;
+}
+
+.user-info-content {
+    padding: 2rem;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #475569;
+    font-size: 1rem;
+}
+
+.info-value {
+    color: #1E293B;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Enhanced Table Styling */
+.risky-users-table {
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+    border: 1px solid #e0e0e0;
+}
+
+.risky-users-table .slds-table {
+    background: #ffffff;
+}
+
+.risky-users-table .slds-table thead th {
+    background: #f8f9fa;
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: normal;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.875rem;
+}
+
+.risky-users-table .slds-table tbody td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    font-size: 0.875rem;
+}
+
+.risky-users-table .slds-table tbody tr:hover {
+    background: #f8f9fa;
+    transform: none;
+    box-shadow: none;
+    transition: background-color 0.2s ease;
+}
+
+/* Ensure badges remain visible on hover */
+.risky-users-table .slds-table tbody tr:hover .slds-badge {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.risky-users-table .slds-table tbody tr:hover .slds-theme_high,
+.risky-users-table .slds-table tbody tr:hover .slds-theme_medium {
+    color: #2c3e50;
+    font-weight: 700;
+.risky-users-table .slds-table tbody tr:hover .slds-theme_critical,
+.risky-users-table .slds-table tbody tr:hover .slds-theme_low {
+    opacity: 0.9;
+}
+
+/* Risk Level Badge Styling */
+.risky-users-table .slds-badge {
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.risky-users-table .slds-theme_error {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border-color: rgba(231, 76, 60, 0.3);
+}
+
+.risky-users-table .slds-theme_warning {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+    border-color: rgba(243, 156, 18, 0.3);
+}
+
+.risky-users-table .slds-theme_info {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    border-color: rgba(52, 152, 219, 0.3);
+}
+
+.risky-users-table .slds-theme_success {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    border-color: rgba(39, 174, 96, 0.3);
+}
+
+.risky-users-table .slds-theme_default {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    color: white;
+    border-color: rgba(149, 165, 166, 0.3);
+}
+
+/* Risk Score Cell Styling */
+.risk-score-cell {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #032d60;
+}
+
+/* Page Info Styling */
+.risky-users-content .slds-text-body_regular {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* Enhanced Pagination Controls */
+.slds-button-group .slds-button {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    color: #495057;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    box-shadow: none;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.slds-button-group .slds-button:hover:not(:disabled) {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.slds-button-group .slds-button:disabled {
+    background: #f8f9fa;
+    color: #adb5bd;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    border-color: #e9ecef;
+}
+
+/* Responsive Design for Full-Screen Interface */
+@media (max-width: 768px) {
+    .risky-users-header {
+        padding: 1rem;
+    }
+    
+    .risky-users-header .slds-grid {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .risky-users-header .app-title {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .risky-users-header h1 {
+        font-size: 1.25rem;
+    }
+    
+    .risk-summary-stats {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .stat-item {
+        flex: 1;
+        min-width: 70px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .user-detail-header .slds-grid {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .risk-score-large {
+        font-size: 2.5rem;
+    }
+    
+    .risky-users-main-content {
+        padding: 1rem;
+    }
+    
+    .user-detail-view {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .risky-users-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .risky-users-header h1 {
+        font-size: 1.125rem;
+    }
+    
+    .risk-summary-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .stat-item {
+        width: 100%;
+        min-width: auto;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .risky-users-header .app-title {
+        gap: 0.5rem;
+    }
+}
+}

@@ -1,0 +1,48 @@
+.stat-card {
+    padding: 1rem;
+    background-color: #f3f3f3;
+    border-radius: 0.25rem;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #706e6b;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #080707;
+}
+
+.stat-privileged {
+    color: #c23934;
+}
+
+.description-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.875rem;
+    background-color: #f4f6f9;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.125rem;
+}
+
+.slds-notify_toast {
+    position: fixed;
+    top: 3rem;
+    right: 1rem;
+    z-index: 10000;
+    min-width: 300px;
+}

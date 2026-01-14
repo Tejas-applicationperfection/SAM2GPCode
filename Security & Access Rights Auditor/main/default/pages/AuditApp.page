@@ -1,0 +1,31 @@
+<!--
+Author     : Tejas K. Kshirsagar
+Description: This VF Page will Include AuditApp.cmp
+-->
+<apex:page controller="AuditObjectiveController" standardStylesheets="false" lightningStyleSheets="true" sidebar="false" >
+       <apex:slds />
+    <apex:includeLightning />
+    <div id="lcdDisplay">
+    </div>  
+     
+    <script src="../../soap/ajax/41.0/connection.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    //Calling Lightning Component from Vf Page
+    $Lightning.use("SA_Audit:PermissionAudit", function(){ 
+        $Lightning.createComponent("SA_Audit:AuditApp",{
+        },
+                                   "lcdDisplay",
+                                   function(component){
+                                       console.log("Lightning Component Rendered Successfully!!");
+                                       //$A.eventService.addHandler({ "event": "c:ToastMessage", "handler": showToast });
+                                   });
+    });
+    function showToast(event) {
+        sforce.one.showToast({
+            "title": "Success",
+            "message": "Welcome to salesforce code crack.",
+            "type": "success"
+        });
+    }
+    </script>
+</apex:page>

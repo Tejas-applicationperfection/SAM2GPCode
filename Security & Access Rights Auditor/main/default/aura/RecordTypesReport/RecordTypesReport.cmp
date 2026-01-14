@@ -1,0 +1,71 @@
+<!--
+@description       : 
+@author            : ChangeMeIn@UserSettingsUnder.SFDoc
+@group             : 
+@last modified on  : 10-19-2021
+@last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<aura:component Controller="RecordTypesReportController"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="selectedTypeOPermission" type="string" />
+    <aura:attribute name="leftValues" type="list" />
+    <aura:attribute name="rightValue" type="list" />
+    <aura:attribute name="allPermissionTypes" type="list" />
+    <div class="slds-box slds-theme_default slds-theme_backgroundColor-lightblue" style="">
+        <div class="slds-page-header">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                <div class="slds-p-horizontal_small slds-size_1-of-1">
+                    <table class="slds-table slds-table_bordered" rendered="true" width="100%">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <th scope="col" style="text-align: left;">
+                                    <div class="slds-truncate" title="Application Perfection"><img
+                                            src="{!$Resource.logoApplicationPerfection}" height="90" width="245" />
+                                    </div>
+                                </th>
+                                <th scope="col" style="text-align: right">
+                                    <lightning:button variant="brand" label="Help/Training"
+                                        onclick="{!c.openContactUSLink}" class="requestButton" />
+                                    <lightning:button variant="brand" label="Request a feature/support"
+                                        onclick="{!c.openContactUSLink}" class="requestButton" />
+                                    <lightning:button variant="brand" label="Release Notes"
+                                        onclick="{!c.openContactUSLink}" class="requestButton" />
+                                </th>
+                                <th scope="col" style="text-align: right; width: 160px;">
+                                    <div class="slds-truncate" title="Security &amp; Access Manager"><img
+                                            src="{!$Resource.logo}" height="95" />
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div><br />
+        <lightning:select name="typeOfPermission" value="{!v.selectedTypeOPermission}" label="Type of the Permission:"
+            onchange="{!c.handleChangeTypeofPermission}">
+            <aura:iteration items="{!v.allPermissionTypes}" var="allPermission">
+                <option value="{!allPermission}">{!allPermission}</option>
+            </aura:iteration>
+        </lightning:select>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+
+                <lightning:dualListbox name="multipleOptions" label="" sourceLabel=" Available Profiles/Permission Sets"
+                    selectedLabel="Selected Profiles/Permission Sets" options="{!v.leftValues}" value="{!v.rightValue}"
+                    onchange="{! c.handleChange }" />
+            </div>
+            <div class="slds-col">
+
+                
+            </div>
+
+        </div>
+
+        <p style="text-align: center; font-size: 10px; font-weight: bold;">Security &amp; Access Manager Functionality
+            Copyright © 2017, Application Perfection Ltd.</p>
+        <p style="text-align: center; font-size: 10px; font-weight: bold;">All rights reserved.</p>
+    </div>
+</aura:component>

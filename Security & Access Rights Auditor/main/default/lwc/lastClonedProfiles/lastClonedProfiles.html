@@ -1,0 +1,16 @@
+<template>
+    <lightning-card title="Last Cloned Profiles" icon-name="action:user">
+        <template if:true={clonedProfiles}>
+            <lightning-datatable 
+                key-field="Id"
+                data={clonedProfiles}
+                columns={columns}
+                hide-checkbox-column="true"
+                class="custom-table"
+            ></lightning-datatable>
+        </template>
+        <template if:true={error}>
+            <p class="slds-text-color_error">Error: {error}</p>
+        </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,112 @@
+<!--
+Author      : Himanshu Kr. Varshney
+Description : This VF is used to generate the Excel File for Filtered Reports
+Dependencies: It is being used in reportManager.cmp
+-->
+<apex:page controller="FilteredReportsExcelController" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#FilteredReports.xls">
+    {!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="s68">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+                </Borders>
+                <Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s69">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+        </Styles>
+        <!--<apex:repeat value="{!ddWList}" var="ddW">-->
+        <Worksheet ss:Name="Filtered Reports">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                <Column ss:AutoFitWidth="0" ss:Width="170"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="250"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Row ss:Height="30"></Row>
+                <Row ss:Height="25">
+                    <Cell></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Report Name</Data></Cell>
+                    <!--<Cell ss:StyleID="s68"><Data ss:Type="String">Type</Data></Cell>-->
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Report Unique Name</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Folder Name</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Filtered By</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Filter Type</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Created Date</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Last Modified Date</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Last Modified By</Data></Cell>
+                </Row>
+                <apex:repeat value="{!reportsList}" var="item">
+                    <Row>
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.reportName)}" escape="true"/></Data></Cell>
+                        <!--<Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.reportType)}" escape="true"/></Data></Cell>-->
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.reportUniqueName)}" escape="true"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.folderName)}" escape="true"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.filterBy)}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.filterType)}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.createdDate)}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.lastModifiedDate)}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String"><apex:outputText value="{!HTMLENCODE(item.lastModifiedByName)}"/></Data></Cell>
+                    </Row>
+                </apex:repeat>
+                <Row ss:Height="30"></Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported from Salesforce.com Org Id:</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.org.Id}" rendered="{!reportInfos.orgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Company</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.org.Name}" rendered="{!reportInfos.orgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Date of Export</Data></Cell>
+                    <Cell ss:StyleID="">
+                        <Data ss:Type="String">
+                            <apex:outputText value="{!NOW()}"/>
+                        </Data>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported By:</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.exportUser}"/></Data></Cell>
+                </Row>
+            </Table>
+        </Worksheet>
+        <!--</apex:repeat>-->
+    </Workbook>
+</apex:page>

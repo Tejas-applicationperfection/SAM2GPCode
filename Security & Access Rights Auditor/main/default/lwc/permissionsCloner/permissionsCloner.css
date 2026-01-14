@@ -1,0 +1,420 @@
+.slds-page-header header flexipageHeader{
+    display:none !important;
+}
+.slds-page-header {
+    display:none !important;
+}
+[app_flexipage-header_header-host]{
+    display:none;
+}
+
+.demo-only{
+    display: inline-flex;
+    max-width: 56%;
+    min-width: 35%;
+    margin-top: 33px !important;
+}
+.THIS .slds-form-element__label  {
+display: none;
+
+}
+
+ 
+.Comb2 .slds-form-element__control{
+    border: 2px solid #b4fff2  !important; /* Light color for the border */
+}
+
+
+.neumorphism-container{
+    border-radius: 27px; 
+    background: #e8dede;
+     box-shadow: inset 19px 19px 38px #c5bdbd,  inset -19px -19px 38px #ffffff;
+}
+ 
+h2{
+    font-family: var(--lwc-fontFamily,-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+        
+    font-size: 16px;
+    margin-left: -7px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+
+}
+
+.This{
+    font-family: var(--lwc-fontFamily,-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+    font-size: 12px;
+}
+      
+:host {
+    font-family: var(--lwc-fontFamily,-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+     
+}
+
+
+
+.slds-form-element label.slds-form-element__label {
+    font-family: var(--lwc-fontFamily,-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+    font-weight: bold;
+    font-size: 1.1em;
+}
+.slds-card{
+     font-family: var(--lwc-fontFamily,-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+    font-weight: 600;
+    height: 100%;
+    padding: 0 5% 13px 5%;
+}
+.colored-icon {
+    fill: #FF5733; /* Replace with your desired color code */
+}
+
+.button-83 {
+    width: inherit;
+    appearance: button;
+    background-color: #8694f4;
+    background-image: linear-gradient(to bottom, #fff, #eceae787);
+    border: 1px solid #d4d2d2;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    color: #444444;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: var(--lwc-fontFamily,-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol');
+    font-size: 100%;
+    flex: 1;
+    font-weight: 700;
+    line-height: 13px;
+    margin: 3px;
+    outline: 2px solid transparent;
+    padding: 0.5rem 0.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow:-6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);
+}
+.button-83:active {
+    /*background-color: #f3f4f6;*/
+    box-shadow: -1px 2px 5px rgba(81,41,10,0.15),0px 1px 1px rgba(81,41,10,0.15);
+    transform: translateY(0.125rem);
+    background: cyan;
+    color: black;
+}
+
+.button-83:focus {
+    box-shadow: rgba(72, 35, 7, .46) 0 0 0 4px, -6px 8px 10px rgba(81,41,10,0.1), 0px 2px 2px rgba(81,41,10,0.2);
+}
+
+
+/*  new from PTOP
+ */
+
+ /* Container with subtle neumorphic styling */
+.neumorphic-container {
+    background: #f2f3f7; /* Light gray background for subtle effect */
+    border-radius: 12px;
+    box-shadow: 6px 6px 10px #d1d9e6, -6px -6px 10px #ffffff; /* Subtle shadows */
+    padding: 1.5rem; /* Add padding for spacing */
+    transition: box-shadow 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+/* Subtle hover effect for the container */
+.neumorphic-container:hover {
+    box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #ffffff; /* Slightly lighter on hover */
+}
+
+/* Heading styling */
+.combohead {
+    font-size: 1.2rem;
+    font-weight: bold;
+   /* margin-bottom: 1rem;*/
+    color: #333; /* Neutral text color */
+}
+
+/* Combobox with subtle neumorphism */
+.neumorphic-combobox {
+    background: #f2f3f7; /* Matches the container background */
+    border-radius: 8px;
+    border: none;
+    padding: 0.6rem;
+    box-shadow: inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff; /* Soft inset shadows */
+    font-size: 1rem;
+    color: #555; /* Neutral text color */
+    transition: box-shadow 0.2s ease-in-out; /* Smooth focus effect */
+}
+
+/* Hover effect for the combobox */
+.neumorphic-combobox:hover {
+    box-shadow: inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff;
+}
+
+/* Active (focus) effect for the combobox */
+.neumorphic-combobox:focus {
+    outline: none;
+    box-shadow: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff; /* Deeper shadows on focus */
+}
+
+/* Overall grid spacing (optional for better alignment) */
+.slds-m-top_medium.slds-grid.slds-gutters {
+    gap: 1rem; /* Add spacing between the columns */
+}
+/* Neumorphic styling for lightning-input */
+.neumorphic-input {
+    background: #f2f3f7; /* Matches container background */
+    border-radius: 8px;
+    border: none;
+    padding: 0.6rem;
+    box-shadow: inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff; /* Soft inset shadows */
+    font-size: 1rem;
+    color: #555; /* Neutral text color */
+    transition: box-shadow 0.2s ease-in-out; /* Smooth focus effect */
+}
+
+/* Hover effect for the input */
+.neumorphic-input:hover {
+    box-shadow: inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #ffffff;
+}
+
+/* Focus effect for the input */
+.neumorphic-input:focus {
+    outline: none;
+    box-shadow: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff; /* Slightly deeper inset shadow */
+}
+
+/* Optional for grid spacing adjustments (if needed) */
+.PermissionInput {
+    margin-left: 0; 
+    max-width: 49.5%;
+}
+
+
+
+/*Header */
+/* Neumorphic Header Container */
+.neumorphic-header {
+    background: #f2f3f7; /* Light gray background */
+    border-radius: 12px; /* Rounded corners for neumorphism */
+    padding: 12px; /* More padding for better spacing */
+    box-shadow: 6px 6px 10px #d1d9e6, -6px -6px 10px #ffffff; /* Subtle shadows */
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Hover effect for header container */
+.neumorphic-header:hover {
+    box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #ffffff; /* Softer hover shadows */
+}
+
+/* Icon Styling */
+.neumorphic-icon {
+    background: #f2f3f7;
+    border-radius: 50%;
+    padding: 8px; /* Spacing around the icon */
+    box-shadow: inset 3px 3px 6px #d1d9e6, inset -3px -3px 6px #ffffff; /* Neumorphic inset effect */
+}
+
+/* Title Text */
+.neumorphic-title {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Clean font family */
+    font-size: 1.25rem; /* Medium size for title */
+    font-weight: bold; /* Bold for emphasis */
+    color: black; /* Neutral text color */
+}
+
+/* General Text Styling */
+.slds-page-header__title {
+    margin-left: 6px; /* Add spacing between "Cloner" and "Instant Permissions Cloner" */
+    color: black;
+}
+
+/* SVG Icon */
+.slds-icon {
+    color: white; /* Neutral color for the SVG icon */
+}
+
+/* Media Figure Alignment */
+.slds-media__figure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-page-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-top: 20px;
+}
+
+.content-section {
+    background: var(--slds-g-color-neutral-base-100, white);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    min-width: 400px;
+    /*height: 79vh;*/
+}
+
+.cloner-section {
+    background: var(--slds-g-color-neutral-base-100, white);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    /*height: 79vh;*/
+    position: sticky;
+    top: 1rem;
+    /*max-width: 400px;*/
+    margin-left: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .main-page-container {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-page-container {
+        grid-template-columns: 1fr;
+    }
+    .cloner-section {
+        max-width: 100%;
+        margin-left: 0;
+    }
+}
+
+.license-filter[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Add these styles to target the helper text */
+.slds-checkbox .slds-form-element__label .slds-text-color_weak {
+    color: #706e6b !important; /* SLDS color token for weak text */
+    font-style: italic !important;
+    font-size: 0.75rem !important;
+    margin-top: 0.5rem !important;
+    display: block !important;
+}
+.itemcombo {
+    flex: 1; /* Equal width for all items */
+    
+    
+  }
+  .custom-input {
+    --sds-c-input-color-border: gainsboro; /* Change border color */
+  }
+
+/* Professional Navigation Buttons */
+.navigation-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+}
+
+.nav-button-professional {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #0176d3 0%, #005fb2 100%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-family: var(--lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 44px;
+    text-decoration: none;
+}
+
+.nav-button-professional:hover {
+    background: linear-gradient(135deg, #005fb2 0%, #014486 100%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.nav-button-professional:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-button-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+}
+
+.nav-button-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.nav-button-description {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.nav-button-icon {
+    display: flex;
+    align-items: center;
+    margin-left: 12px;
+}
+
+.nav-button-icon::after {
+    content: '→';
+    font-size: 16px;
+    font-weight: bold;
+    transition: transform 0.2s ease-in-out;
+}
+
+.nav-button-professional:hover .nav-button-icon::after {
+    transform: translateX(3px);
+}
+
+/* Alternative style for secondary button */
+.nav-button-secondary {
+    background: linear-gradient(135deg, #54698d 0%, #3e5372 100%);
+}
+
+.nav-button-secondary:hover {
+    background: linear-gradient(135deg, #3e5372 0%, #2a3a52 100%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .navigation-buttons-container {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .nav-button-professional {
+        padding: 10px 14px;
+        min-height: 40px;
+    }
+    
+    .nav-button-title {
+        font-size: 13px;
+    }
+    
+    .nav-button-description {
+        font-size: 11px;
+    }
+}

@@ -1,0 +1,979 @@
+<apex:page controller="UserDictionaryController" sidebar="false" showHeader="true"  docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true">
+    <apex:includeLightning />
+    <head>
+        <title>UserDictionary </title>
+        <meta charset="utf-8" />
+        <link href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" rel="stylesheet"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+        <apex:slds />
+        
+        <style type="text/css">
+            .slds-scope p{
+            
+            padding: 2px;
+            
+            }
+            
+            /* Column Visibility Popup Styles */
+            .column-visibility-popup {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                z-index: 9000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .column-visibility-container {
+                background-color: white;
+                width: 600px;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            
+            .column-visibility-header {
+                background-color: #b0c4df;
+                color: #333;
+                padding: 8px 16px;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 4px 4px 0 0;
+            }
+            
+            .column-visibility-body {
+                padding: 16px;
+            }
+            
+            .column-visibility-footer {
+                display: flex;
+                justify-content: center;
+                padding: 12px;
+                border-top: 1px solid #ddd;
+            }
+            
+            .config-type-container {
+                margin-bottom: 16px;
+            }
+            
+            .config-type-options {
+                display: flex;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+            
+            .config-type-option {
+                flex: 1;
+                text-align: center;
+                padding: 8px;
+                cursor: pointer;
+                background-color: #f9f9f9;
+            }
+            
+            .config-type-option.active {
+                background-color: #0070d2;
+                color: white;
+            }
+            
+            .checkbox-container {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            
+            .checkbox-item {
+                width: 50%;
+                margin-bottom: 8px;
+            }
+        </style>
+        <script type="text/javascript">
+        
+        
+        function expandForm() {
+            var outputPanel = document.querySelector(".hideTable");
+            console.log("outputPanel", outputPanel);
+            
+            if (outputPanel) {
+                var displayProperty = window.getComputedStyle(outputPanel).getPropertyValue("display");
+                outputPanel.style.display = displayProperty === 'none' ? 'flex' : 'none';
+            }
+        }
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            console.log('input',input);
+            filter = input.value.toUpperCase();
+            console.log('filter',filter);
+            table = document.getElementById("fieldsTableBody");
+            console.log('table',table);
+            tr = table.getElementsByTagName("tr");
+            
+            for (i = 0; i < tr.length; i++) {
+                
+                td = tr[i].getElementsByTagName("td")[0]; // Assuming the field name is in the first column
+                //console.log('td',td);
+                if (td) {
+                    //console.log('td.textContent',td.textContent);
+                    // console.log('td.innerText',td.innerText);
+                    txtValue = td.textContent || td.innerText;
+                    //console.log('txtValue',txtValue);
+                    // Change the condition to check if the field name starts with the search input
+                    if (txtValue.toUpperCase().includes(filter)) {
+                        console.log('txtinif',txtValue.toUpperCase());
+                        console.log('filter',filter);
+                        tr[i].style.display = "";
+                    } else {
+                        console.log('text none');
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        function clearSearch() {
+            // Get the input element
+            var input = document.getElementById("searchInput");
+            
+            // Clear the input value
+            input.value = '';
+            
+            // Trigger the search function to update the table display
+            searchTable();
+        }
+        
+        
+        
+        </script>
+    </head>
+    
+    
+    <body>
+        
+        <!-- Access Control Check -->
+        <apex:outputPanel rendered="{!NOT(hasAccess)}">
+            <div class="slds-scope">
+                <div class="slds-align_absolute-center" style="margin-top: 100px;">
+                    <div class="slds-text-align_center">
+                        <div style="font-size: 64px; color: #c23934; margin-bottom: 20px;">🔒</div>
+                        <h1 style="font-size: 28px; font-weight: bold; color: #c23934; margin-bottom: 15px;">
+                            Sorry, you do not have access to User Dictionary.
+                        </h1>
+                        <p style="font-size: 16px; color: #444444; margin-bottom: 10px;">
+                            It looks like your current subscription does not include access to User Dictionary.
+                        </p>
+                        <p style="font-size: 16px; color: #444444; margin-bottom: 20px;">
+                            To gain access, please purchase the feature by contacting our support team or visiting 
+                            <a href="https://applicationperfection.com/contact/" target="_blank" style="color: #0070d2; text-decoration: underline;">ApplicationPerfection.com</a>.
+                        </p>
+                        <p style="font-size: 14px; color: #666666;">
+                            If you believe you should have access, please reach out to support for assistance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        
+        <!-- Main Content (only shown if hasAccess is true) -->
+        <apex:outputPanel rendered="{!hasAccess}">
+        <apex:form id="theForm"> 
+            <!-- Hidden fields to track settings state -->
+            <apex:inputHidden id="userSpecificSettingsHidden" value="{!isUserSpecificSettings}"/>
+            <apex:inputHidden id="configType" value="{!configType}"/>
+            
+            <!--  <apex:pageMessages />-->
+            <apex:commandButton styleClass="slds-button slds-button--brand slds-not-selected" value="Create New Remote Site Settings" action="{!CreateEndpoint}" rendered="{!noEndpointMetadata}" status="tableStatus" reRender="theForm"/>
+            <apex:outputPanel rendered="{!!noEndpointMetadata}">
+                <!--<apex:actionPoller action="{!checkAsyncRequest}" interval="5" rerender="form" rendered="{!NOT(ISNULL(AsyncResult))}"/>-->
+                <apex:actionFunction name="deployZip" action="{!deployZip}" rendered="{!ISNULL(AsyncResult)}" rerender="theForm" status="tableStatus">
+                    <apex:param name="data" assignTo="{!ZipData}" value=""/>
+                </apex:actionFunction>
+                <c:Zip name="generateZip" oncomplete="deployZip(data);" rendered="{!ISNULL(AsyncResult) && isDeploy && !isEdit}">
+                    <c:Zipentry path="package.xml" data="{!PackageXml}"/>
+                    <c:Zipentry path="objects/{!selectedObject}.object" data="{!NewDescription}"/>
+                </c:Zip>
+                
+                <div class="slds-scope">
+                    <div class="slds-form-element">
+                        <table class="slds-table slds-table_bordered " width="100%" >
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="text-align: left;background-color: transparent;">
+                                        <div class="slds-truncate" title="Application Perfection">
+                                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <th scope="col" style="display: flex;  float: right;    margin-bottom: 11px;    width: 48%;    background-color: transparent;margin-top: 13px;">
+                                        <apex:commandLink value="Help/Training" action="{!openHelpTraining}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                        <apex:commandLink value="FAQ's" action="{!openFAQ}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                        <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                        <apex:commandLink value="Release Notes" action="{!openReleaseNotes}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                    </th>
+                                    <th scope="col" style="text-align: right; width: 160px;background-color: transparent;">
+                                        <div class="slds-truncate" title="Security & Access Manager">
+                                            <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                        
+                        <apex:outputPanel id="errorSection">
+                            <apex:pageMessages />
+                        </apex:outputPanel>
+                        
+                        
+                        
+                        <div class="demo-only demo-only--sizing slds-grid slds-wrap hideTable "  style="border-top: 1px solid lightgray;padding-top: 15px;">
+                            
+                            
+                            <!-- first grid -->
+                            <div class="slds-p-horizontal_small slds-size_1-of-4 selectOptions2"  >
+                                <div class="slds-col slds-align-left slds-p-left_medium slds-p-right_xx-large" styleClass="width: 45em">
+                                    <strong>Type of object</strong> <br></br>
+                                <apex:selectList value="{!selectedType}" size="1" id="IdOfSelectType" styleClass="slds-select">
+                                    <apex:selectOptions value="{!objectsType}"/>
+                                    <apex:actionSupport event="onchange" rerender="theForm, selectionTable" action="{!changeType}" status="tableStatus"/>
+                                </apex:selectList>
+                                <apex:selectList value="{!selectedObject}" size="1" id="IdOfSelectElement" styleClass="slds-select">
+                                    <apex:selectOptions value="{!objectsList}"/>
+                                    <apex:selectOptions value="{!objectsList1}"/>
+                                    <apex:actionSupport event="onchange" rerender="theForm" action="{!changeObject}" status="tableStatus"/>
+                                </apex:selectList> 
+                            </div> 
+                        </div>
+                        
+                        <!-- second grid
+<div class="slds-p-horizontal_small slds-size_1-of-4 selectOptions2"  >
+<strong>Type of Profiles</strong> <br></br>
+<apex:selectList value="{!selectedPerm}" size="1" styleClass="slds-select">
+<apex:selectOptions value="{!PermissionType}"/>
+<apex:actionSupport event="onchange" rerender="theForm, selectionTable" action="{!changePermType}" status="tableStatus"/>
+</apex:selectList>
+<apex:selectList value="{!selectedProfile}" size="1" id="profileSelectList" styleClass="slds-select">
+<apex:selectOptions value="{!profilesList}"/>
+<apex:actionSupport event="onchange" rerender="theForm" action="{!retrieveRecords}" status="tableStatus"/>
+<apex:actionSupport event="onload" rerender="theForm" action="{!retrieveRecords}" status="tableStatus"/>
+</apex:selectList>
+</div> -->
+                        
+                        <!--  thirdgrid  
+<div class="slds-size_2-of-4" style="display: flex; justify-content: flex-end;" >
+<c:MultiselectPicklist id="multiselect"
+leftLabel="Permission Sets"
+disableComponents="false"
+leftOption="{!permissionList}"
+leftOption1="{!permissionListLeftoption1}"
+rightLabel="Selected Permission Sets"
+rightOption="{!selectedPermission}"
+size="8"
+width="180px"
+/>
+</div>
+-->
+                        <!--  fourthgrid -->
+                        <div class="buts slds-size_2-of-4" id="buttons" style="display:flex; margin-top: auto; align-items: flex-end;padding-left: 15px;">
+                            <div>    
+                                <apex:commandButton styleClass="b83" style=" width: 120px;height: 40px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" value="Go" action="{!createDescriptionMap}"  rendered="{!!isEdit && editAccess}">
+                                    <apex:actionSupport event="onclick" rerender="theForm" action="{!retrieveRecords}" status="tableStatus"/>
+                                </apex:commandButton>
+                            </div>
+                            <div    >
+                                <apex:commandButton styleClass="  b83" style=" width: 120px;height: 40px; justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" value="Edit" action="{!Edit}" rendered="{!!isEdit && editAccess}" status="tableStatus" reRender="theForm"/>
+                            </div>
+
+                            <!-- New Manage Column Visibility Button -->
+                            <div>
+                                <apex:commandButton styleClass="b83" style=" width: 180px;height: 40px; justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" value="Manage Column Visibility" action="{!openColumnVisibilityPopup}" rendered="{!editAccess}" status="tableStatus" reRender="columnVisibilityPopup"/>
+                            </div>
+                            
+                            <!-- <div    >
+<apex:commandButton styleClass="  b83" style=" width: inherit; appearance: button;justify-content: center; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%); width: 150px;height: 40px;" value="Export To Excel" action="{!ExportToExcel}" rendered="{!!isEdit}"/>
+</div>-->
+                            <div    >
+                                <apex:commandButton styleClass="  b83" style=" width: inherit; appearance: button;justify-content: center; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%); width: 243px;height: 40px;" action="{!yesPopUp}" value="Select Object for Export to Excel" reRender="tstpopup, errorMessage" status="tableStatus" rendered="{!!isEdit && editAccess}" onclick="expandForm();" />
+                            </div>
+                            <div      >
+                                <apex:commandButton styleClass="  b83"  style=" width: inherit; appearance: button;justify-content: center; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%); width: 195px;height: 40px;" value="Show All Fields" rendered="{!editAccess}"/>
+                            </div> 
+                            
+                            
+                            <div  >
+                                <apex:commandButton styleClass="  b83" style=" width: inherit; appearance: button;justify-content: center; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);width: 150px;height: 40px;" value="Report" action="{!reportSensitiveData}" rendered="{!!isEdit && editAccess}" status="tableStatus"/>
+                            </div>
+                            <div      >
+                                <apex:commandButton styleClass="  b83"  style=" width: inherit; appearance: button;justify-content: center; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%); width: 195px;height: 40px;" value="Save Changes For Deploy" action="{!SaveMap}" rendered="{!isEdit}" status="tableStatus" reRender="theForm"/>
+                            </div> 
+                            <div     >
+                                <apex:commandButton styleClass="  b83"  style=" width: inherit; appearance: button;justify-content: center; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%); width: 150px;height: 40px;" value="Cancel" action="{!Cancel}" rendered="{!isEdit}" status="tableStatus" reRender="theForm"/>
+                            </div>
+                            
+                        </div>
+                        
+                        <!--  fifth grid -->
+                        <div class="slds-size_2-of-4">
+                            
+                        </div>
+                        
+                    </div>   
+                    
+                    <apex:outputPanel id="tstpopup">
+                        <div style="  border-radius: 9px;  display: flex;flex-direction: column;align-items: center;border: 1px solid lightblue;">
+                            
+                            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+                            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                                <!-- Below div is for Export fields-->   
+                                
+                                
+                                <div style="border: 1px solid gray; padding: 1px;border-radius: 5px;margin: 0;">
+                                    <Strong> 
+                                        <p style="background-color: lightsteelblue;font-weight: bold;font-size: 0.8rem;font-family: monospace,sans-serif; border-radius: 4px; padding: 2px;padding-left: 15px;">
+                                            Select Fields To Export: 
+                                        </p>
+                                    </Strong>
+                                    <div style="display: flex; align-content: space-around;justify-content: space-evenly;align-items: center;">
+                                        <apex:inputCheckbox value="{!isField1}" label="Description " >
+                                            <p>Description</p>
+                                            <apex:actionSupport event="onchange" action="{!toggleValue1}" reRender="multiselectComponents" />
+                                        </apex:inputCheckbox> <br/>
+                                        <apex:inputCheckbox value="{!isField2}" label="Helptext " >
+                                            <p>Helptext </p>
+                                            <apex:actionSupport event="onchange" action="{!toggleValue2}" reRender="multiselectComponents" />
+                                        </apex:inputCheckbox><br/>
+                                        <apex:inputCheckbox value="{!isField3}" label="Highlighted Data " >
+                                            <p>Highlighted Data</p>
+                                            <apex:actionSupport event="onchange" action="{!toggleValue3}" reRender="multiselectComponents" />
+                                        </apex:inputCheckbox><br/>
+                                        <apex:inputCheckbox value="{!isField4}" label="Sensitivity ">
+                                            <p>Sensitivity</p>
+                                            <apex:actionSupport event="onchange" action="{!toggleValue4}" reRender="multiselectComponents" />
+                                        </apex:inputCheckbox><br/>
+                                        
+                                        <apex:inputCheckbox value="{!isField6}" label="Field Usage ">
+                                            <p>Field Usage</p>
+                                            <apex:actionSupport event="onchange" action="{!toggleValue6}" reRender="multiselectComponents" />
+                                        </apex:inputCheckbox><br/>
+                                        
+                                        <apex:inputCheckbox value="{!isField7}" label="Data Owner ">
+                                            <p>Data Owner</p>
+                                            <apex:actionSupport event="onchange" action="{!toggleValue7}" reRender="multiselectComponents" />
+                                        </apex:inputCheckbox><br/>
+                                        
+                                        <apex:inputCheckbox value="{!isField8}" label="Compliance Categorization ">
+                                            <p>Compliance Categorization</p>
+                                            <apex:actionSupport event="onchange" action="{!toggleValue8}" reRender="multiselectComponents" />
+                                        </apex:inputCheckbox><br/>
+                                    </div> 
+                                </div>
+                                
+                                <div style="border:1px solid gray;border-radius:5px;">
+                                    
+                                    
+                                    
+                                    
+                                    <c:MultiselectPicklist id="multiselectComponents"
+                                                           leftLabel="Available Objects"
+                                                           disableComponents="{!IF(isField1||isField2||isField3||isField4||isField6||isField7||isField8, false, true)}"
+                                                           leftOption="{!objectsList}"
+                                                           leftOption1=""
+                                                           rightLabel="Selected Objects"
+                                                           rightOption="{!selectedObjectsList}"
+                                                           size="8"
+                                                           width="180px"
+                                                           />
+                                    
+                                </div>
+                                
+                                <div id="noOfObjects"></div>
+                                <apex:actionStatus id="popupStatus" layout="block">
+                                    <apex:facet name="start">
+                                        <p >
+                                            <div class="slds-spinner_container slds-is-fixed">
+                                                <div role="status" class="slds-spinner slds-spinner_large slds-spinner_brand">
+                                                    <span class="slds-assistive-text">Loading</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                        </div>
+                                    </p>
+                                </apex:facet>
+                                <apex:facet name="stop"></apex:facet>
+                            </apex:actionStatus>
+                            <apex:outputPanel id="erorrMessage">
+                                <apex:pageMessages />
+                            </apex:outputPanel>
+                            <div style="text-align: center">
+                                <br/>
+                                <apex:commandButton value="Export to Excel"  onclick="expandForm();" action="{!SelectObjectForExportToExcel}" rerender="tstpopup, erorrMessage, {!If(displayPopup == false, 'exportToExcel', '')}" status="popupStatus" style=" width: inherit; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer; font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button_success"/>
+                                <apex:commandButton value="Cancel" action="{!closePopup}" rerender="tstpopup, theForm" status="popupStatus" style=" width: inherit; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer; font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button_destructive"/>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel id="exportToExcel" rendered="{!selectedObjectsList.size > 0 && isReadyToDownload}">
+                            <script>
+                            callBackFunctionExportToExcel();
+                            </script>
+                        </apex:outputPanel>
+                        <apex:actionFunction action="{!ExportToExcel}" name="callBackFunctionExportToExcel"/>
+                        <apex:actionFunction name="retrieveRecords" action="{!retrieveRecords}" rerender="theForm" status="tableStatus"/>
+                    </div>
+                </apex:outputPanel>
+                
+                <a href="javascript:void(0);" onclick="expandForm();" class="expand-link" style="text-decoration:none">
+                    <i class="la la-expand expand-icon"></i> Filters(Hide/Show)
+                </a>
+                <div class="slds-align_absolute-center slds-text-color_error">
+                    <apex:outputText style="text-align: center; text-decoration-style: red" value="Your changes have been saved for review. To deploy your changes to the database please press Deploy." rendered="{!isDeploy && !isEdit}"/>
+                </div>
+                <br/>
+                <apex:actionStatus id="tableStatus" layout="block">
+                    <apex:facet name="start">
+                        <p >
+                            <div class="slds-spinner_container slds-is-fixed">
+                                <div role="status" class="slds-spinner slds-spinner_large">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                        </div>
+                    </p>
+                </apex:facet>
+                <apex:facet name="stop"></apex:facet>
+            </apex:actionStatus>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;" class="butss2">
+                <div style="display: flex; align-items: center;">
+                    <label for="searchInput" style="margin-right: 8px;"><strong>Search Fields :</strong></label>
+                    
+                    <input class="form-control" id="searchInput" type="text" oninput="searchTable()" placeholder="Enter Field Name..." style="width: 50%; padding: 2px; border-radius: 10px;padding-left: 10px;"></input>  
+                <!-- <button type="button" onclick="clearSearch()" styleClass="b83" style=" width: 120px;height: 40px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);">
+Clear
+</button> -->
+            </div>
+        </div>
+        
+        <apex:outputPanel id="table" layout="block">
+            
+            <div class="slds-table--header-fixed_container" style=" margin-top: 35px;background-color: #f6f6f6;">
+                <div class="slds-scrollable" style="height: 100vh; overflow-y: auto;">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-max-medium-table_stacked-horizontal slds-table--header-fixed slds-table_fixed-layout">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                
+                                <apex:outputPanel layout="none" rendered="{!showFieldNameColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 30%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_x-small" title="Field Name" style="background-color: #f6f6f6;"><strong>Field Name</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showFieldTypeColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 10%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_x-small" title="Field Name" style="background-color: #f6f6f6;"><strong>Field Type</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showDescriptionColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 30%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_x-small" title="Description" style="background-color: #f6f6f6;"><strong>Description</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showHelpTextColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 30%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_x-small" title="Help Text" style="background-color: #f6f6f6;"><strong>Help Text</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showHighlightedDataColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 10%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_xx-small" title="GDPR" style="background-color: #f6f6f6;"><strong>Highlighted <br/>Data</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showSensitivityColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 10%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_xx-small" title="GDPR" style="background-color: #f6f6f6;" ><strong>Sensitivity</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showFieldUsageColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 10%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_xx-small" title="GDPR" style="background-color: #f6f6f6;" ><strong>Field Usage</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showDataOwnerColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 10%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_xx-small" title="GDPR" style="background-color: #f6f6f6;" ><strong>Data Owner</strong></div>
+                                    </th>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel layout="none" rendered="{!showComplianceCategorizationColumn}">
+                                    <th scope="col" class="slds-cell-wrap" style="width: 10%">
+                                        <div class="slds-truncate slds-cell-fixed slds-p-top_xx-small" title="GDPR" style="background-color: #f6f6f6;">
+                                            <apex:outputPanel style="display: inline-block; margin-right: 2px;">
+                                                <span style="font-size: xx-small; font-weight: 700;">
+                                                    <apex:image value="{!URLFOR($Resource.HelpIconInGreen)}" style="height: 15px;" title="Press ctrl+select to choose multiple picklist value"/>
+                                                </span>
+                                            </apex:outputPanel>
+                                            <strong>Compliance <br/>Categorization</strong>
+                                        </div>
+                                    </th>
+                                </apex:outputPanel>
+                            
+                            </tr>
+                        </thead>
+                        <tbody id="fieldsTableBody" >
+                            <apex:repeat value="{!fieldDescriptionMap}" var="fieldName">
+                                <tr style=" line-height: 11px;">
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showFieldNameColumn}">
+                                        <td data-label="Field Name" class="slds-cell-wrap" style="width: 30%">
+                                            <div class="slds-wrap" title="{!HTMLENCODE(fieldName)}"><apex:outputText value="{!HTMLENCODE(fieldName)}" escape="false" /></div>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showFieldTypeColumn}">
+                                        <td data-label="Field Type" class="slds-cell-wrap" style="width: 30%">
+                                            <div class="slds-wrap" title="FieldName">
+                                                
+                                                <apex:outputText value="{!IF(CONTAINS(fieldDescriptionMap[fieldName][5],'string'), 'Text', IF(CONTAINS(fieldDescriptionMap[fieldName][5],'reference'), 'Lookup', IF(CONTAINS(fieldDescriptionMap[fieldName][5],'integer'), 'Number', fieldDescriptionMap[fieldName][5])))}"/>
+                                                
+                                            </div>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showDescriptionColumn}">
+                                        <td data-label="Description" class="slds-cell-wrap" style="width: 30%">
+                                            <div class="slds-wrap" title="{!HTMLENCODE(fieldDescriptionMap[fieldName][0])}">
+                                                <apex:inputTextarea value="{!fieldDescriptionMap[fieldName][0]}" rows="1" style="width: 100%;" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}"/><!-- && IF(contains(fieldName, '__c'), true, false)}-->
+                                                <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][0])}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'false'}"/>
+                                                <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][0])}" escape="false" rendered="{!!isEdit}"/>
+                                            </div>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showHelpTextColumn}">
+                                        <td data-label="Help Text" class="slds-cell-wrap" style="width: 30%">
+                                            <div class="slds-wrap" title="{!HTMLENCODE(fieldDescriptionMap[fieldName][1])}">
+                                                <apex:inputTextarea value="{!fieldDescriptionMap[fieldName][1]}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}" style="width: 100%;" rows="1"/>
+                                                <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][1])}" rendered="{!NOT(isEdit)}"/>
+                                            </div>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showHighlightedDataColumn}">
+                                        <td data-label="GDPR" class="slds-cell-wrap" style="width: 10%">
+                                            <apex:inputCheckbox value="{!fieldGDPRMap[fieldName]}" style="pointer-events: {!IF(!isEdit, 'none', '')};" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}"/>
+                                            <apex:inputCheckbox value="{!fieldGDPRMap[fieldName]}" rendered="{!!isEdit}" disabled="true" style="pointer-events: {!IF(!!isEdit, 'none', '')};"/>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showSensitivityColumn}">
+                                        <td data-label="sensitivity" class="slds-cell-wrap" style="width: 10%">
+                                            <div class="slds-wrap" title="Class" >
+                                                <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][4]) }" rendered="{!!isEdit }"  />
+                                                
+                                                <apex:selectList value="{!fieldDescriptionMap[fieldName][4]}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}"  size="1" > 
+                                                    <apex:selectOption itemValue="None"  itemLabel="None" rendered="{!IF(CONTAINS(fieldDescriptionMap[fieldName][4],''), 'true','False')}"/>
+                                                    <apex:selectOption itemValue="Public"  itemLabel="Public" />
+                                                    <apex:selectOption itemValue="Internal" itemLabel="Internal" />
+                                                    <apex:selectOption itemValue="Confidential" itemLabel="Confidential" />
+                                                    <apex:selectOption itemValue="Restricted" itemLabel="Restricted"/>
+                                                    <apex:selectOption itemValue="MissionCritical" itemLabel="MissionCritical"/>
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showFieldUsageColumn}">
+                                        <td data-label="Field Usage" class="slds-cell-wrap" style="width: 10%;" >
+                                            <div class="slds-wrap" title="Class">
+                                                <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][7])}" rendered="{!!isEdit}" />
+                                                
+                                                <apex:selectList value="{!fieldDescriptionMap[fieldName][7]}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}" size="1" style="width: 100%; margin-left:10px;" >
+                                                    <apex:selectOption itemValue="None" itemLabel="None" rendered="{!IF(CONTAINS(fieldDescriptionMap[fieldName][7],''), 'true','False')}"/>
+                                                    <apex:selectOption itemValue="Active" itemLabel="Active" />
+                                                    <apex:selectOption itemValue="DeprecateCandidate" itemLabel="DeprecateCandidate" />
+                                                    <apex:selectOption itemValue="Hidden" itemLabel="Hidden" />
+                                                </apex:selectList>
+                                            </div>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showDataOwnerColumn}">
+                                        <td data-label="Data Owner" class="slds-cell-wrap" style="width: 10%;">
+                                            <div class="slds-wrap" title="Data Owner">
+                                                
+                                                <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][8])}" escape="false"/>
+                                            </div>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!showComplianceCategorizationColumn}">
+                                        <td data-label="Compliance Categorization" class="slds-cell-wrap" style="width: 10%;">
+                                            <div class="slds-wrap" title="Compliance Categorization">
+                                                <apex:outputPanel rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}">
+                                                    <apex:outputText value="{!fieldDescriptionMap[fieldName][9]}" />
+                                                    
+                                                    
+                                                    <apex:selectList value="{!fieldDescriptionMap[fieldName][9]}" 
+                                                                     multiselect="true" 
+                                                                     size="5" style="width: 100%; margin-left:15px;" 
+                                                                     title="Press Ctrl + Select to choose multiple picklist values">
+                                                        <apex:selectOption itemValue="PII" itemLabel="PII" />
+                                                        <apex:selectOption itemValue="HIPAA" itemLabel="HIPAA" />
+                                                        <apex:selectOption itemValue="GDPR" itemLabel="GDPR" />
+                                                        <apex:selectOption itemValue="PCI" itemLabel="PCI" />
+                                                        <apex:selectOption itemValue="COPPA" itemLabel="COPPA" />
+                                                        <apex:selectOption itemValue="CCPA" itemLabel="CCPA" />
+                                                    </apex:selectList>
+                                                    
+                                                    
+                                                </apex:outputPanel>
+                                                
+                                                
+                                                <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][9])}" rendered="{!!isEdit}" />
+                                            </div>
+                                        </td>
+                                    </apex:outputPanel>
+                                    
+                                    
+                                    
+                                     
+                                    
+                                    <td style="width: 5%"></td> <!-- Empty td for space -->
+                                    
+                                    
+                                    
+                                    
+                                    
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </div>
+</div>
+</apex:outputPanel>
+
+<apex:outputPanel id="columnVisibilityPopup">
+    <div class="column-visibility-popup" style="display: {!IF(displayColumnVisibilityPopup, 'flex', 'none')};">
+        <div class="column-visibility-container">
+            <div class="column-visibility-header">
+                Manage Column Visibility by Profile or User
+            </div>
+            <div class="column-visibility-body">
+                <div class="slds-grid slds-gutters slds-p-around_medium">
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-form-element">
+                            <fieldset class="slds-form-element">
+                                <legend class="slds-form-element__legend slds-form-element__label">Configuration Type</legend>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-radio_button-group">
+                                        <span class="slds-button slds-radio_button">
+                                            <input type="radio" id="profileRadio" name="configType" onchange="toggleConfigType('profile');" checked="checked"/>
+                                            <label class="slds-radio_button__label" for="profileRadio">
+                                                <span class="slds-radio_faux">By Profile</span>
+                                            </label>
+                                        </span>
+                                        <span class="slds-button slds-radio_button">
+                                            <input type="radio" id="userRadio" name="configType" onchange="toggleConfigType('user');"/>
+                                            <label class="slds-radio_button__label" for="userRadio">
+                                                <span class="slds-radio_faux">By User</span>
+                                            </label>
+                                        </span>
+                                        <span class="slds-button slds-radio_button">
+                                            <input type="radio" id="permissionSetRadio" name="configType" onchange="toggleConfigType('permissionset');"/>
+                                            <label class="slds-radio_button__label" for="permissionSetRadio">
+                                                <span class="slds-radio_faux">By Permission Set</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slds-grid slds-gutters slds-p-around_medium">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element" id="profileSelectContainer">
+                            <label class="slds-form-element__label" for="profileSelect">Select Profile</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!selectedProfileForColumnVisibility}" size="1" id="profileSelect" styleClass="slds-select">
+                                    <apex:selectOptions value="{!profilesForColumnVisibility}"/>
+                                    <apex:actionSupport event="onchange" action="{!loadColumnVisibilityForProfile}" 
+                                                       reRender="columnVisibilityPopup, errorSection" 
+                                                       status="columnVisibilityStatus"
+                                                       oncomplete="updateConfigTypeUI();"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element" id="userSelectContainer" style="display: none;">
+                            <label class="slds-form-element__label" for="userSelect">Select User</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!selectedUserForColumnVisibility}" size="1" id="userSelect" styleClass="slds-select">
+                                    <apex:selectOptions value="{!usersForColumnVisibility}"/>
+                                    <apex:actionSupport event="onchange" action="{!loadColumnVisibilityForUser}" 
+                                                       reRender="columnVisibilityPopup, errorSection" 
+                                                       status="columnVisibilityStatus"
+                                                       oncomplete="updateConfigTypeUI();"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element" id="permissionSetSelectContainer" style="display: none;">
+                            <label class="slds-form-element__label" for="permissionSetSelect">Select Permission Set</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!selectedPermissionSetForColumnVisibility}" size="1" id="permissionSetSelect" styleClass="slds-select">
+                                    <apex:selectOptions value="{!permissionSetsForColumnVisibility}"/>
+                                    <apex:actionSupport event="onchange" action="{!loadColumnVisibilityForPermissionSet}" 
+                                                       reRender="columnVisibilityPopup, errorSection" 
+                                                       status="columnVisibilityStatus"
+                                                       oncomplete="updateConfigTypeUI();"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slds-grid slds-gutters slds-p-around_medium">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">Profile Information</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-box slds-theme_shade">
+                                    <p>
+                                        <strong>Selected Profile:</strong> <span id="selectedProfileName"></span>
+                                    </p>
+                                    <p class="slds-text-body_small slds-m-top_x-small">
+                                        User-specific settings take precedence over profile settings. If a user doesn't have specific settings, they'll inherit their profile's settings.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add the checkbox section here -->
+                <div class="slds-grid slds-gutters slds-p-around_medium">
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="checkbox-container">
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showFieldNameColumn}" id="showFieldNameColumn">
+                                    <apex:outputLabel for="showFieldNameColumn" styleClass="slds-checkbox__label">
+                                        Show Field Name Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showFieldTypeColumn}" id="showFieldTypeColumn">
+                                    <apex:outputLabel for="showFieldTypeColumn" styleClass="slds-checkbox__label">
+                                        Show Field Type Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showDescriptionColumn}" id="showDescriptionColumn">
+                                    <apex:outputLabel for="showDescriptionColumn" styleClass="slds-checkbox__label">
+                                        Show Description Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showHelpTextColumn}" id="showHelpTextColumn">
+                                    <apex:outputLabel for="showHelpTextColumn" styleClass="slds-checkbox__label">
+                                        Show Help Text Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showHighlightedDataColumn}" id="showHighlightedDataColumn">
+                                    <apex:outputLabel for="showHighlightedDataColumn" styleClass="slds-checkbox__label">
+                                        Show Highlighted Data Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showSensitivityColumn}" id="showSensitivityColumn">
+                                    <apex:outputLabel for="showSensitivityColumn" styleClass="slds-checkbox__label">
+                                        Show Sensitivity Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showFieldUsageColumn}" id="showFieldUsageColumn">
+                                    <apex:outputLabel for="showFieldUsageColumn" styleClass="slds-checkbox__label">
+                                        Show Field Usage Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showDataOwnerColumn}" id="showDataOwnerColumn">
+                                    <apex:outputLabel for="showDataOwnerColumn" styleClass="slds-checkbox__label">
+                                        Show Data Owner Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                            
+                            <div class="checkbox-item">
+                                <apex:inputCheckbox value="{!showComplianceCategorizationColumn}" id="showComplianceCategorizationColumn">
+                                    <apex:outputLabel for="showComplianceCategorizationColumn" styleClass="slds-checkbox__label">
+                                        Show Compliance Categorization Column
+                                    </apex:outputLabel>
+                                </apex:inputCheckbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column-visibility-footer">
+                <apex:commandButton value="Save Settings" action="{!saveColumnVisibilitySettingsWithType}" 
+                                   rerender="columnVisibilityPopup,errorSection" status="columnVisibilityStatus" 
+                                   styleClass="slds-button slds-button_brand slds-m-right_small"
+                                   oncomplete="updateConfigTypeUI();"/>
+                
+                <apex:commandButton value="Cancel" action="{!closeColumnVisibilityPopup}" 
+                                   rerender="columnVisibilityPopup" status="columnVisibilityStatus" 
+                                   styleClass="slds-button slds-button_neutral"
+                                   oncomplete="updateConfigTypeUI();"/>
+            </div>
+        </div>
+    </div>
+    
+    <apex:actionStatus id="columnVisibilityStatus">
+        <apex:facet name="start">
+            <div class="slds-spinner_container slds-is-fixed">
+                <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </apex:facet>
+        <apex:facet name="stop"></apex:facet>
+    </apex:actionStatus>
+</apex:outputPanel>
+
+</apex:form>
+</apex:outputPanel>
+<!-- End Access Granted Content -->
+
+<p style="text-align: center; font-size: 10px; font-weight: bold;">Security &amp; Access Manager Functionality Copyright © 2017, Application Perfection Ltd.</p> 
+<p style="text-align: center; font-size: 10px; font-weight: bold;">All rights reserved.</p>
+
+<script type="text/javascript">
+    // Call toggleConfigType based on the current configType value when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        var configTypeInput = document.querySelector('input[id$="configType"]');
+        var type = 'profile'; // Default
+        
+        if (configTypeInput && configTypeInput.value) {
+            type = configTypeInput.value; // Use current configType value if available
+        }
+        
+        toggleConfigType(type);
+    });
+    
+    // Function to be called after rerender
+    function updateConfigTypeUI() {
+        var configTypeInput = document.querySelector('input[id$="configType"]');
+        if (configTypeInput && configTypeInput.value) {
+            // Update the radio buttons based on the current value
+            var type = configTypeInput.value;
+            document.getElementById('profileRadio').checked = (type === 'profile');
+            document.getElementById('userRadio').checked = (type === 'user');
+            document.getElementById('permissionSetRadio').checked = (type === 'permissionset');
+            
+            // Show/hide the appropriate containers
+            var profileContainer = document.getElementById('profileSelectContainer');
+            var userContainer = document.getElementById('userSelectContainer');
+            var permissionSetContainer = document.getElementById('permissionSetSelectContainer');
+            
+            if (profileContainer) profileContainer.style.display = (type === 'profile') ? 'block' : 'none';
+            if (userContainer) userContainer.style.display = (type === 'user') ? 'block' : 'none';
+            if (permissionSetContainer) permissionSetContainer.style.display = (type === 'permissionset') ? 'block' : 'none';
+        }
+    }
+
+    function toggleConfigType(type) {
+        // Get container elements
+        var profileContainer = document.getElementById('profileSelectContainer');
+        var userContainer = document.getElementById('userSelectContainer');
+        var permissionSetContainer = document.getElementById('permissionSetSelectContainer');
+        
+        // Hide all containers first
+        if (profileContainer) profileContainer.style.display = 'none';
+        if (userContainer) userContainer.style.display = 'none';
+        if (permissionSetContainer) permissionSetContainer.style.display = 'none';
+        
+        // Show the appropriate container
+        if (type === 'profile' && profileContainer) {
+            profileContainer.style.display = 'block';
+            // Set hidden input values
+            var isUserSpecificSettingsInput = document.querySelector('input[id$="isUserSpecificSettings"]');
+            if (isUserSpecificSettingsInput) {
+                isUserSpecificSettingsInput.value = 'false';
+            }
+            var configTypeInput = document.querySelector('input[id$="configType"]');
+            if (configTypeInput) {
+                configTypeInput.value = 'profile';
+            }
+        } else if (type === 'user' && userContainer) {
+            userContainer.style.display = 'block';
+            // Set hidden input values
+            var isUserSpecificSettingsInput = document.querySelector('input[id$="isUserSpecificSettings"]');
+            if (isUserSpecificSettingsInput) {
+                isUserSpecificSettingsInput.value = 'true';
+            }
+            var configTypeInput = document.querySelector('input[id$="configType"]');
+            if (configTypeInput) {
+                configTypeInput.value = 'user';
+            }
+        } else if (type === 'permissionset' && permissionSetContainer) {
+            permissionSetContainer.style.display = 'block';
+            // Set hidden input values - keep isUserSpecificSettings as false but set configType
+            var isUserSpecificSettingsInput = document.querySelector('input[id$="isUserSpecificSettings"]');
+            if (isUserSpecificSettingsInput) {
+                isUserSpecificSettingsInput.value = 'false';
+            }
+            var configTypeInput = document.querySelector('input[id$="configType"]');
+            if (configTypeInput) {
+                configTypeInput.value = 'permissionset';
+            }
+        }
+        
+        // Update radio button states
+        document.getElementById('profileRadio').checked = (type === 'profile');
+        document.getElementById('userRadio').checked = (type === 'user');
+        document.getElementById('permissionSetRadio').checked = (type === 'permissionset');
+        
+        // Trigger Apex controller method
+        if (typeof toggleUserSpecificSettings === 'function') {
+            toggleUserSpecificSettings();
+        }
+    }
+</script>
+
+</body>
+</apex:page>

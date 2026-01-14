@@ -1,0 +1,192 @@
+<template>
+    <div class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>{title}</span>
+                        <lightning-button-icon
+                            icon-name="utility:refresh"
+                            variant="border-filled"
+                            alternative-text="Refresh"
+                            class="slds-m-left_x-small"
+                            title="Refresh">
+                        </lightning-button-icon>
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="slds-card__body">
+            
+            <!-- Search Input -->
+            <div class="slds-m-bottom_small">
+                <template if:true={showIncludeAllToggle}>
+                    <lightning-input type="checkbox" label="Include All Active Users" checked={includeAllChecked} onchange={handleIncludeAllToggle} class="slds-m-bottom_x-small"></lightning-input>
+                </template>
+                
+                <!-- License Type Filter - Only show for Users -->
+                <template if:true={showLicenseFilter}>
+                    <div class="slds-m-bottom_x-small">
+                        <lightning-combobox
+                            label="Filter by License Type"
+                            value={selectedLicenseType}
+                            options={licenseTypeOptions}
+                            onchange={handleLicenseTypeChange}
+                            variant="label-hidden"
+                            placeholder="Select License Type">
+                        </lightning-combobox>
+                    </div>
+                </template>
+                
+                <lightning-input type="text" placeholder={searchPlaceholder} onchange={handleSearchChange} icon-name="utility:search" variant="label-hidden"></lightning-input>
+            </div>
+            
+            <!-- Count and Loading Indicator -->
+            <div class="slds-grid slds-p-vertical_x-small">
+                <div class="slds-col">
+                    <div class="slds-text-color_weak slds-text-body_small">{countLabel}</div>
+                </div>
+                <div class="slds-col slds-shrink-none">
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading" size="x-small"></lightning-spinner>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Select All Checkbox -->
+            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-checkbox">
+                                <input type="checkbox" 
+                                       id={selectAllId} 
+                                       checked={isSelectAllChecked} 
+                                       onchange={handleSelectAll} />
+                                <label class="slds-checkbox__label" for={selectAllId}>
+                                    <span class="slds-checkbox_faux"></span>
+                                    <span class="slds-form-element__label">Select All</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <template if:true={showPrivilegedFilter}>
+                    <div class="slds-col slds-shrink-none">
+                        <lightning-button 
+                            label="Select All Privileged" 
+                            variant="brand"
+                            icon-name="utility:shield"
+                            onclick={handleSelectAllPrivileged}
+                            size="small"
+                            class="slds-button_destructive">
+                        </lightning-button>
+                    </div>
+                </template>
+            </div>
+            
+            <!-- Virtual Scrolling Container -->
+            <div class={containerClass}>
+                <ul class={itemListClass}>
+                    <template for:each={displayedItems} for:item="item">
+                        <li key={item.uniqueKey} class="slds-item selectable-item" onclick={handleRowClick} data-id={item.id}>
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                                <div class="slds-col slds-size_1-of-12">
+                                    <div class="slds-checkbox">
+                                        <input type="checkbox" 
+                                               id={item.uniqueInputId} 
+                                               data-id={item.id} 
+                                               checked={item.isSelected} 
+                                               onchange={handleItemSelection}
+                                               onclick={handleCheckboxClick} />
+                                        <label class="slds-checkbox__label" for={item.uniqueInputId}>
+                                            <span class="slds-checkbox_faux"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_11-of-12">
+                                    <div>
+                                        <template if:true={item.name}>
+                                            <div class="slds-truncate" data-privileged={item.isPrivileged} title={item.name}>
+                                                <span class={item.privilegedClass}>{item.name}</span>
+                                                <template if:true={item.isPrivileged}>
+                                                    <lightning-icon icon-name="utility:shield" size="xx-small" class="slds-icon-text-error slds-m-left_xx-small"></lightning-icon>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template if:false={item.name}>
+                                            <div class="slds-truncate" data-privileged={item.isPrivileged} title={item.label}>
+                                                <span class={item.privilegedClass}>{item.label}</span>
+                                                <template if:true={item.isPrivileged}>
+                                                    <lightning-icon icon-name="utility:shield" size="xx-small" class="slds-icon-text-error slds-m-left_xx-small"></lightning-icon>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <div class="slds-text-body_small slds-text-color_weak">{item.type}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+            
+            <!-- Pagination Controls -->
+            <template if:true={showPaginationControls}>
+                <div class="slds-grid slds-grid_align-center slds-m-top_small">
+                    <div class="slds-col slds-shrink-none">
+                        <lightning-button 
+                            label="Previous" 
+                            variant="neutral" 
+                            onclick={handlePreviousPage}
+                            disabled={isFirstPage}
+                            size="small">
+                        </lightning-button>
+                    </div>
+                    <div class="slds-col slds-text-align_center slds-p-horizontal_small">
+                        <span class="slds-text-body_small">Page {currentPage} of {totalPages}</span>
+                    </div>
+                    <div class="slds-col slds-shrink-none">
+                        <lightning-button 
+                            label="Next" 
+                            variant="neutral" 
+                            onclick={handleNextPage}
+                            disabled={isLastPage}
+                            size="small">
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+            
+            <!-- Load More Button -->
+            <template if:true={showLoadMoreButton}>
+                <div class="slds-text-align_center slds-m-top_small">
+                    <lightning-button 
+                        label="Load More" 
+                        variant="neutral" 
+                        onclick={handleLoadMore}
+                        disabled={loadingMore}
+                        size="small">
+                    </lightning-button>
+                </div>
+            </template>
+            
+            <!-- Selection Summary -->
+            <template if:true={hasSelectedItems}>
+                <div class="slds-text-align_center slds-p-vertical_small">
+                    <div class="slds-text-body_small slds-text-color_weak">{selectedItemsLabel}</div>
+                </div>
+            </template>
+            
+            <!-- Performance Indicator -->
+            <template if:true={virtualScrollEnabled}>
+                <div class="slds-text-align_center slds-p-top_small">
+                    <div class="slds-text-body_small slds-text-color_weak">
+                        <lightning-icon icon-name="utility:zoomin" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                        Virtual scrolling enabled for better performance
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

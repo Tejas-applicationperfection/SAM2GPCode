@@ -1,0 +1,179 @@
+<!--
+Author/Modified Code By : Pradeep
+-->
+<apex:page controller="ExternalRolesExcelController" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#ExternalRolesReport.xls">
+    {!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="Default" ss:Name="Normal">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders/>
+                <Font/>
+                <Interior/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="s67">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s68">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+                </Borders>
+                <Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s69">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+            <Style ss:ID="s70" ss:Name="Date">
+                <Alignment ss:Vertical="Bottom"/>
+                <DateFormat ss:Format="MM/DD/YYYY"/>
+            </Style>
+            <Style ss:ID="sNO">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10"/>
+                <Interior ss:Color="#FFC7CE" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="sYES">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10"/>
+                <Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/>
+            </Style>
+        </Styles>
+        <!--<apex:repeat value="{!ddWList}" var="ddW">-->
+        <Worksheet ss:Name="Roles">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                <Column ss:AutoFitWidth="0" ss:Width="350"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="120"/>
+                <Column ss:AutoFitWidth="0" ss:Width="120"/>
+                <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                <Row ss:Height="30"></Row>
+                <Row ss:Height="30">
+                    <Cell></Cell>
+                    <Cell>
+                        <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/>
+                    </Cell>
+                    <Cell ss:MergeAcross="2"></Cell>
+                    <Cell>
+                        <apex:image id="theImage" value="{!$Resource.logo}" width="200" height="50"/>
+                    </Cell>
+                </Row>
+                <Row ss:Height="25">
+                    <Cell></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Role Label</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Role Name</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">This role reports to</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Forecast Manager</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Modified By</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Opportunity Access</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Case Access</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Customer Role</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Portal Role</Data></Cell>
+                    <Cell ss:StyleID="s68"><Data ss:Type="String">Portal Type</Data></Cell>
+                </Row>
+                <apex:repeat value="{!hierarchyItemList}" var="item">
+                    <apex:outputText rendered="{!item.objItem['PortalType'] != 'None'}">
+                    <Row>
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.itemValue)}" escape="true"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.objItem['DeveloperName'])}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.reportsToName)}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.objItem['ForecastUserId'])}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.objItem['LastModifiedBy']['Name'])}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.objItem['OpportunityAccessForAccountOwner'])}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.objItem['CaseAccessForAccountOwner'])}"/></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><!--<apex:outputText value="{!HTMLENCODE(IF(item.objItem['PortalRole'] == '', 'No','Yes'))}"/>--></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><!--<apex:outputText value="{!HTMLENCODE(item.objItem['PortalRole'])}"/>--></Data></Cell>
+                        <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.objItem['PortalType'])}"/></Data></Cell>
+                    </Row>
+                    </apex:outputText>
+                </apex:repeat>
+                <Row ss:Height="30"></Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported from Salesforce.com org id:</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.org.Id}" rendered="{!reportInfos.OrgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Filter by:</Data></Cell>
+                    <Cell ss:StyleID="">
+                        <Data ss:Type="String">
+                            <apex:outputText value="External Roles"/>
+                        </Data>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Company</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.org.Name}" rendered="{!reportInfos.OrgIsAccessible}"/></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Date of Export</Data></Cell>
+                    <Cell ss:StyleID="">
+                        <Data ss:Type="String">
+                            <apex:outputText value="{!NOW()}"/>
+                        </Data>
+                    </Cell>
+                </Row>
+                <Row>
+                    <Cell></Cell>
+                    <Cell><Data ss:Type="String">Exported by :</Data></Cell>
+                    <Cell><Data ss:Type="String"><apex:outputText value="{!reportInfos.exportUser}"/></Data></Cell>
+                </Row>
+            </Table>
+        </Worksheet>
+        <!--</apex:repeat>-->
+    </Workbook>
+</apex:page>

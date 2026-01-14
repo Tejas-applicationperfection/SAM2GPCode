@@ -1,0 +1,205 @@
+<apex:page controller="ObjectAccess" extensions="ProfileSecurity" docType="HTML-5.0" applyHtmlTag="false" applyBodyTag="false" sidebar="false"  renderAs="PDF" showHeader="false" standardStylesheets="false">
+    <head>
+        <title>Profile page</title>
+    </head>
+    <body>
+    <apex:form >
+        <br/><br/>
+        <apex:outputPanel id="profilesTable" layout="block">
+            <table width="100%" class="table">
+                <tr>
+                    <td style="text-align: left">
+                        <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/> 
+                    </td>
+                    <td style="text-align: right">
+                        <apex:image id="theImage" value="{!$Resource.logo}" width="200" height="50"/>
+                    </td>
+                </tr>
+            </table>
+            <apex:outputPanel rendered="{!selectedLog == '-- Please select --' || selectedLog == '--+Please+select+--'}">
+                <table width="100%" border="1" style="border-collapse: collapse;">
+                    <thead>
+                    <tr><td colspan="8" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 200%; font-family: Arial, Helvetica, sans-serif">
+                        <apex:outputText value="{!HTMLENCODE(objectsNameMap[selectedObject])}" escape="true"/> &nbsp; Access
+                    </td></tr>
+                    <tr>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Profile Name</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">User License</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Read</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Create</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Edit</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Delete</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">View All</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Modify All</th>
+                        <!-- <th>Review?</th>
+                        <th>Approved</th>-->
+                    </tr>
+                    </thead>
+                    
+                    <tbody>
+                    <apex:repeat value="{!profileWList}" var="p">
+                        <tr>
+                            <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!HTMLENCODE(profileMap[p.profId])}" escape="true"/></td>
+                            <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!IF(p.profUserLicenseId != null,userLicenseMap[p.profUserLicenseId].Name, '')}" rendered="{!userLicenseNotAccessible}"/></td>
+                            <td bgcolor="{!IF(p.objPerm.R,'#C6EFCE','#FFC7CE')}" style="font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.R,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.C,'#C6EFCE','#FFC7CE')}" style="font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.C,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.E,'#C6EFCE','#FFC7CE')}" style="font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.E,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.D,'#C6EFCE','#FFC7CE')}" style="font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.D,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.V,'#C6EFCE','#FFC7CE')}" style="font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.V,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.M,'#C6EFCE','#FFC7CE')}" style="font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.M,'YES','NO')}"/>
+                            </td>
+                            <!--<td><apex:inputCheckbox /></td>
+                            <td><apex:inputCheckbox /></td>-->
+                        </tr>
+                    </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputPanel>
+            
+    <!--    --------------   ROLLBACK SECTION     ----------------------   -->
+
+        <apex:outputPanel rendered="{!selectedLog != '-- Please select --' && selectedLog !='--+Please+select+--'}">
+                <table width="100%" border="1" style="border-collapse: collapse;">
+                    <thead>
+                    <tr>
+                        <td colspan="6" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 200%; font-family: Arial, Helvetica, sans-serif">
+                            <apex:outputText value="{!HTMLENCODE(objectsNameMap[selectedObject])}" escape="true"/> &nbsp; Access 
+                        </td>
+                        <td colspan="8" bgcolor="#4682B4" style="color: #8b1a1a; font-size: 100%; font-family: Arial, Helvetica, sans-serif">
+                            Log : &nbsp;<apex:outputText value="{!selectedLogValue}" escape="true"/> &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Profile Name</th>
+                        <th bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">User License</th>
+                        <th colspan="2" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Read</th>
+                        <th colspan="2" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Create</th>
+                        <th colspan="2" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Edit</th>
+                        <th colspan="2" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Delete</th>
+                        <th colspan="2" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">View All</th>
+                        <th colspan="2" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif">Modify All</th>
+                        <!-- <th>Review?</th>
+                        <th>Approved</th>-->
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Now</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Log</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Now</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Log</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Now</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Log</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Now</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Log</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Now</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Log</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Now</th>
+                        <th style="font-family: Arial, Helvetica, sans-serif">Log</th>
+                        <!-- <th>Review?</th>
+                        <th>Approved</th>-->
+                    </tr>
+                    </thead>
+                    
+                    <tbody>
+                    <apex:variable var="index" value="{!0}" />
+                    <apex:repeat value="{!profileWList}" var="p">
+                        <tr>
+                            <td><apex:outputText value="{!HTMLENCODE(profileMap[p.profId])}" escape="true"/></td>
+                            <td><apex:outputText value="{!IF(p.profUserLicenseId != null,userLicenseMap[p.profUserLicenseId].Name, '')}" rendered="{!userLicenseNotAccessible}"/></td>
+                            <td bgcolor="{!IF(p.objPerm.R != profileWSaveList[index].objPerm.R,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.R,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.R != profileWSaveList[index].objPerm.R,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(profileWSaveList[index].objPerm.R,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.C != profileWSaveList[index].objPerm.C,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.C,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.C != profileWSaveList[index].objPerm.C,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(profileWSaveList[index].objPerm.C,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.E != profileWSaveList[index].objPerm.E,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.E,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.E != profileWSaveList[index].objPerm.E,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(profileWSaveList[index].objPerm.E,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.D != profileWSaveList[index].objPerm.D,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.D,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.D != profileWSaveList[index].objPerm.D,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(profileWSaveList[index].objPerm.D,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.V != profileWSaveList[index].objPerm.V,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.V,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.V != profileWSaveList[index].objPerm.V,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(profileWSaveList[index].objPerm.V,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.M != profileWSaveList[index].objPerm.M,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(p.objPerm.M,'YES','NO')}"/>
+                            </td>
+                            <td bgcolor="{!IF(p.objPerm.M != profileWSaveList[index].objPerm.M,'#FFC7CE','#C6EFCE')}" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!IF(profileWSaveList[index].objPerm.M,'YES','NO')}"/>
+                            </td>
+                            <!--<td><apex:inputCheckbox /></td>
+                            <td><apex:inputCheckbox /></td>-->
+                        </tr>
+                        <apex:variable var="index" value="{!index+1}" />
+                    </apex:repeat>
+                    </tbody>
+                </table>
+            </apex:outputPanel>
+            <br></br><br></br><br></br><br></br>
+            <table>
+                <tr> 
+                    <td style="font-family: Arial, Helvetica, sans-serif">Exported from Salesforce.com org id: </td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!org.Id}" rendered="{!OrgIsAccessible}"/></td>
+                </tr>
+                <tr>
+                    <td style="font-family: Arial, Helvetica, sans-serif">Company</td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!org.Name}" rendered="{!OrgIsAccessible}"/></td>
+                </tr>
+                <apex:outputPanel rendered="{!selectedLog != '' && selectedLog != null}">
+                    <tr>
+                        <td style="font-family: Arial, Helvetica, sans-serif">User that made the changes :</td>
+                        <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!userSavedLog}"/></td>
+                    </tr>
+                </apex:outputPanel>
+                <tr>
+                    <td style="font-family: Arial, Helvetica, sans-serif">Date of Export</td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"> <apex:outputText value="{!NOW()}"/></td>
+                </tr>
+                <apex:outputPanel rendered="{!selectedLog != '' && selectedLog != null}">
+                    <tr>
+                        <td style="font-family: Arial, Helvetica, sans-serif">Date of Log</td>
+                        <td style="font-family: Arial, Helvetica, sans-serif"> <apex:outputText value="{!selectedLogValue}"/></td>
+                    </tr>
+                </apex:outputPanel>
+                <tr>
+                    <td style="font-family: Arial, Helvetica, sans-serif">Exported by :</td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!exportUser}"/></td>
+                </tr>
+                <apex:outputPanel rendered="{!selectedLog != '' && selectedLog != null}" layout="none">
+                    <tr>
+                        <td style="font-family: Arial, Helvetica, sans-serif">Description Log:</td>
+                        <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!description}"/></td>
+                    </tr>
+                </apex:outputPanel>
+            </table>
+        </apex:outputPanel>
+    </apex:form>
+    </body>
+</apex:page>

@@ -1,0 +1,89 @@
+/*.THIS .mainHeader{
+    font-size: 30px;
+    margin-top: 20px;
+    margin-left: 20px;
+}*/
+.THIS .appLogo{
+    height: 180px;
+    width: 300px;
+    float: right;
+}
+.THIS .companyLogo{
+    float: left;
+    width: 300px;
+    height: 120px;
+}
+.THIS{
+    background-color: white;
+    min-height: 100%;
+}
+.THIS .radioButtonSection{
+    /*margin-top: 80px;*/
+    margin-left: 30px;
+}
+.THIS .buttonCSS{
+    margin-top: 20px;
+    float: right;
+    margin: 2px;
+}
+.THIS .table{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass1{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass0{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass2{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass3{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass4{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .table{
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+.THIS .td{
+  border: 2px solid black;
+  padding: 0;
+  margin: 0px;
+  overflow: auto; 
+}
+.THIS .div{
+  resize: both;
+  overflow: auto;
+  width: 120px;
+  height: 120px;
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid black;
+  display: block;
+}
+.THIS .fontCSS{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.THIS .horizontalCSS{
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+.THIS .requestButton{
+    background-color: #4bca81; 
+    border: none;
+}
+.THIS .requestButton:hover{
+    background-color: #4bca81;
+}

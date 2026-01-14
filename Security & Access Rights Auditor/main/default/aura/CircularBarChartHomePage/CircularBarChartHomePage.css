@@ -1,0 +1,19 @@
+.THIS .mZero{ 
+    font-weight: 600;
+    color: black; 
+    font-size: larger;
+    border-top: none; 
+}
+.THIS .custom-date-wrapper .slds-form-element__help {
+    display: none;
+}
+.THIS .slds-form-element__help {
+    display: none;
+}
+                    
+ .THIS [data-date-format].slds-form-element__help {
+    display: none;
+}
+.THIS .slds-form-element__help[data-date-format] {
+    display: none;
+}

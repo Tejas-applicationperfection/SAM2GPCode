@@ -1,0 +1,172 @@
+<template>
+    <!--<article class="slds-card"> 
+    <div class="slds-page-header">
+        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+            <div class="slds-p-horizontal_small slds-size_1-of-1">
+                <table class="slds-table slds-table_bordered" width="100%">
+                    <thead>
+                        <tr class="slds-text-title_caps">
+                            <th scope="col" style="text-align: left;">
+                                <div class="slds-truncate" title="Application Perfection">
+                                    <img src={resourceLogoApplicationPerfection} height="90" width="245"/>
+                                </div>
+                            </th>
+                            <th scope="col" style="text-align: right" class="button-containerADvertising">
+                                <lightning-button variant="brand" label="Help/Training" onclick={openContactUSLink} class="button-83"></lightning-button>
+                                <lightning-button variant="brand" label="FAQ's" onclick={openContactUSLink} class="button-83"></lightning-button>
+                                <lightning-button variant="brand" label="Request a feature/support" onclick={openContactUSLink} class="button-83"></lightning-button>
+                                <lightning-button variant="brand" label="Release Notes" onclick={openContactUSLink} class="button-83"></lightning-button>
+                            </th>
+                            <th scope="col" style="text-align: right; width: 160px;">
+                                <div class="slds-truncate" title="Security &amp; Access Manager">
+                                    <img src={resourceLogo} height="95"/>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+     </article>
+-->
+
+    <template if:true={isLoaded}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <template if:true={isShowModal}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <button onclick={hideModalBox}
+                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Profile Cloned Successfully</h1>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p> New PermissionSet is created with the Object and Fields permission from Profile... </p>
+                </div>
+                <div class="slds-modal__footer">
+
+                    <button onclick={hideModalBox} class="slds-button slds-button_brand">Okay</button>
+                    <button onclick={linkToPermissionSet} class="slds-button slds-button_brand" style="top:2px;">
+                        <svg style="margin: 0px 5px 2px 0;" class="slds-button__icon slds-button__icon_medium"
+                            aria-hidden="true">
+                            <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#new_window"></use>
+                        </svg> See Permission
+                    </button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+    <!-- <lightning-card title="Profile to PermissionSet Cloner" > -->
+    <article class="slds-card">
+
+        <div class="slds-box slds-theme_shade neumorphic-header" style="margin: 6px;">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure neumorphic-icon">
+                            <span class="slds-icon_container slds-icon-action-clone">
+                        <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                            <use xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#clone"></use>
+                        </svg>
+                    </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span>Cloner</span>
+                                        <span class="slds-page-header__title slds-truncate neumorphic-title"
+                                      title="Instant Permissions Cloner">
+                                    Instant Permissions Cloner
+                                </span>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+
+        <div class="slds-p-around_medium">
+            <div class="slds-m-top_medium slds-grid slds-gutters">
+                <div class="slds-col slds-m-around_small neumorphic-container" style="width: 22%;">
+                    <h2 class="combohead">Select License</h2>
+                    <lightning-combobox class="Comb1 Combo neumorphic-combobox" name="userLicense"
+                        value={selectedLicense} placeholder="Select License" options={licenseOptions} required="true"
+                        onchange={handleLicenseChange}>
+                    </lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-m-around_small neumorphic-container">
+                    <h2 class="combohead">Select Profile</h2>
+                    <lightning-combobox class="Comb2 Combo neumorphic-combobox" name="selectProfiles" required="true"
+                        value={selectedProfiles} placeholder="Select Profile" options={profileOptions}
+                        onchange={handleProfileChange}>
+                    </lightning-combobox>
+
+
+                </div>
+            </div>
+
+
+
+            <div style="max-width: 49.5%;" class="PermissionInput slds-m-around_small neumorphic-container">
+                <h2 class="combohead">PermissionSet Name</h2>
+                <lightning-input class="neumorphic-input" name="PermissionSet Name" value={permissionName}
+                    placeholder="Enter custom permissionSet Name (Optional)" onchange={handlePermissionSetChange}>
+                </lightning-input>
+            </div>
+
+
+
+            <div class="demo-only" role="group">
+                <button class="slds-button slds-button_brand button-83"  style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';" title="Clone Profiles"
+                    onclick={handleCloneProfilesToPermissionSets}>Clone Profiles
+                </button>
+                <button class="slds-button slds-button_brand button-83"  style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';" title="See History" onclick={handleHistory}>
+                    See History
+                </button>
+                <button class="slds-button slds-button_brand button-83"  style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';" title="Manage Object Access"
+                    onclick={linkToObjectAccess}>Manage Object Access
+                </button>
+                <button class="slds-button slds-button_brand button-83"  style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';" title="Manage Fields Access"
+                    onclick={linkToObjectnFieldsAccess}>Manage Fields Access
+                </button>
+                <button  onclick={navigateToUserClonerPage}   class="slds-button slds-button_brand button-83">     User Cloner </button>
+
+            </div>
+
+        </div>
+
+        <template if:true={isHistory}>
+            <div class="slds-p-around_medium" style="height: 75vh; padding: 19px; margin-bottom: 20%;">
+                <button class="slds-button slds-button_brand button-83" title="Refresh"
+                   style="font-family: --lwc-fontFamily, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';margin-bottom: 12px;"  onclick={refreshData}>Refresh</button>
+                <lightning-datatable class="custom-table" key-field="id" columns={columns} data={data}>
+                </lightning-datatable>
+            </div>
+
+
+        </template>
+    </article>
+    <!-- </lightning-card> -->
+
+
+
+
+
+
+
+</template>

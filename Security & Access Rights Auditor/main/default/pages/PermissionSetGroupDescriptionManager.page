@@ -1,0 +1,543 @@
+<apex:page controller="PermissionSetGroupDescriptionManager" sidebar="false" showHeader="false" docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true">
+    
+    <apex:includeLightning />
+     
+    <apex:stylesheet value="/slds/assets/styles/salesforce-lightning-design-system.min.css"/>
+    <head>
+        <title>Pset Group Description</title>
+        <meta charset="utf-8" />
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+        <apex:slds />
+        
+        <style>
+            /* LWC Container Styles */
+            .lwc-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 1rem;
+                background-color: #f3f3f3;
+                min-height: 100vh;
+            }
+
+            .lwc-card {
+                background: white;
+                border-radius: 0.5rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin-bottom: 1rem;
+                overflow: hidden;
+            }
+
+            .lwc-card__header {
+                padding: 1rem;
+                border-bottom: 1px solid #e5e5e5;
+                background-color: #fafafa;
+            }
+
+            .lwc-card__body {
+                padding: 1rem;
+            }
+
+            /* Header Styles */
+            .lwc-header-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #181818;
+                margin: 0;
+                line-height: 1.25;
+            }
+
+            /* Button Styles */
+            .lwc-button-group {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                align-items: center;
+            }
+
+            .lwc-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.5rem 1rem;
+                border: 1px solid #d8dde6;
+                border-radius: 0.25rem;
+                background-color: #ffffff;
+                color: #0176d3;
+                font-size: 0.875rem;
+                font-weight: 400;
+                line-height: 1.25rem;
+                text-decoration: none;
+                cursor: pointer;
+                transition: all 0.15s ease-in-out;
+                min-height: 2rem;
+                white-space: nowrap;
+            }
+
+            .lwc-button:hover {
+                background-color: #f3f3f3;
+                border-color: #d8dde6;
+                color: #014486;
+                text-decoration: none;
+            }
+
+            .lwc-button_brand {
+                background-color: #0176d3;
+                border-color: #0176d3;
+                color: #ffffff;
+            }
+
+            .lwc-button_brand:hover {
+                background-color: #014486;
+                border-color: #014486;
+                color: #ffffff;
+            }
+
+            /* Grid System */
+            .lwc-grid {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .lwc-grid_align-center {
+                justify-content: center;
+            }
+
+            .lwc-grid_vertical-align-center {
+                align-items: center;
+            }
+
+            .lwc-col {
+                flex: 1;
+                padding: 0.5rem;
+            }
+
+            .lwc-col_padded {
+                padding: 1rem;
+            }
+
+            /* Form Elements */
+            .lwc-form-element {
+                margin-bottom: 1rem;
+            }
+
+            .lwc-form-element__label {
+                display: block;
+                font-size: 0.875rem;
+                font-weight: 400;
+                line-height: 1.25rem;
+                margin-bottom: 0.25rem;
+                color: #444444;
+            }
+
+            .lwc-select,
+            .lwc-input {
+                display: block;
+                width: 100%;
+                padding: 0.5rem 0.75rem;
+                border: 1px solid #d8dde6;
+                border-radius: 0.25rem;
+                background-color: #ffffff;
+                color: #181818;
+                font-size: 0.875rem;
+                line-height: 1.25rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            }
+
+            .lwc-select:focus,
+            .lwc-input:focus {
+                outline: none;
+                border-color: #0176d3;
+                box-shadow: 0 0 0 2px rgba(1, 118, 211, 0.1);
+            }
+
+            .lwc-combobox {
+                position: relative;
+            }
+
+            .lwc-combobox__form-element {
+                position: relative;
+            }
+
+            /* Section Styles */
+            .lwc-section {
+                margin-bottom: 2rem;
+            }
+
+            .lwc-section__title {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #181818;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #0176d3;
+            }
+
+            /* Progress Card Styles */
+            .lwc-progress-container {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+                margin-bottom: 2rem;
+            }
+
+            .lwc-progress-card {
+                flex: 1;
+                min-width: 200px;
+                background: white;
+                border: 1px solid #e5e5e5;
+                border-radius: 0.5rem;
+                padding: 1.5rem;
+                text-align: center;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+
+            .lwc-progress-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+
+            .lwc-progress-value {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #181818;
+                margin-bottom: 0.5rem;
+                line-height: 1;
+            }
+
+            .lwc-progress-label {
+                font-size: 0.875rem;
+                color: #666666;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.025em;
+            }
+
+            /* Table Styles */
+            .lwc-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                border-radius: 0.5rem;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .lwc-table th,
+            .lwc-table td {
+                padding: 0.75rem;
+                text-align: left;
+                border-bottom: 1px solid #e5e5e5;
+            }
+
+            .lwc-table th {
+                background-color: #f8f9fa;
+                font-weight: 600;
+                color: #181818;
+                font-size: 0.875rem;
+                text-transform: uppercase;
+                letter-spacing: 0.025em;
+            }
+
+            .lwc-table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+            /* Spinner Styles */
+            .lwc-spinner {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border: 3px solid #f3f3f3;
+                border-top: 3px solid #0176d3;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            /* Alert Styles */
+            .lwc-alert {
+                padding: 0.75rem 1rem;
+                margin-bottom: 1rem;
+                border: 1px solid transparent;
+                border-radius: 0.25rem;
+            }
+
+            .lwc-alert_error {
+                color: #721c24;
+                background-color: #f8d7da;
+                border-color: #f5c6cb;
+            }
+
+            .lwc-alert_success {
+                color: #155724;
+                background-color: #d4edda;
+                border-color: #c3e6cb;
+            }
+
+            .lwc-alert_warning {
+                color: #856404;
+                background-color: #fff3cd;
+                border-color: #ffeaa7;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .lwc-button-group {
+                    justify-content: center;
+                }
+                
+                .lwc-progress-container {
+                    flex-direction: column;
+                }
+                
+                .lwc-progress-card {
+                    min-width: auto;
+                }
+                
+                .lwc-grid {
+                    flex-direction: column;
+                }
+            }
+
+            /* Utility Classes */
+            .lwc-text-center {
+                text-align: center;
+            }
+
+            .lwc-text-right {
+                text-align: right;
+            }
+
+            .lwc-m-bottom_small {
+                margin-bottom: 0.5rem;
+            }
+
+            .lwc-m-bottom_medium {
+                margin-bottom: 1rem;
+            }
+
+            .lwc-p-around_small {
+                padding: 0.5rem;
+            }
+
+            .lwc-p-around_medium {
+                padding: 1rem;
+            }
+            /* Grouped stats helpers to mirror other pages */
+            .lwc-group-row {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            .lwc-group-box {
+                flex: 1;
+                min-width: 280px;
+                border: 1px solid #e5e5e5;
+                border-radius: 0.5rem;
+                background: #fff;
+                padding: 1rem;
+            }
+            .lwc-progress-help {
+                font-size: 0.75rem;
+                color: #666666;
+                margin-top: 0.25rem;
+            }
+        </style>
+    </head>
+    
+    
+    
+    <body>
+        
+        
+        <apex:form >
+            <apex:actionStatus id="tableStatus" layout="block">
+                <apex:facet name="start">
+                    <p >
+                        <div class="slds-spinner_container slds-is-fixed">
+                            <div role="status" class="slds-spinner slds-spinner_large">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                    </div>
+                </p>
+            </apex:facet>
+            <apex:facet name="stop"></apex:facet>
+        </apex:actionStatus>
+        
+        <table class="slds-table slds-table_bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <!-- Logo Column -->
+                                    <th style="text-align: left; background-color: transparent; width: 15%;">
+                                        <div class="slds-truncate" title="Application Perfection">
+                                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Description Column -->
+                                    <th style="background-color: transparent; text-align: left;">
+                                        <div class="slds-truncate">
+                                            <h2>
+                                                Review and edit permission sets groups metadata to create or update a complete Permission sets group dictionary. 
+                                            </h2>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Button Group Column -->
+                                    <th style="background-color: transparent; width: 35%;">
+                                        <div class="lwc-button-group">
+                                            <apex:commandLink value="Help/Training" action="{!openHelpTraining}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                            <apex:commandLink value="FAQ's" action="{!openFAQ}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                            <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                            <apex:commandLink value="Release Notes" action="{!openReleaseNotes}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Security Logo -->
+                                    <th style="text-align: right; width: 10%; background-color: transparent;">
+                                        <div class="slds-truncate" title="Security & Access Manager">
+                                            <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+        
+        <!-- Permission Set Group Statistics (mirrors Object/Profile stats pattern) -->
+        <div class="lwc-section">
+            <div class="lwc-group-row">
+                <div class="lwc-group-box">
+                    <h3 class="lwc-section__title">High level permission set group statistics</h3>
+                    <div class="lwc-progress-container">
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!TotalPsetGrpCount}</div>
+                            <div class="lwc-progress-label">Total Permission Set Groups</div>
+                            <div class="lwc-progress-help">All permission set groups in the org.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!descriptionCount}</div>
+                            <div class="lwc-progress-label">Groups with description populated</div>
+                            <div class="lwc-progress-help">Groups whose “Description” field contains text.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!TotalPsetGrpCount - descriptionCount}</div>
+                            <div class="lwc-progress-label">Groups with description not populated</div>
+                            <div class="lwc-progress-help">Groups whose “Description” field is blank.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <!-- Multiselect Component for Permission Set Groups -->
+        <div class="slds-grid slds-wrap slds-p-around_medium" style="place-items: end;">
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-p-around_small">
+                <c:multiselectpicklistobjdesc id="multiselectPermissionSetGroups"
+                                              leftLabel="Available Permission Sets"
+                                              leftOption="{!allPSetGroups}"
+                                              leftOption1=""
+                                              rightLabel="Selected Permission Sets"
+                                              rightOption="{!selectedPSetGroups}"
+                                              size="8"
+                                              width="180px"/>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-grid slds-wrap slds-p-around_small slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                    <apex:commandButton styleClass="lwc-button lwc-button_brand"
+                                        value="Fetch Descriptions"
+                                        status="tableStatus"
+                                        action="{!fetchPSetGroupDescriptions}" 
+                                        rerender="permissionSetGroupDescriptionsPanel"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                    <apex:commandButton styleClass="lwc-button"
+                                        value="Edit" 
+                                        status="tableStatus"
+                                        action="{!toggleEdit}" 
+                                        rerender="permissionSetGroupDescriptionsPanel"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                    <apex:commandButton styleClass="lwc-button lwc-button_brand"
+                                        value="Save Changes" 
+                                        status="tableStatus"
+                                        action="{!saveDescriptions}" 
+                                        rerender="permissionSetGroupDescriptionsPanel"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                        <apex:commandButton styleClass="lwc-button"
+                                            value="Export To Excel" status="tableStatus"
+                                            action="{!ExportToExcel}" rendered="{!!isEdit}"
+                                            />
+                    </div>
+                
+            </div>
+        </div>
+        
+        <!-- Table to Display and Edit Permission Set Group Descriptions -->
+        
+        <apex:outputPanel id="permissionSetGroupDescriptionsPanel">
+            <div class="slds-grid slds-wrap slds-p-around_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <apex:pageMessages id="messagesPanel"/> <!-- Error messages will be displayed here -->
+                    
+                    
+                    <apex:pageBlock title="Permission Set Groups" rendered="{!NOT(ISNULL(pSetGroupDescriptions))}">
+                        
+                        <apex:pageBlockTable value="{!pSetGroupDescriptions}" var="group">
+                            
+                            <!-- Serial Number Column -->
+                            <apex:column headerValue="S.No">
+                                <apex:outputText value="{!group.serialNumber}" />
+                            </apex:column>
+                            
+                            <!-- Permission Set Group Name Column -->
+                            <apex:column headerValue="Permission Set Group Name">
+                                <apex:outputText value="{!group.masterLabel}" />
+                            </apex:column>
+                            
+                            <!-- Description Column -->
+                            <apex:column headerValue="Description">
+                                <apex:outputText rendered="{!NOT(isEdit)}" value="{!group.description}" />
+                                <apex:inputText rendered="{!isEdit}" value="{!group.description}" style="width: 300px; height: 50px;"
+                                                disabled="{!AND(group.pSetGroup.NamespacePrefix != null, group.pSetGroup.NamespacePrefix != org.NamespacePrefix)}"
+                                                title="{!IF(AND(group.pSetGroup.NamespacePrefix != null, group.pSetGroup.NamespacePrefix != org.NamespacePrefix), 'Managed by a different package; description cannot be edited.', '')}" />
+                            </apex:column>
+                            
+                        </apex:pageBlockTable>
+                        
+                    </apex:pageBlock>
+                    
+                </div>
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+</body>
+</apex:page>

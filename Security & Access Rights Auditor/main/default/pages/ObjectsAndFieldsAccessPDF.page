@@ -1,0 +1,178 @@
+<apex:page controller="ObjectsAndFieldsAccess" extensions="ProfileMultiSelect" docType="HTML-5.0" applyHtmlTag="false" applyBodyTag="false" sidebar="false"  renderAs="PDF" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <title>Objects and Fields Access</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+        <style>
+            @page {  
+                size: A4 landscape; /* ISO/JIS A4 (210mm�297mm) */  
+                margin: 5mm; 
+            } 
+    
+        </style>
+    </head>
+    
+    <body>
+        <apex:form >
+            <apex:outputPanel id="profilesTable" layout="block">
+                <table width="100%" class="table">
+                    <tr>
+                        <td style="text-align: left">
+                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/> 
+                        </td>
+                        <td style="text-align: right">
+                            <apex:image id="theImage" value="{!$Resource.logo}" width="200" height="50"/>
+                        </td>
+                    </tr>
+                </table>
+                <apex:outputPanel rendered="{!selectedLog == ''}" layout="none">
+                    <table width="100%" border="1" style="border-collapse: collapse;" >
+                        <tr>
+                            <td width="40%" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif"><b>Object Name</b></td>
+                            <apex:repeat value="{!selectedProfileIdList}" var="pr">
+                                <td colspan="2" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 120%; font-family: Arial, Helvetica, sans-serif">
+                                    <p><apex:outputText value="{!HTMLENCODE(profileNameMap[pr])}" escape="true"/></p>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                        <apex:repeat value="{!objectPermisionWList}" var="opw">
+                            <tr>
+                                <td width="40%" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 120%; font-family: Arial, Helvetica, sans-serif">
+                                    <apex:outputText value="{!HTMLENCODE(opw.objLabel)}" escape="true"/>
+                                </td>
+                                <apex:repeat value="{!opw.objPermList}" var="p">
+                                    <td colspan="2" style=" text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                        <apex:outputText value="{!p}"/>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            
+                            <apex:outputPanel rendered="{!expandObject == opw.objName && expandObject != ''}" layout="none">
+                                <tr>
+                                    <td width="40%"></td>
+                                    <apex:repeat value="{!selectedProfileIdList}" var="fp">
+                                        <td bgcolor="#4682B4"  style=" text-align: center; color: #FFFFFF; font-size: 110%; font-family: Arial, Helvetica, sans-serif">Read</td>
+                                        <td bgcolor="#4682B4"  style=" text-align: center; color: #FFFFFF; font-size: 110%; font-family: Arial, Helvetica, sans-serif">Edit</td>
+                                    </apex:repeat>
+                                </tr>
+                                <apex:repeat value="{!fieldNameList}" var="field">
+                                    <tr>
+                                        <td  width="40%" style="padding-left:20px; font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!HTMLENCODE(fieldNameMap[field][0])}" escape="true"/></td>
+                                        <apex:repeat value="{!fieldPermissionMap[field]}" var="fpw">
+                                            <td style=" text-align: center; font-family: Arial, Helvetica, sans-serif" bgcolor="{!IF(fpw.R,'#C6EFCE','#FFC7CE')}">
+                                                <apex:outputText value="{!IF(fpw.R,'YES','NO')}"/>
+                                            </td>
+                                            <td style=" text-align: center; font-family: Arial, Helvetica, sans-serif" bgcolor="{!IF(fpw.E,'#C6EFCE','#FFC7CE')}">
+                                                <apex:outputText value="{!IF(fpw.E,'YES','NO')}"/>
+                                            </td>
+                                        </apex:repeat>
+                                    </tr>
+                                </apex:repeat>
+                            </apex:outputPanel>
+                        </apex:repeat>
+                    </table>
+                </apex:outputPanel>
+                
+                <!-- ------------- SECTION ROLLBACK ------------  -->
+                
+                <apex:outputPanel rendered="{!selectedLog != ''}" layout="none">
+                    <table width="100%" border="1" style="border-collapse: collapse;" >
+                        <tr>
+                            <td width="40%" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 140%; font-family: Arial, Helvetica, sans-serif"><b>Object Name</b></td>
+                            <apex:repeat value="{!selectedProfileIdList}" var="pr">
+                                <td colspan="4" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 120%; font-family: Arial, Helvetica, sans-serif">
+                                    <p><apex:outputText value="{!HTMLENCODE(profileNameMap[pr])}" escape="true"/></p>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                        <tr>
+                            <td width="40%" bgcolor="#4682B4" style="color: #FFFFFF; font-size: 120%; font-family: Arial, Helvetica, sans-serif">
+                                <apex:outputText value="{!HTMLENCODE(expandObject)}" escape="true"/>
+                            </td>
+                            <apex:repeat value="{!objectPermisionWList[0].objPermList}" var="pr">
+                                <td colspan="4" style=" text-align: center; font-family: Arial, Helvetica, sans-serif">
+                                    <apex:outputText value="{!pr}"/>
+                                </td>
+                            </apex:repeat>
+                        </tr>
+                        <tr>
+                            <td width="40%"></td>
+                            <apex:repeat value="{!selectedProfileIdList}" var="fp">
+                                <td colspan="2" bgcolor="#4682B4"  style=" text-align: center; color: #FFFFFF; font-size: 110%; font-family: Arial, Helvetica, sans-serif">Read</td>
+                                <td colspan="2" bgcolor="#4682B4"  style=" text-align: center; color: #FFFFFF; font-size: 110%; font-family: Arial, Helvetica, sans-serif">Edit</td>
+                            </apex:repeat>
+                        </tr>
+                        <tr>
+                            <td width="40%"></td>
+                            <apex:repeat value="{!selectedProfileIdList}" var="fp">
+                                <td style=" text-align: center; font-family: Arial, Helvetica, sans-serif">Now</td>
+                                <td style=" text-align: center; font-family: Arial, Helvetica, sans-serif">Log</td>
+                                <td style=" text-align: center; font-family: Arial, Helvetica, sans-serif">Now</td>
+                                <td style=" text-align: center; font-family: Arial, Helvetica, sans-serif">Log</td>
+                            </apex:repeat>
+                        </tr>
+                        <apex:repeat value="{!fieldNameList}" var="field">
+                            <tr>
+                                <td  width="40%" style="padding-left:20px; font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!HTMLENCODE(fieldNameMap[field][0])}" escape="true"/></td>
+                                <apex:repeat value="{!selectedProfileIdList}" var="prId">
+                                    <td bgcolor="{!IF(fielPermLogWMap[field][prId].R != fielPermLogWMap[field][prId].logR ,'#FFC7CE','#C6EFCE')}" style="text-align: center">
+                                        <apex:outputText value="{!IF(fielPermLogWMap[field][prId].R,'YES','NO')}"/>
+                                    </td>
+                                    <td bgcolor="{!IF(fielPermLogWMap[field][prId].R != fielPermLogWMap[field][prId].logR ,'#FFC7CE','#C6EFCE')}" style="text-align: center">
+                                        <apex:outputText value="{!IF(fielPermLogWMap[field][prId].logR,'YES','NO')}"/>
+                                    </td>
+                                    <td bgcolor="{!IF(fielPermLogWMap[field][prId].E != fielPermLogWMap[field][prId].logE ,'#FFC7CE','#C6EFCE')}" style="text-align: center">
+                                        <apex:outputText value="{!IF(fielPermLogWMap[field][prId].E,'YES','NO')}"/>
+                                    </td>   
+                                    <td bgcolor="{!IF(fielPermLogWMap[field][prId].E != fielPermLogWMap[field][prId].logE ,'#FFC7CE','#C6EFCE')}" style="text-align: center">
+                                        <apex:outputText value="{!IF(fielPermLogWMap[field][prId].logE,'YES','NO')}"/>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                        </apex:repeat>
+                    </table>
+                </apex:outputPanel>
+                    
+                <br></br><br></br><br></br>
+                <table>
+                <tr> 
+                    <td style="font-family: Arial, Helvetica, sans-serif">Exported from Salesforce.com org id: </td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!org.Id}" rendered="{!OrgIsAccessible}"/></td>
+                </tr>
+                <tr>
+                    <td style="font-family: Arial, Helvetica, sans-serif">Company</td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!org.Name}" rendered="{!OrgIsAccessible}"/></td>
+                </tr>
+                <apex:outputPanel rendered="{!selectedLog != '' && selectedLog != null}" layout="none">
+                    <tr>
+                        <td style="font-family: Arial, Helvetica, sans-serif">User that made the changes :</td>
+                        <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!userSavedLog}"/></td>
+                    </tr>
+                </apex:outputPanel>
+                <tr>
+                    <td style="font-family: Arial, Helvetica, sans-serif">Date of Export</td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"> <apex:outputText value="{!NOW()}"/></td>
+                </tr>
+                <apex:outputPanel rendered="{!selectedLog != ''}" layout="none">
+                    <tr>
+                        <td style="font-family: Arial, Helvetica, sans-serif">Date of Log</td>
+                        <td style="font-family: Arial, Helvetica, sans-serif"> <apex:outputText value="{!selectedLogValue}"/></td>
+                    </tr>
+                </apex:outputPanel>
+                <tr>
+                    <td style="font-family: Arial, Helvetica, sans-serif">Exported by :</td>
+                    <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!exportUser}"/></td>
+                </tr>
+                <apex:outputPanel rendered="{!selectedLog != '' && selectedLog != null}" layout="none">
+                    <tr>
+                        <td style="font-family: Arial, Helvetica, sans-serif">Description Log:</td>
+                        <td style="font-family: Arial, Helvetica, sans-serif"><apex:outputText value="{!description}"/></td>
+                    </tr>
+                </apex:outputPanel>
+            </table>
+            </apex:outputPanel>
+        </apex:form>
+    </body>
+</apex:page>

@@ -1,0 +1,243 @@
+<aura:component controller="RecordAccessLightning" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <!--Page Under Construction-->
+    <!-- Feature Access Control -->
+    <aura:attribute name="hasAccess" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="true" access="public"/>
+    
+    <!-- Create attribute to store lookup value as a sObject--> 
+    <aura:attribute name="selectedLookUpRecord" type="sObject" default="{}"/>
+    <aura:attribute name="selectedLookUpRecord2" type="sObject" default="{}"/>
+    <aura:attribute name="objectID" type="String"/>
+    <aura:attribute name="objectID2" type="String"/>
+    <aura:attribute name="objectName" type="String"/>
+    <aura:attribute name="objectLabel" type="String"/>
+    <aura:attribute name="loaded" type="Boolean" default="true" />
+    <aura:attribute name="comparisonMode" type="Boolean" default="false" />
+    <aura:attribute name="showComparison" type="Boolean" default="false" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <!-- Loading State - Checking Feature Access -->
+    <aura:if isTrue="{!v.showSpinner}">
+        <div class="slds-align_absolute-center" style="height: 200px;">
+            <lightning:spinner alternativeText="Checking access" size="medium"/>
+        </div>
+    </aura:if>
+    
+    <!-- Access Granted - Show Main Content -->
+    <aura:if isTrue="{!v.hasAccess}">
+    <div class="slds-scope" aura:id="pageForPrint">
+        <div class="slds-page-header">
+            
+            <!-- Print-only headers -->
+            <div class="print-only-header print-single-header">
+                <h1 style="font-size: 1.5rem; font-weight: bold; color: #032d60; text-align: center; padding: 1rem 0 2rem 0; border-bottom: 2px solid #0176d3; margin-bottom: 2rem;">Record Access Analysis</h1>
+            </div>
+            <div class="print-only-header print-comparison-header">
+                <h1 style="font-size: 1.5rem; font-weight: bold; color: #032d60; text-align: center; padding: 1rem 0 2rem 0; border-bottom: 2px solid #0176d3; margin-bottom: 2rem;">PDF Generation for Comparison Mode</h1>
+            </div>
+            
+            <!-- https://www.lightningdesignsystem.com/components/lookups/ --> 
+            <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small no-print">
+                <div class="slds-form-element">
+                    <!-- Comparison Mode Toggle -->
+                    <div class="demo-only demo-only--sizing slds-grid slds-wrap slds-m-bottom--small">
+                        <div class="slds-p-horizontal_small slds-size_1-of-10">
+                        </div>
+                        <div class="slds-p-horizontal_small slds-size_1-of-2">
+                            <lightning:input type="toggle" 
+                                           label="Enable Comparison Mode" 
+                                           name="comparisonMode" 
+                                           checked="{!v.comparisonMode}" 
+                                           messageToggleActive="Compare Two Scenarios" 
+                                           messageToggleInactive="Single Analysis"
+                                           onchange="{!c.toggleComparisonMode}"/>
+                        </div>
+                    </div>
+                    
+                    <!-- First Row: User 1 and Record ID 1 -->
+                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                        <div class="slds-p-horizontal_small slds-size_1-of-10">
+                            <aura:if isTrue="{!v.comparisonMode}">
+                                <span class="slds-text-heading--small slds-text-color--default">User 1:</span>
+                            </aura:if>
+                        </div>
+                        <div class="slds-p-horizontal_small slds-size_1-of-4">
+                            <c:customLookup objectAPIName="User" IconName="standard:user" selectedRecord="{!v.selectedLookUpRecord}" label="User Name"/>
+                            <!-- here c: is org. namespace prefix-->
+                        </div>
+                        <div class="slds-p-horizontal_small slds-size_1-of-4">
+                            <lightning:input label="Record ID" name="objectID" placeholder="Record ID" aura:id="objectID" value="{!v.objectID}"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Second Row: User 2 and Record ID 2 (Only shown in comparison mode) -->
+                    <aura:if isTrue="{!v.comparisonMode}">
+                        <div class="demo-only demo-only--sizing slds-grid slds-wrap slds-m-top--small">
+                            <div class="slds-p-horizontal_small slds-size_1-of-10">
+                                <span class="slds-text-heading--small slds-text-color--default">User 2:</span>
+                            </div>
+                            <div class="slds-p-horizontal_small slds-size_1-of-4">
+                                <c:customLookup objectAPIName="User" IconName="standard:user" selectedRecord="{!v.selectedLookUpRecord2}" label="User Name (Compare)"/>
+                            </div>
+                            <div class="slds-p-horizontal_small slds-size_1-of-4">
+                                <lightning:input label="Record ID (Compare)" name="objectID2" placeholder="Record ID" aura:id="objectID2" value="{!v.objectID2}"/>
+                            </div>
+                        </div>
+                    </aura:if>
+                    
+                    <br/>
+                    <div class="demo-only demo-only--sizing slds-grid slds-wrap no-print">
+                        <div class="slds-p-horizontal_small slds-size_1-of-10">
+                        </div>
+                        <div class="slds-p-horizontal_small slds-size_1-of-4">
+                            <lightning:button variant="brand" label="Go" onclick="{!c.handleClick}" iconName="utility:download" iconPosition="right" class="buttonWidth"/>
+                        </div>
+                        <div class="slds-p-horizontal_small slds-size_1-of-10"/>
+                        <div class="slds-p-horizontal_small slds-size_2-of-4">
+                            <div aura:id="myDiv" class="divHidden">
+                                This is an <b>{!v.objectLabel}</b> Id.  
+                            </div>
+                        </div>
+                        <!-- Conditional PDF Button -->
+                        <div class="slds-p-horizontal_small slds-size_1-of-5">
+                            <aura:if isTrue="{!v.showComparison}">
+                                <lightning:button variant="brand" label="Generate PDF" onclick="{!c.printPdf}" iconName="utility:download" iconPosition="right" class="buttonWidth"/>
+                            </aura:if>
+                            <aura:if isTrue="{!and(!v.comparisonMode, v.objectID != '')}">
+                                <lightning:button variant="brand" label="Generate PDF" onclick="{!c.printSinglePdf}" iconName="utility:download" iconPosition="right" class="buttonWidth"/>
+                            </aura:if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Page Under Construction.--> 
+       
+            <!-- Single View Mode -->
+            <aura:if isTrue="{!and(v.showComparison == false, !v.comparisonMode)}">
+                <div class="single-view-content">
+                    <div aura:id="OWD" class="divHidden">
+                        <c:OWD aura:id="OWDcmp"/>
+                    </div>
+                    <div aura:id="profile" class="divHidden">
+                        <c:profileCMP aura:id="profileCmp"/>
+                    </div>
+                    <div aura:id="permSet" class="divHiddenPermSet">
+                        <c:permSetCmp aura:id="permSetCmp"/>
+                    </div>
+                    <div aura:id="userRole" class="divHidden">
+                        <c:userRoleCmp aura:id="userRoleCmp"/>
+                    </div>
+                    <div aura:id="groupSharing" class="divHidden">
+                        <c:GroupSharingCmp aura:id="groupSharingCmp"/>
+                    </div>
+                </div>
+            </aura:if>
+            
+            <!-- Comparison View Mode -->
+            <aura:if isTrue="{!v.showComparison}">
+                <div class="comparison-view-content slds-grid slds-gutters slds-wrap slds-p-around--medium">
+                    <!-- Left Column: Scenario 1 -->
+                    <div class="slds-col slds-size_1-of-2 comparison-column">
+                        <div class="slds-box slds-theme_shade">
+                            <h3 class="slds-text-heading_medium">
+                                <lightning:icon iconName="utility:user" size="small" alternativeText="User" class="slds-m-right--x-small" variant="inverse"/>
+                                <span>User 1: {!v.selectedLookUpRecord.Name}</span>
+                            </h3>
+                            <p class="slds-text-body_small">
+                                <lightning:icon iconName="utility:record" size="x-small" alternativeText="Record" class="slds-m-right--xx-small" variant="inverse"/>
+                                Record ID: {!v.objectID}
+                            </p>
+                        </div>
+                        
+                        <div class="comparison-content">
+                            <div aura:id="OWD1" class="divHidden">
+                                <c:OWD aura:id="OWDcmp1"/>
+                            </div>
+                            <div aura:id="profile1" class="divHidden">
+                                <c:profileCMP aura:id="profileCmp1"/>
+                            </div>
+                            <div aura:id="permSet1" class="divHiddenPermSet">
+                                <c:permSetCmp aura:id="permSetCmp1"/>
+                            </div>
+                            <div aura:id="userRole1" class="divHidden">
+                                <c:userRoleCmp aura:id="userRoleCmp1"/>
+                            </div>
+                            <div aura:id="groupSharing1" class="divHidden">
+                                <c:GroupSharingCmp aura:id="groupSharingCmp1"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Scenario 2 -->
+                    <div class="slds-col slds-size_1-of-2 comparison-column">
+                        <div class="slds-box slds-theme_shade">
+                            <h3 class="slds-text-heading_medium">
+                                <lightning:icon iconName="utility:user" size="small" alternativeText="User" class="slds-m-right--x-small" variant="inverse"/>
+                                <span>User 2: {!v.selectedLookUpRecord2.Name}</span>
+                            </h3>
+                            <p class="slds-text-body_small">
+                                <lightning:icon iconName="utility:record" size="x-small" alternativeText="Record" class="slds-m-right--xx-small" variant="inverse"/>
+                                Record ID: {!v.objectID2}
+                            </p>
+                        </div>
+                        
+                        <div class="comparison-content">
+                            <div aura:id="OWD2" class="divHidden">
+                                <c:OWD aura:id="OWDcmp2"/>
+                            </div>
+                            <div aura:id="profile2" class="divHidden">
+                                <c:profileCMP aura:id="profileCmp2"/>
+                            </div>
+                            <div aura:id="permSet2" class="divHiddenPermSet">
+                                <c:permSetCmp aura:id="permSetCmp2"/>
+                            </div>
+                            <div aura:id="userRole2" class="divHidden">
+                                <c:userRoleCmp aura:id="userRoleCmp2"/>
+                            </div>
+                            <div aura:id="groupSharing2" class="divHidden">
+                                <c:GroupSharingCmp aura:id="groupSharingCmp2"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aura:if>
+            <div class="exampleHolder">
+        		<aura:if isTrue="{!v.loaded }">
+                    <aura:set attribute="else">
+                        <lightning:spinner alternativeText="Loading" />
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+       
+    </div>
+    </aura:if>
+    <!-- End Access Granted Content -->
+    
+    <!-- Access Denied Message -->
+    <aura:if isTrue="{!not(v.hasAccess)}">
+        <aura:if isTrue="{!not(v.showSpinner)}">
+            <div class="slds-align_absolute-center" style="margin-top: 100px;">
+                <div class="slds-text-align_center">
+                    <lightning:icon iconName="utility:lock" size="large" class="slds-m-bottom_medium"/>
+                    <h1 class="slds-text-heading_large slds-text-color_error slds-m-bottom_medium">
+                        Sorry, you do not have access to Record Access.
+                    </h1>
+                    <p class="slds-text-body_regular slds-m-bottom_small">
+                        It looks like your current subscription does not include access to Record Access.
+                    </p>
+                    <p class="slds-text-body_regular slds-m-bottom_medium">
+                        To gain access, please purchase the feature by contacting our support team or visiting 
+                        <a href="https://applicationperfection.com/contact/" target="_blank" class="slds-text-link">ApplicationPerfection.com</a>.
+                    </p>
+                    <p class="slds-text-body_small">
+                        If you believe you should have access, please reach out to support for assistance.
+                    </p>
+                </div>
+            </div>
+        </aura:if>
+    </aura:if>
+</aura:component>

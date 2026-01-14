@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OWD_Data_Field__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Will Hold the Data Related to OWD.</description>
+    <label>OWD Data Field</label>
+    <length>131072</length>
+    <trackTrending>false</trackTrending>
+    <type>Html</type>
+    <visibleLines>50</visibleLines>
+</CustomField>
