@@ -7,13 +7,17 @@
     {
       "path": "Security & Access Rights Auditor",
       "package": "Security & Access Rights Auditor",
-      "versionName": "ver 1.0",
-      "versionNumber": "1.0.0.NEXT",
-      "default": true
+      "versionName": "ver 2.0",
+      "versionNumber": "2.0.0.NEXT",
+      "default": true,
+      "ancestorVersion": "1.1.2.1"
     }
   ],
   "name": "SAM2GP",
   "namespace": "SA_Audit",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "65.0"
+  "sourceApiVersion": "65.0",
+  "packageAliases": {
+    "Security & Access Rights Auditor": "0HoQ50000000001KAA"
+  }
 }
