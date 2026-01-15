@@ -1,0 +1,168 @@
+<apex:page controller="AuditObjectiveExportToExcelContoller2"  sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#Export.xls">{!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"  xmlns:html="http://www.w3.org/TR/REC-html40">
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight><WindowWidth>12345</WindowWidth><WindowTopX>480</WindowTopX><WindowTopY>90</WindowTopY><ProtectStructure>False</ProtectStructure><ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="s69">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10" ss:Bold="1"/>
+                <Interior ss:Color="#cdc0ff" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s70">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10" ss:Bold="1"/>
+                <Interior ss:Color="#aaafff" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s71">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10" ss:Bold="1" />
+                
+            </Style>
+            <Style ss:ID="s72">
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10" />
+                
+            </Style>
+        </Styles>
+        <Worksheet ss:Name="audit">
+            
+            <Table>
+                <Column ss:AutoFitWidth="0" ss:Width="30"/>
+                <Column ss:AutoFitWidth="0" ss:Width="100"/>
+                <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                <Row ss:Height="35">
+                    <Cell ss:MergeAcross ="4" ss:StyleID="s69"><Data ss:Type="String">Permission Review Intel</Data></Cell>
+                    <Cell ss:MergeAcross ="3"  ss:StyleID="s70"><Data ss:Type="String">Permission Review Recommended Actions</Data></Cell>
+                </Row>
+                
+                <Row ss:Height="30">
+                    <Cell></Cell>
+                    <Cell ss:StyleID="s71"><Data ss:Type="String"></Data></Cell>
+                    <Cell ss:StyleID="s71"><Data ss:Type="String">Security area</Data></Cell>
+                    <Cell ss:StyleID="s71"><Data ss:Type="String">Type of permission</Data></Cell>
+                    <Cell ss:StyleID="s71"><Data ss:Type="String">Total number of the permission</Data></Cell>
+                    <Cell  ss:StyleID="s71"><Data ss:Type="String">Permission relevant Actions</Data></Cell> 
+                    <Cell  ss:StyleID="s71"></Cell>
+                    <!-- <Cell></Cell>
+<Cell></Cell>-->
+                    <Cell ss:StyleID="s71"><Data ss:Type="String">Count of unused permissions</Data></Cell>
+                    <Cell ss:StyleID="s71"><Data ss:Type="String">Unused permission percentage</Data></Cell>
+                    <!--<Cell ss:StyleID="s71"><Data ss:Type="String">Last review date</Data></Cell> -->
+                </Row>
+                <apex:repeat value="{!permissionReviewDataMap}" var="p">
+                    <Row ss:Height="30">
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"></Data></Cell> 
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Permissions</Data></Cell> 
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Profile</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['ProfileCount']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Have you any unused profiles?</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"> <apex:outputText value="{!IF(p['unusedProfilesCount'] != 0, 'Yes', 'No')}"/></Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['unusedProfilesCount']}</Data></Cell> 
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['percentageUnusedProfiles']}</Data></Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">PermissionSet</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['PermissionCount']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Have you any unused permissionsets?</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"> <apex:outputText value="{!IF(p['unusedPermissionCount'] != 0, 'Yes', 'No')}"/></Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['unusedPermissionCount']}</Data></Cell> 
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['percentageUnusedPermissions']}</Data></Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">PermissionSet Group</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['PermissionGroupCount']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Have you any unused permissionsetGroups?</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"> <apex:outputText value="{!IF(p['unusedPermissionGroupCount'] != 0, 'Yes', 'No')}"/></Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['unusedPermissionGroupCount']}</Data></Cell> 
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['percentageUnusedPsetGroup']}</Data></Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Roles</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['RolesCount']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Have you any unused Roles?</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"> <apex:outputText value="{!IF(p['unusedRolesCanDelete'] != 0, 'Yes', 'No')}"/></Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['unusedRolesCanDelete']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['percentageUnusedRoles']}</Data></Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Public Groups</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['PublicGroupcount']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Have you any unused Public Groups?</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"> <apex:outputText value="{!IF(p['unusedPublicGroupCanDelete'] != 0, 'Yes', 'No')}"/></Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['unusedPublicGroupCanDelete']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['percentageUnusedPublicGroup']}</Data></Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Internal Roles</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['InternalRolescount']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Have you any unused Internal Roles?</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"> <apex:outputText value="{!IF(p['unusedInternalRolesCanDelete'] != 0, 'Yes', 'No')}"/></Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['unusedInternalRolesCanDelete']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['percentageUnusedInternalRoles']}</Data></Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">External Roles</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['ExternalRolescount']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">Have you any unused External Roles?</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String"> <apex:outputText value="{!IF(p['unusedExternalRolesCanDelete'] != 0, 'Yes', 'No')}"/></Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['unusedExternalRolesCanDelete']}</Data></Cell>
+                        <Cell ss:StyleID="s72"><Data ss:Type="String">{!p['percentageUnusedExternalRoles']}</Data></Cell>
+                    </Row>
+                    
+                    
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+    </Workbook>
+</apex:page>

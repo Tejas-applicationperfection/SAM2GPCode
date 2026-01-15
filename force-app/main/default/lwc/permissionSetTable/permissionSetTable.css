@@ -1,0 +1,30 @@
+.slds-m-around_medium {
+    overflow: auto;
+}
+
+.permission-set-table {
+    --sds-c-table-sizing-border: 1px;
+}
+
+/* Enhance checkbox styling */
+:host {
+    --sds-c-checkbox-color-background: white;
+    --sds-c-checkbox-color-border: rgb(201, 201, 201);
+    --sds-c-checkbox-color-border-checked: rgb(0, 112, 210);
+    --sds-c-checkbox-color-background-checked: rgb(0, 112, 210);
+    --sds-c-checkbox-mark-color: white;
+    --sds-c-checkbox-radius-border: 3px;
+    --sds-c-checkbox-shadow-focus: 0 0 3px rgb(0, 112, 210);
+}
+
+/* Ensure proper checkbox alignment and visibility */
+.slds-table_fixed-layout {
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+}
+
+/* Improve row hover state */
+.permission-set-table .slds-is-selected {
+    background-color: #f3f3f3;
+}

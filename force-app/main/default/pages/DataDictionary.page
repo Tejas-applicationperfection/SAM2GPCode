@@ -1,0 +1,1466 @@
+<apex:page controller="DataDictionary" sidebar="false" showHeader="false"  docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true">
+    <apex:includeLightning />
+    <head>
+        <title>Data Dictionary</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+        <apex:slds />
+        
+        <style type="text/css">
+            /* LWC-style CSS improvements */
+            .lwc-container {
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 1rem;
+                font-family: 'Salesforce Sans', Arial, sans-serif;
+            }
+            
+            .lwc-card {
+                background: white;
+                border-radius: 0.25rem;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+                border: 1px solid #dddbda;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-card-header {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #dddbda;
+                background-color: #f3f2f2;
+            }
+            
+            .lwc-card-body {
+                padding: 1rem;
+            }
+            
+            .lwc-header {
+                display: flex;
+                justify-content: flex-start; /* keep items together with controlled gap */
+                align-items: center; /* single straight line alignment */
+                flex-wrap: nowrap; /* keep in one line */
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .lwc-header-title {
+                font-size: 1.25rem; /* slightly larger for readability */
+                font-weight: bold;
+                color: #080707;
+                margin: 0;
+                line-height: 2rem; /* align with button height */
+            }
+            
+            .lwc-button-group {
+                display: flex;
+                flex: 1 1 auto; /* occupy remaining space on the row */
+                flex-wrap: nowrap; /* prevent wrapping to next line */
+                align-items: center;
+                gap: 0.5rem; /* small consistent gap between buttons */
+                margin-left: 0.75rem; /* small, consistent gap after the description */
+                white-space: nowrap; /* keep buttons on a single line */
+                justify-content: flex-start; /* buttons sit just after text */
+            }
+
+            /* Push the SAM logo to the extreme right inside the group */
+            .lwc-button-group img[id$='theImage'] {
+                margin-left: auto;
+                display: block;
+            }
+            
+            /* Base button retained for existing usage elsewhere */
+            .lwc-button {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                color: #0070d2;
+                cursor: pointer;
+                display: inline-block;
+                font-size: 0.75rem;
+                font-weight: 400;
+                line-height: 1.875rem;
+                padding: 0 1rem;
+                text-decoration: none;
+                transition: border 0.15s linear;
+                position: relative;
+                text-align: center;
+                vertical-align: middle;
+                white-space: normal;
+            }
+            
+            .lwc-button:hover {
+                background-color: #f4f6f9;
+                color: #005fb2;
+            }
+
+            /* New: Tab-style buttons to match page tabs (e.g., Data Dictionary) */
+            .lwc-tab-button {
+                background-color: #f3f2f2;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                color: #000 !important; /* black text */
+                cursor: pointer;
+                display: inline-flex; /* ensure consistent vertical centering */
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+                font-size: 0.75rem;
+                font-weight: 400;
+                height: 2rem; /* fixed height to match tab */
+                line-height: 2rem; /* text baseline alignment */
+                padding: 0 1rem;
+                min-width: 120px; /* slightly narrower to fit on one line */
+                text-decoration: none;
+                transition: background-color 0.15s linear, border-color 0.15s linear;
+                position: relative;
+                text-align: center;
+                vertical-align: middle;
+                white-space: nowrap;
+            }
+
+            /* Ensure black text across all anchor states */
+            .lwc-tab-button:link,
+            .lwc-tab-button:visited,
+            .lwc-tab-button:hover,
+            .lwc-tab-button:active,
+            .lwc-tab-button:focus {
+                color: #000 !important;
+            }
+
+            .lwc-tab-button:hover {
+                background-color: #e5e5e5;
+                border-color: #c9c7c5;
+                color: #000 !important; /* keep text black on hover */
+            }
+            
+            .lwc-button_brand {
+                background-color: #0070d2;
+                border: 1px solid #0070d2;
+                color: #fff;
+            }
+            
+            .lwc-button_brand:hover {
+                background-color: #005fb2;
+                border-color: #005fb2;
+                color: #fff;
+            }
+            
+            .lwc-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-form-element {
+                margin-bottom: 0.75rem;
+            }
+            
+            .lwc-form-element__label {
+                display: block;
+                font-size: 0.75rem;
+                color: #3e3e3c;
+                margin-bottom: 0.25rem;
+                font-weight: 400;
+            }
+            
+            .lwc-select {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                height: 32px;
+                padding: 0 1rem 0 0.5rem;
+                font-size: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-combobox {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .lwc-combobox__form-element {
+                position: relative;
+                flex: 1 1 auto;
+            }
+            
+            .lwc-input {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                padding: 0 1rem 0 0.75rem;
+                font-size: 0.75rem;
+                color: #080707;
+                height: 32px;
+            }
+            
+            .lwc-input:focus {
+                outline: 0;
+                border-color: #1589ee;
+                background-color: #fff;
+                box-shadow: 0 0 3px #0070D2;
+            }
+            
+            .lwc-section {
+                margin: 1rem 0;
+            }
+            
+            .lwc-section__title {
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-progress-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-progress-card {
+                flex: 1;
+                min-width: 180px;
+                background: white;
+                border-radius: 0.25rem;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+                border: 1px solid #dddbda;
+                padding: 1rem;
+                text-align: center;
+            }
+            
+            .lwc-progress-value {
+                font-size: 1.5rem;
+                font-weight: 300;
+                margin: 0.5rem 0;
+            }
+            
+            .lwc-progress-label {
+                font-size: 0.75rem;
+                color: #3e3e3c;
+            }
+            
+            .lwc-table-container {
+                overflow-x: auto;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+            }
+            
+            .lwc-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+            
+            .lwc-table th {
+                background-color: #f3f2f2;
+                border-top: 1px solid #dddbda;
+                border-bottom: 1px solid #dddbda;
+                font-weight: 600;
+                text-align: left;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+                color: #3e3e3c;
+            }
+            
+            .lwc-table td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid #dddbda;
+                font-size: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-table tr:last-child td {
+                border-bottom: none;
+            }
+            
+            .lwc-table tr:hover td {
+                background-color: #f3f2f2;
+            }
+            
+            .lwc-textarea {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+                color: #080707;
+                min-height: 60px;
+                resize: vertical;
+            }
+            
+            .lwc-checkbox {
+                display: flex;
+                align-items: center;
+            }
+            
+            .lwc-checkbox input[type="checkbox"] {
+                margin-right: 0.5rem;
+            }
+            
+            .lwc-footer {
+                text-align: center;
+                font-size: 0.6875rem;
+                color: #706e6b;
+                margin-top: 2rem;
+            }
+            
+            .lwc-spinner-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+            }
+            
+            .lwc-spinner {
+                display: inline-block;
+                position: relative;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .lwc-spinner div {
+                box-sizing: border-box;
+                display: block;
+                position: absolute;
+                width: 44px;
+                height: 44px;
+                margin: 3px;
+                border: 3px solid #0070d2;
+                border-radius: 50%;
+                animation: lwc-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                border-color: #0070d2 transparent transparent transparent;
+            }
+            
+            .lwc-spinner div:nth-child(1) {
+                animation-delay: -0.45s;
+            }
+            
+            .lwc-spinner div:nth-child(2) {
+                animation-delay: -0.3s;
+            }
+            
+            .lwc-spinner div:nth-child(3) {
+                animation-delay: -0.15s;
+            }
+            
+            @keyframes lwc-spinner {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            
+            .lwc-alert {
+                padding: 0.5rem;
+                border-radius: 0.25rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-alert_error {
+                background-color: #feded9;
+                border: 1px solid #c23934;
+                color: #c23934;
+            }
+            
+            .lwc-alert_success {
+                background-color: #cdefc4;
+                border: 1px solid #4bca81;
+                color: #04844b;
+            }
+            
+            /* Modern multiselect styles */
+            .lwc-multiselect-container {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+            }
+            
+            .lwc-multiselect-header {
+                font-size: 0.75rem;
+                color: #3e3e3c;
+                font-weight: 400;
+                margin-bottom: 0.25rem;
+            }
+            
+            .lwc-multiselect-body {
+                display: flex;
+                gap: 0.5rem;
+                align-items: stretch;
+                min-height: 250px;
+            }
+            
+            .lwc-multiselect-select {
+                flex: 1;
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                min-height: 200px;
+                padding: 0.25rem;
+                font-size: 0.75rem;
+                width: 100%;
+            }
+            
+            .lwc-multiselect-select:focus {
+                outline: 0;
+                border-color: #1589ee;
+                background-color: #fff;
+                box-shadow: 0 0 3px #0070D2;
+            }
+            
+            .lwc-multiselect-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem; /* slightly larger gap for clear separation */
+                justify-content: center;
+                align-items: center;
+                padding: 0.25rem; /* tighter padding to remove boxy feel */
+            }
+            
+            .lwc-multiselect-button {
+                background: transparent; /* remove box background */
+                border: none; /* remove box border */
+                color: #1b1b1b; /* neutral icon color */
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem; /* bigger, clearer arrows */
+                font-weight: 600;
+                line-height: 1; /* compact */
+                padding: 0; /* no padding to avoid box feel */
+                text-decoration: none;
+                transition: color 0.15s linear, transform 0.15s ease-in-out;
+                position: relative;
+                text-align: center;
+                vertical-align: middle;
+                white-space: nowrap;
+                min-width: 0; /* remove enforced box sizing */
+                min-height: 0; /* remove enforced box sizing */
+            }
+            
+            .lwc-multiselect-button:hover {
+                color: #005fb2; /* subtle highlight on hover */
+                transform: scale(1.05);
+            }
+            
+            .lwc-multiselect-button:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+            
+            .lwc-multiselect-button-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem; /* crisp, readable arrows */
+                line-height: 1;
+            }
+            
+            .lwc-controls-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-search-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1rem;
+                gap: 0.5rem;
+            }
+            
+            .lwc-search-input {
+                flex: 1;
+            }
+
+            /* New: split search area into two equal halves */
+            .lwc-search-left {
+                flex: 1 1 50%;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .lwc-selected-permissions {
+                flex: 1 1 50%;
+                display: flex;
+                align-items: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .lwc-selected-permissions .label {
+                font-weight: bold;
+                margin-right: 0.25rem;
+            }
+            
+            /* Original scrollbar styles preserved */
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+            html {
+                scrollbar-width: thin;
+                scrollbar-color: #888 #f1f1f1;
+            }
+            
+            .slds-scope p {
+                padding: 2px;
+            }
+            
+            .loading-spinner {
+                text-align: center;
+                margin-top: 20px;
+            }
+            
+            .loading-spinner img {
+                width: 50px;  
+            }
+            
+            div[style*="overflow-y: scroll"]::-webkit-scrollbar {
+                display: none;
+            }
+
+            div[style*="overflow-y: scroll"] {
+                scrollbar-width: none;
+            }
+
+            div[style*="overflow-y: scroll"] {
+                -ms-overflow-style: none;
+            }
+
+            #compliancePL::-webkit-scrollbar {
+                width: 6px; 
+            }
+
+            #compliancePL::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            #compliancePL::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+            }
+
+            #compliancePL::-webkit-scrollbar-thumb:hover {
+                background: #555; 
+            }
+
+            #compliancePL {
+                scrollbar-width: thin; 
+                scrollbar-color: #888 #f1f1f1; 
+            }
+            
+            .green-selected option:checked {
+                background-color: green;
+                color: white;
+            }
+            
+            /* Responsive adjustments */
+            @media (max-width: 1200px) {
+                .lwc-controls-grid {
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                }
+            }
+            
+            @media (max-width: 992px) {
+                .lwc-controls-grid {
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                }
+            }
+            
+            @media (max-width: 768px) {
+                .lwc-grid {
+                    grid-template-columns: 1fr;
+                }
+                
+                .lwc-header {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                
+                .lwc-button-group {
+                    justify-content: center;
+                }
+                
+                .lwc-multiselect-body {
+                    flex-direction: column;
+                }
+                
+                .lwc-multiselect-actions {
+                    flex-direction: row;
+                    justify-content: center;
+                    padding: 0.25rem 0; /* tighter spacing on small screens */
+                }
+                
+                .lwc-controls-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .lwc-multiselect-button {
+                    min-width: 0;
+                    min-height: 0;
+                    padding: 0;
+                    font-size: 0.9rem; /* maintain readability on small screens */
+                }
+
+                .lwc-multiselect-button-icon {
+                    font-size: 1rem; /* keep icon legible on small screens */
+                }
+            }
+        </style>
+    </head>
+    
+    <script type="text/javascript">
+        function expandForm() {
+            var outputPanel = document.querySelector(".hideTable");
+            if (outputPanel) {
+                var displayProperty = window.getComputedStyle(outputPanel).getPropertyValue("display");
+                outputPanel.style.display = displayProperty === 'none' ? 'flex' : 'none';
+            }
+            // Ensure the export popup right multiselect starts empty when popup opens
+            try {
+                setTimeout(clearRightSelect, 0);
+            } catch(e) { console.warn('clearRightSelect not available yet', e); }
+        }
+        
+        // Debug function to log all select element IDs
+        function debugSelectElements() {
+            console.log('=== Debugging Select Elements ===');
+            var selects = document.querySelectorAll('select');
+            for (var i = 0; i < selects.length; i++) {
+                console.log('Select ' + i + ':', selects[i].id, selects[i]);
+            }
+            console.log('=================================');
+        }
+        
+        // Call debug function on page load
+        window.addEventListener('load', function() {
+            loadDD_Dropdown(); 
+            // Debug select elements after a short delay to ensure they're rendered
+            setTimeout(debugSelectElements, 1000);
+            // Clear right multiselect after a longer delay to ensure Visualforce is fully rendered
+            setTimeout(clearRightSelect, 1500);
+        });
+        
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("fieldsTableBody");
+            tr = table.getElementsByTagName("tr");
+            
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().includes(filter)) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        
+        function clearSearch() {
+            var input = document.getElementById("searchInput");
+            input.value = '';
+            searchTable();
+        }
+        
+        // Clear all options from right multiselect so it shows empty initially
+        function clearRightSelect() {
+            try {
+                console.log('clearRightSelect called');
+                
+                // Visible UI select for right panel
+                var uiRight = document.getElementById('multiselect_right_ui');
+                // Hidden VF-bound select
+                var rightSelect = document.getElementById('multiselect_right') ||
+                                  document.querySelector('[id$="multiselect_right"]') ||
+                                  document.getElementById('theForm:multiselect_right') ||
+                                  document.querySelector('select[id*="multiselect_right"]');
+
+                // Export popup right multiselect (Selected Objects)
+                var exportRight = document.getElementById('theForm:multiselectComponents_right') ||
+                                   document.querySelector('[id$="multiselectComponents_right"]') ||
+                                   document.getElementById('multiselectComponents_right') ||
+                                   document.querySelector('select[id*="multiselectComponents_right"]');
+                
+                console.log('UI Right select found:', uiRight);
+                console.log('Hidden VF Right select found:', rightSelect);
+                console.log('Export popup Right select found:', exportRight);
+                
+                if (uiRight) {
+                    uiRight.innerHTML = '';
+                    console.log('Cleared UI right select');
+                }
+                
+                if (rightSelect) {
+                    console.log('Hidden VF right select options before clearing:', rightSelect.options.length);
+                    rightSelect.innerHTML = '';
+                    console.log('Hidden VF right select options after clearing:', rightSelect.options.length);
+                } else {
+                    console.warn('Hidden VF right multiselect not found when attempting to clear');
+                }
+
+                if (exportRight) {
+                    console.log('Export popup right select options before clearing:', exportRight.options.length);
+                    exportRight.innerHTML = '';
+                    console.log('Export popup right select options after clearing:', exportRight.options.length);
+                }
+                
+                console.log('Right multiselects cleared successfully');
+            } catch (e) {
+                console.error('Error clearing right multiselect', e);
+            }
+        }
+        
+        // Modern multiselect functions
+        function moveSelected(fromId, toId) {
+            console.log('moveSelected called with:', fromId, toId);
+            
+            // Try multiple ways to find the elements with Visualforce ID generation
+            var fromSelect = document.getElementById(fromId) ||
+                            document.querySelector('[id$="' + fromId + '"]') ||
+                            document.getElementById('theForm:' + fromId);
+            var toSelect = document.getElementById(toId) ||
+                          document.querySelector('[id$="' + toId + '"]') ||
+                          document.getElementById('theForm:' + toId);
+            
+            console.log('Looking for elements with IDs:', fromId, toId);
+            console.log('Found elements:', fromSelect, toSelect);
+            
+            if (!fromSelect || !toSelect) {
+                console.error('Could not find select elements:', fromId, toId);
+                // Try to find elements by partial ID match
+                var allSelects = document.querySelectorAll('select');
+                console.log('All select elements:', allSelects);
+                return;
+            }
+            
+            var movedCount = 0;
+            for (var i = fromSelect.options.length - 1; i >= 0; i--) {
+                if (fromSelect.options[i].selected) {
+                    var option = fromSelect.options[i];
+                    toSelect.appendChild(option);
+                    movedCount++;
+                }
+            }
+            console.log('Moved ' + movedCount + ' options');
+            // Update the Selected permissions label after changes
+            try { updateSelectedPermissionsLabel(); } catch (e) { console.warn('Label update failed', e); }
+        }
+        
+        function moveAll(fromId, toId) {
+            console.log('moveAll called with:', fromId, toId);
+            
+            // Try multiple ways to find the elements with Visualforce ID generation
+            var fromSelect = document.getElementById(fromId) ||
+                            document.querySelector('[id$="' + fromId + '"]') ||
+                            document.getElementById('theForm:' + fromId);
+            var toSelect = document.getElementById(toId) ||
+                          document.querySelector('[id$="' + toId + '"]') ||
+                          document.getElementById('theForm:' + toId);
+            
+            console.log('Looking for elements with IDs:', fromId, toId);
+            console.log('Found elements:', fromSelect, toSelect);
+            
+            if (!fromSelect || !toSelect) {
+                console.error('Could not find select elements:', fromId, toId);
+                // Try to find elements by partial ID match
+                var allSelects = document.querySelectorAll('select');
+                console.log('All select elements:', allSelects);
+                return;
+            }
+            
+            var movedCount = 0;
+            for (var i = fromSelect.options.length - 1; i >= 0; i--) {
+                var option = fromSelect.options[i];
+                toSelect.appendChild(option);
+                movedCount++;
+            }
+            console.log('Moved ' + movedCount + ' options');
+            // Update the Selected permissions label after changes
+            try { updateSelectedPermissionsLabel(); } catch (e) { console.warn('Label update failed', e); }
+        }
+        
+        // Function to update the selectedPermission values before form submission
+        function updateSelectedPermissions() {
+            console.log('Updating selected permissions...');
+            var uiRight = document.getElementById('multiselect_right_ui');
+            // Hidden VF-bound select
+            var vfRight = document.getElementById('multiselect_right') ||
+                          document.querySelector('[id$="multiselect_right"]') ||
+                          document.getElementById('theForm:multiselect_right');
+            
+            if (!vfRight) {
+                console.error('Could not find the hidden VF right select element');
+                return;
+            }
+            
+            // Clear hidden VF select options
+            vfRight.innerHTML = '';
+            
+            // Copy options from UI right select into hidden VF select and mark as selected
+            if (uiRight) {
+                for (var i = 0; i < uiRight.options.length; i++) {
+                    var opt = uiRight.options[i];
+                    var newOpt = document.createElement('option');
+                    newOpt.text = opt.text;
+                    newOpt.value = opt.value;
+                    newOpt.selected = true; // select all to ensure submission
+                    vfRight.appendChild(newOpt);
+                }
+            } else {
+                console.warn('UI right select not found; proceeding with existing VF options');
+                // Fallback: select existing VF options
+                for (var j = 0; j < vfRight.options.length; j++) {
+                    vfRight.options[j].selected = true;
+                }
+            }
+            
+            console.log('Synchronized UI selections into hidden VF select and selected all options');
+        }
+
+        // After rerender, rebuild the Selected Permission Sets UI from the hidden VF-bound select
+        function repopulateRightList() {
+            try {
+                var vfRight = document.getElementById('multiselect_right') ||
+                              document.querySelector('[id$="multiselect_right"]') ||
+                              document.getElementById('theForm:multiselect_right');
+                var uiRight = document.getElementById('multiselect_right_ui');
+                var leftSelect = document.getElementById('multiselect_left') ||
+                                 document.querySelector('[id$="multiselect_left"]') ||
+                                 document.getElementById('theForm:multiselect_left');
+
+                if (!vfRight || !uiRight || !leftSelect) {
+                    return;
+                }
+
+                // Build a set of values that should be on the right side
+                var selectedValues = new Set();
+                for (var i = 0; i < vfRight.options.length; i++) {
+                    if (vfRight.options[i].selected) {
+                        selectedValues.add(vfRight.options[i].value);
+                    }
+                }
+
+                // Move matching options from left to right UI list
+                for (var i = leftSelect.options.length - 1; i >= 0; i--) {
+                    var opt = leftSelect.options[i];
+                    if (selectedValues.has(opt.value)) {
+                        uiRight.appendChild(opt);
+                    }
+                }
+                // Update the Selected permissions label after rebuilding the right list
+                try { updateSelectedPermissionsLabel(); } catch (e) { console.warn('Label update failed', e); }
+            } catch (e) {
+                console.warn('Could not repopulate right list', e);
+            }
+        }
+        
+        // Build and display the Selected permissions summary beside the Search Fields
+        function getSelectedProfileName() {
+            var profSel = document.getElementById('profileSelectList') ||
+                          document.querySelector('[id$="profileSelectList"]') ||
+                          document.getElementById('theForm:profileSelectList');
+            if (!profSel || profSel.selectedIndex < 0) { return null; }
+            var txt = profSel.options[profSel.selectedIndex].text;
+            if (!txt) { return null; }
+            var clean = txt.trim();
+            if (clean === '-------- None -------') { return null; }
+            return clean;
+        }
+        function getSelectedPsetNames() {
+            var uiRight = document.getElementById('multiselect_right_ui');
+            var names = [];
+            if (uiRight) {
+                for (var i = 0; i < uiRight.options.length; i++) {
+                    names.push(uiRight.options[i].text);
+                }
+            }
+            return names;
+        }
+        function updateSelectedPermissionsLabel() {
+            var displayEl = document.getElementById('selectedPermDisplay');
+            if (!displayEl) { return; }
+            var parts = [];
+            var profileName = getSelectedProfileName();
+            var psetNames = getSelectedPsetNames();
+            if (profileName) { parts.push(profileName); }
+            if (psetNames && psetNames.length) { parts.push(psetNames.join(', ')); }
+            displayEl.textContent = parts.length ? parts.join(' | ') : 'None';
+        }
+        
+        // Initialize label on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            try { updateSelectedPermissionsLabel(); } catch (e) {}
+        });
+        
+        // Enhanced debug function to show all select elements with their full IDs
+        function debugSelectElements() {
+            console.log('=== Debugging Select Elements ===');
+            var selects = document.querySelectorAll('select');
+            for (var i = 0; i < selects.length; i++) {
+                console.log('Select ' + i + ': ID =', selects[i].id, 'Element =', selects[i]);
+                // Log selected options
+                var selectedOptions = [];
+                for (var j = 0; j < selects[i].options.length; j++) {
+                    if (selects[i].options[j].selected) {
+                        selectedOptions.push(selects[i].options[j].value);
+                    }
+                }
+                console.log('  Selected options:', selectedOptions);
+            }
+            console.log('=================================');
+        }
+    </script>
+    
+    <body>
+        <div class="lwc-container">
+            <apex:form id="theForm"> 
+                <apex:outputPanel id="loadingPanel">
+                    <apex:outputPanel rendered="{!isDeploying}">
+                        <apex:actionPoller action="{!checkAsyncRequest}" interval="5" rerender="theForm " rendered="{!isDeploying}" />
+                        <div class="lwc-spinner-container">
+                            <div class="lwc-spinner">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <p>Deployment in progress, please wait...</p>
+                        </div>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!AND(NOT(ISNULL(AsyncResult)), NOT(isDeploying))}">
+                        <div class="lwc-alert lwc-alert_success">
+                            <p>Deployment complete!</p>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                
+                
+                <apex:commandButton styleClass="lwc-button lwc-button_brand" value="Create New Remote Site Settings" action="{!CreateEndpoint}" rendered="{!noEndpointMetadata}" status="tableStatus" reRender="theForm"/>
+                <apex:outputPanel rendered="{!!noEndpointMetadata}">
+                    <apex:actionFunction name="deployZip" action="{!deployZip}" rendered="{!ISNULL(AsyncResult)}" rerender="theForm" status="tableStatus">
+                        <apex:param name="data" assignTo="{!ZipData}" value=""/>
+                    </apex:actionFunction>
+                    <c:Zip name="generateZip" oncomplete="deployZip(data);" rendered="{!ISNULL(AsyncResult) && isDeploy && !isEdit}">
+                        <c:Zipentry path="package.xml" data="{!PackageXml}"/>
+                        <c:Zipentry path="objects/{!selectedObject}.object" data="{!NewDescription}"/>
+                    </c:Zip>
+
+                    <div class="lwc-card">
+                        <div class="lwc-card-header">
+                            <div class="lwc-header">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                    <h2 class="lwc-header-title">
+                                        Review and edit field metadata and compliance to create or update a complete data dictionary.
+                                    </h2>
+                                </div>
+                                
+                                <div class="lwc-button-group">
+                                    <apex:commandLink value="Help/Training" action="{!openHelpTraining}" immediate="true" target="_blank" styleClass="lwc-tab-button"/>
+                                    <apex:commandLink value="FAQ's" action="{!openFAQ}" immediate="true" target="_blank" styleClass="lwc-tab-button"/>
+                                    <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}" immediate="true" target="_blank" styleClass="lwc-tab-button"/>
+                                    <apex:commandLink value="Release Notes" action="{!openReleaseNotes}" immediate="true" target="_blank" styleClass="lwc-tab-button"/>
+                                    <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="lwc-card-body">
+                            <div id="loadingSpinner" style="display: none;">
+                                <div class="lwc-spinner-container">
+                                    <div class="lwc-spinner">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="lwc-section">
+                                <h3 class="lwc-section__title">Permission Based Count</h3>
+                                <div class="lwc-progress-container">
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!fieldsWithPermissionsCount}</div>
+                                        <div class="lwc-progress-label">Total fields</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!fieldsWithHelpTextCount}</div>
+                                        <div class="lwc-progress-label">Helptext populated fields</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!percentageOfFieldsWithHelpText}%</div>
+                                        <div class="lwc-progress-label">Helptext populated</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!fieldsWithDescriptionCount}</div>
+                                        <div class="lwc-progress-label">Description populated fields</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!percentageOfFieldsWithDescription}%</div>
+                                        <div class="lwc-progress-label">Description populated</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="lwc-section">
+                                <h3 class="lwc-section__title">Overall Count</h3>
+                                <div class="lwc-progress-container">
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!TotalFieldCount}</div>
+                                        <div class="lwc-progress-label">Total fields</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!TotalHelptextCount}</div>
+                                        <div class="lwc-progress-label">Helptext populated fields</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!percentageOfTotalFieldsWithHelpText}%</div>
+                                        <div class="lwc-progress-label">Helptext populated</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!TotalDescriptionCount}</div>
+                                        <div class="lwc-progress-label">Description populated fields</div>
+                                    </div>
+                                    
+                                    <div class="lwc-progress-card">
+                                        <div class="lwc-progress-value">{!percentageOfTotalFieldsWithDescription}%</div>
+                                        <div class="lwc-progress-label">Description populated</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="lwc-card">
+                                <div class="lwc-card-body">
+                                    <div class="lwc-controls-grid">
+                                        <div class="lwc-form-element">
+                                            <label class="lwc-form-element__label">Type of object</label>
+                                            <apex:selectList value="{!selectedType}" size="1" id="IdOfSelectType" styleClass="lwc-select">
+                                                <apex:selectOptions value="{!objectsType}"/>
+                                                <apex:actionSupport event="onchange" rerender="theForm, selectionTable" action="{!changeType}" status="tableStatus"/>
+                                            </apex:selectList>
+                                            <apex:selectList value="{!selectedObject}" size="1" id="IdOfSelectElement" styleClass="lwc-select" style="margin-top: 0.5rem;">
+                                                <apex:selectOptions value="{!objectsList}"/>
+                                                <apex:selectOptions value="{!objectsList1}"/>
+                                                <apex:actionSupport event="onchange" rerender="theForm" action="{!changeObject}" status="tableStatus"/>
+                                            </apex:selectList>
+                                        </div>
+                                        
+                                        <div class="lwc-form-element">
+                                            <label class="lwc-form-element__label">Type of Profiles</label>
+                                            <apex:selectList value="{!selectedPerm}" size="1" styleClass="lwc-select">
+                                                <apex:selectOptions value="{!PermissionType}"/>
+                                                <apex:actionSupport event="onchange" rerender="theForm, selectionTable" action="{!changePermType}" status="tableStatus" oncomplete="clearRightSelect();"/>
+                                            </apex:selectList>
+                                            <apex:selectList value="{!selectedProfile}" size="1" id="profileSelectList" styleClass="lwc-select" style="margin-top: 0.5rem;">
+                                                <apex:selectOptions value="{!profilesList}"/>
+                                                <apex:actionSupport event="onchange" rerender="theForm" action="{!retrieveRecords}" status="tableStatus" oncomplete="clearRightSelect(); updateSelectedPermissionsLabel();"/>
+                                                <apex:actionSupport event="onload" rerender="theForm" action="{!retrieveRecords}" status="tableStatus" oncomplete="clearRightSelect(); updateSelectedPermissionsLabel();"/>
+                                            </apex:selectList>
+                                        </div>
+                                        
+                                        <div class="lwc-form-element">
+                                            <label class="lwc-form-element__label">Permission Sets</label>
+                                            <div class="lwc-multiselect-container">
+                                                <div class="lwc-multiselect-body">
+                                                    <div style="flex: 1; display: flex; flex-direction: column;">
+                                                        <apex:selectList id="multiselect_left" styleClass="lwc-multiselect-select" multiselect="true" size="10">
+                                                            <apex:selectOptions value="{!permissionList}"/>
+                                                        </apex:selectList>
+                                                    </div>
+                                                    
+                                                    <div class="lwc-multiselect-actions">
+                                                        <button type="button" class="lwc-multiselect-button" onclick="moveSelected('multiselect_left', 'multiselect_right_ui')" title="Add selected">
+                                                            <div class="lwc-multiselect-button-icon">→</div>
+                                                        </button>
+                                                        <button type="button" class="lwc-multiselect-button" onclick="moveSelected('multiselect_right_ui', 'multiselect_left')" title="Remove selected">
+                                                            <div class="lwc-multiselect-button-icon">←</div>
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <div style="flex: 1; display: flex; flex-direction: column;">
+                                                        <div class="lwc-multiselect-header">Selected Permission Sets</div>
+                                                        <!-- Visible UI select for right panel -->
+                                                        <select id="multiselect_right_ui" class="lwc-multiselect-select" multiple="multiple" size="10"></select>
+                                                        <!-- Hidden VF-bound select for server-side validation and submission -->
+                                                        <apex:selectList id="multiselect_right" styleClass="lwc-multiselect-select" multiselect="true" size="10" value="{!selectedPermission}" style="display:none;">
+                                                            <apex:selectOptions value="{!permissionList}"/>
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+                                        <div>
+                                            <apex:commandButton value="Save Selection" styleClass="lwc-button" status="tableStatus" onclick="DD_storeOptionsInLS(); return false;" />
+                                        </div>
+                                        
+                                        <div class="lwc-button-group">
+                                            <apex:commandButton styleClass="lwc-button" value="Go" action="{!createDescriptionMap}" rendered="{!!isEdit}" onclick="updateSelectedPermissions();">
+                                                <apex:actionSupport event="onclick" rerender="theForm" action="{!retrieveRecords}" status="tableStatus" oncomplete="repopulateRightList(); updateSelectedPermissionsLabel();"/>
+                                            </apex:commandButton>
+                                            
+                                            <apex:commandButton styleClass="lwc-button" value="Edit" action="{!Edit}" rendered="{!!isEdit && editAccess}" status="tableStatus" reRender="theForm"/>
+                                            
+                                            <apex:commandButton styleClass="lwc-button" onclick="generateZip()" value="Deploy" action="{!Deploy}" rendered="{!ISNULL(AsyncResult) && isDeploy && !isEdit}" reRender="theForm"/>
+                                            
+                                            <apex:commandButton styleClass="lwc-button" value="Select Object for Export to Excel" action="{!yesPopUp}" reRender="tstpopup, erorrMessage" status="tableStatus" rendered="{!!isEdit}" onclick="expandForm();" />
+                                            
+                                            <apex:commandButton styleClass="lwc-button" value="Show All Fields" action="{!showAllFields}" rendered="{!!isEdit}" />
+                                            
+                                            <apex:commandButton styleClass="lwc-button" value="Report" action="{!reportSensitiveData}" rendered="{!!isEdit}" status="tableStatus"/>
+                                            
+                                            <apex:commandButton styleClass="lwc-button lwc-button_brand" value="Save Changes For Deploy" action="{!SaveMap}" rendered="{!isEdit}" status="tableStatus" reRender="theForm"/>
+                                            
+                                            <apex:commandButton styleClass="lwc-button" value="Cancel" action="{!Cancel}" rendered="{!isEdit}" status="tableStatus" reRender="theForm"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <apex:outputPanel id="tstpopup">
+                                <div class="lwc-card" style="margin-top: 1rem;">
+                                    <div class="lwc-card-body">
+                                        <apex:outputPanel rendered="{!displayPopup}">
+                                            <div class="lwc-section">
+                                                <h3 class="lwc-section__title">Select Fields To Export</h3>
+                                                <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                                                    <div class="lwc-checkbox">
+                                                        <apex:inputCheckbox value="{!isField1}" label="Description">
+                                                            <apex:actionSupport event="onchange" action="{!toggleValue1}" reRender="multiselectComponents_left" />
+                                                        </apex:inputCheckbox>
+                                                        <label>Description</label>
+                                                    </div>
+                                                    
+                                                    <div class="lwc-checkbox">
+                                                        <apex:inputCheckbox value="{!isField2}" label="Helptext">
+                                                            <apex:actionSupport event="onchange" action="{!toggleValue2}" reRender="multiselectComponents_left" />
+                                                        </apex:inputCheckbox>
+                                                        <label>Helptext</label>
+                                                    </div>
+                                                    
+                                                    <div class="lwc-checkbox">
+                                                        <apex:inputCheckbox value="{!isField3}" label="Highlighted Data">
+                                                            <apex:actionSupport event="onchange" action="{!toggleValue3}" reRender="multiselectComponents_left" />
+                                                        </apex:inputCheckbox>
+                                                        <label>Highlighted Data</label>
+                                                    </div>
+                                                    
+                                                    <div class="lwc-checkbox">
+                                                        <apex:inputCheckbox value="{!isField4}" label="Sensitivity">
+                                                            <apex:actionSupport event="onchange" action="{!toggleValue4}" reRender="multiselectComponents_left" />
+                                                        </apex:inputCheckbox>
+                                                        <label>Sensitivity</label>
+                                                    </div>
+                                                    
+                                                    <div class="lwc-checkbox">
+                                                        <apex:inputCheckbox value="{!isField6}" label="Field Usage">
+                                                            <apex:actionSupport event="onchange" action="{!toggleValue6}" reRender="multiselectComponents_left" />
+                                                        </apex:inputCheckbox>
+                                                        <label>Field Usage</label>
+                                                    </div>
+                                                    
+                                                    <div class="lwc-checkbox">
+                                                        <apex:inputCheckbox value="{!isField7}" label="Data Owner">
+                                                            <apex:actionSupport event="onchange" action="{!toggleValue7}" reRender="multiselectComponents_left" />
+                                                        </apex:inputCheckbox>
+                                                        <label>Data Owner</label>
+                                                    </div>
+                                                    
+                                                    <div class="lwc-checkbox">
+                                                        <apex:inputCheckbox value="{!isField8}" label="Compliance Categorization">
+                                                            <apex:actionSupport event="onchange" action="{!toggleValue8}" reRender="multiselectComponents_left" />
+                                                        </apex:inputCheckbox>
+                                                        <label>Compliance Categorization</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="lwc-section">
+                                                <h3 class="lwc-section__title">Select Objects</h3>
+                                                <div class="lwc-multiselect-container">
+                                                    <div class="lwc-multiselect-body">
+                                                        <div style="flex: 1; display: flex; flex-direction: column;">
+                                                            <div class="lwc-multiselect-header">Available Objects</div>
+                                                            <apex:selectList id="multiselectComponents_left" styleClass="lwc-multiselect-select" multiselect="true" size="10" disabled="{!!isMultiselectPicklistEnabled}">
+                                                                <apex:selectOptions value="{!objectsList}"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                        
+                                                        <div class="lwc-multiselect-actions">
+                                                            <button type="button" class="lwc-multiselect-button" onclick="moveSelected('theForm:multiselectComponents_left', 'theForm:multiselectComponents_right')" title="Add selected">
+                                                                <div class="lwc-multiselect-button-icon">→</div>
+                                                            </button>
+                                                            <button type="button" class="lwc-multiselect-button" onclick="moveSelected('theForm:multiselectComponents_right', 'theForm:multiselectComponents_left')" title="Remove selected">
+                                                                <div class="lwc-multiselect-button-icon">←</div>
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        <div style="flex: 1; display: flex; flex-direction: column;">
+                                                            <div class="lwc-multiselect-header">Selected Objects</div>
+                                                            <!-- Bind to List<String> for VF compatibility; controller converts to List<SelectOption> -->
+                                                            <apex:selectList id="multiselectComponents_right" styleClass="lwc-multiselect-select" multiselect="true" size="10" value="{!selectedObjectValues}">
+                                                                <apex:selectOptions value="{!objectsList}"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p style="font-size: 0.75rem; color: #3e3e3c; margin-top: 0.5rem;">
+                                                    Select at least one object up to 5.
+                                                </p>
+                                            </div>
+                                            
+                                            <apex:actionStatus id="popupStatus" layout="block">
+                                                <apex:facet name="start">
+                                                    <div class="lwc-spinner-container">
+                                                        <div class="lwc-spinner">
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                            <div></div>
+                                                        </div>
+                                                    </div>
+                                                </apex:facet>
+                                                <apex:facet name="stop"></apex:facet>
+                                            </apex:actionStatus>
+                                            
+                                            <apex:outputPanel id="erorrMessage">
+                                                <apex:pageMessages />
+                                            </apex:outputPanel>
+                                            
+                                            <div style="text-align: center; margin-top: 1rem;">
+                                                <apex:commandButton value="Export to Excel" onclick="expandForm();" action="{!SelectObjectForExportToExcel}" rerender="tstpopup, erorrMessage, {!If(displayPopup == false, 'exportToExcel', '')}" status="popupStatus" styleClass="lwc-button lwc-button_brand"/>
+                                                <apex:commandButton value="Cancel" action="{!closePopup}" rerender="tstpopup, theForm" status="popupStatus" styleClass="lwc-button"/>
+                                            </div>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:outputPanel id="exportToExcel" rendered="{!selectedObjectsList.size > 0 && isReadyToDownload}" layout="none">
+                                            <script>
+                                                callBackFunctionExportToExcel();
+                                            </script>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:actionFunction action="{!ExportToExcel}" name="callBackFunctionExportToExcel"/>
+                                        <apex:actionFunction name="retrieveRecords" action="{!retrieveRecords}" rerender="theForm" status="tableStatus"/>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            
+                            
+                            
+                            <div style="text-align: center; color: #c23934; margin: 1rem 0;">
+                                <apex:outputText value="Your changes have been saved for review. To deploy your changes to the database please press Deploy." rendered="{!isDeploy && !isEdit}"/>
+                            </div>
+                            
+                            <apex:actionStatus id="tableStatus" layout="block" onstop="clearRightSelect();">
+                                <apex:facet name="start">
+                                    <div class="lwc-spinner-container">
+                                        <div class="lwc-spinner">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </apex:facet>
+                                <apex:facet name="stop"></apex:facet>
+                            </apex:actionStatus>
+                            
+                            <div class="lwc-search-container">
+                                <div class="lwc-search-left">
+                                    <label for="searchInput" style="font-weight: bold;">Search Fields:</label>
+                                    <div class="lwc-search-input">
+                                        <input class="lwc-input" id="searchInput" type="text" oninput="searchTable()" placeholder="Enter Field Name..."/>
+                                    </div>
+                                </div>
+                                <div class="lwc-selected-permissions">
+                                    <span class="label">Selected permissions:</span>
+                                    <span id="selectedPermDisplay" class="value"></span>
+                                </div>
+                            </div>
+
+                            <!-- Messages below search section -->
+                            <div id="belowSearchMessages" style="margin: 0.75rem 0;">
+                                <apex:pageMessages />
+                                <apex:outputPanel rendered="{!AND(NOT(ISNULL(AsyncResult)), NOT(isDeploying))}">
+                                    <div class="lwc-alert lwc-alert_success">
+                                        <p>Deployment complete!</p>
+                                    </div>
+                                </apex:outputPanel>
+                            </div>
+                            
+                            <apex:outputPanel id="table" layout="block">
+                                <div class="lwc-table-container">
+                                    <table class="lwc-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 20%">Field Name</th>
+                                                <th style="width: 10%">Field Type</th>
+                                                <th style="width: 20%">Description</th>
+                                                <th style="width: 20%">Help Text</th>
+                                                <th style="width: 5%">Highlighted Data</th>
+                                                <th style="width: 5%">Sensitivity</th>
+                                                <th style="width: 5%">Field Usage</th>
+                                                <th style="width: 5%">Data Owner</th>
+                                                <th style="width: 10%">Compliance Categorization</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="fieldsTableBody">
+                                            <apex:repeat value="{!fieldDescriptionMap}" var="fieldName">
+                                                <tr>
+                                                    <td data-label="Field Name">
+                                                        <div title="{!HTMLENCODE(fieldName)}">
+                                                            <apex:outputText value="{!HTMLENCODE(fieldName)}" escape="true" />
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="Field Type">
+                                                        <div title="FieldName">
+                                                            <apex:outputText value="{!IF(CONTAINS(fieldDescriptionMap[fieldName][5],'string'), 'Text', IF(CONTAINS(fieldDescriptionMap[fieldName][5],'reference'), 'Lookup', IF(CONTAINS(fieldDescriptionMap[fieldName][5],'integer'), 'Number', fieldDescriptionMap[fieldName][5])))}"/>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="Description">
+                                                        <div title="{!HTMLENCODE(fieldDescriptionMap[fieldName][0])}">
+                                                            <apex:inputTextarea value="{!fieldDescriptionMap[fieldName][0]}" styleClass="lwc-textarea" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}"/>
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][0])}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'false'}"/>
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][0])}" escape="true" rendered="{!!isEdit}"/>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="Help Text">
+                                                        <div title="{!HTMLENCODE(fieldDescriptionMap[fieldName][1])}">
+                                                            <apex:inputTextarea value="{!fieldDescriptionMap[fieldName][1]}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}" styleClass="lwc-textarea"/>
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][1])}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'false'}"/>
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][1])}" rendered="{!NOT(isEdit)}"/>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="GDPR">
+                                                        <div class="lwc-checkbox">
+                                                            <apex:inputCheckbox value="{!fieldGDPRMap[fieldName]}" style="pointer-events: {!IF(!isEdit, 'none', '')};" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}"/>
+                                                            <apex:inputCheckbox value="{!fieldGDPRMap[fieldName]}" rendered="{!!isEdit}" disabled="true" style="pointer-events: {!IF(!!isEdit, 'none', '')};"/>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="Sensitivity">
+                                                        <div title="Class">
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][4])}" rendered="{!!isEdit}"/>
+                                                            
+                                                            <apex:selectList value="{!fieldDescriptionMap[fieldName][4]}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}" size="1" styleClass="lwc-select">
+                                                                <apex:selectOption itemValue="None" itemLabel="None" rendered="{!IF(CONTAINS(fieldDescriptionMap[fieldName][4],''), 'true','False')}"/>
+                                                                <apex:selectOption itemValue="Public" itemLabel="Public" />
+                                                                <apex:selectOption itemValue="Internal" itemLabel="Internal" />
+                                                                <apex:selectOption itemValue="Confidential" itemLabel="Confidential" />
+                                                                <apex:selectOption itemValue="Restricted" itemLabel="Restricted"/>
+                                                                <apex:selectOption itemValue="MissionCritical" itemLabel="MissionCritical"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="Field Usage">
+                                                        <div title="Class">
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][7])}" rendered="{!!isEdit}"/>
+                                                            
+                                                            <apex:selectList value="{!fieldDescriptionMap[fieldName][7]}" rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}" size="1" styleClass="lwc-select">
+                                                                <apex:selectOption itemValue="None" itemLabel="None" rendered="{!IF(CONTAINS(fieldDescriptionMap[fieldName][7],''), 'true','False')}"/>
+                                                                <apex:selectOption itemValue="Active" itemLabel="Active" />
+                                                                <apex:selectOption itemValue="DeprecateCandidate" itemLabel="DeprecateCandidate" />
+                                                                <apex:selectOption itemValue="Hidden" itemLabel="Hidden" />
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="Data Owner">
+                                                        <div title="Data Owner">
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][8])}" escape="true"/>
+                                                        </div>
+                                                    </td>
+                                                    
+                                                    <td data-label="Compliance Categorization">
+                                                        <div title="Compliance Categorization">
+                                                            <apex:outputPanel rendered="{!isEdit && fieldDescriptionMap[fieldName][2] == 'true'}">
+                                                                <apex:outputText value="{!fieldDescriptionMap[fieldName][9]}" />
+                                                                
+                                                                <div style="max-height: 150px; border: 1px solid #dbcdcd; padding: 2px; overflow-y: auto; margin-top: 0.25rem;">
+                                                                    <apex:selectList id="compliancePL" value="{!fieldDescriptionMap[fieldName][9]}" 
+                                                                        multiselect="true" size="3"
+                                                                        styleClass="lwc-select green-selected"
+                                                                        title="Press Ctrl + Select to choose multiple picklist values">
+                                                                        <apex:selectOption itemValue="PII" itemLabel="PII" />
+                                                                        <apex:selectOption itemValue="HIPAA" itemLabel="HIPAA" />
+                                                                        <apex:selectOption itemValue="GDPR" itemLabel="GDPR" />
+                                                                        <apex:selectOption itemValue="PCI" itemLabel="PCI" />
+                                                                        <apex:selectOption itemValue="COPPA" itemLabel="COPPA" />
+                                                                        <apex:selectOption itemValue="CCPA" itemLabel="CCPA" />
+                                                                    </apex:selectList> 
+                                                                </div>
+                                                            </apex:outputPanel>  
+                                                            <apex:outputText value="{!HTMLENCODE(fieldDescriptionMap[fieldName][9])}" rendered="{!!isEdit}" />
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+            </apex:form>
+            
+            <div class="lwc-footer">
+                <p>Security &amp; Access Manager Functionality Copyright © 2017, Application Perfection Ltd.</p>
+                <p>All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+</apex:page>

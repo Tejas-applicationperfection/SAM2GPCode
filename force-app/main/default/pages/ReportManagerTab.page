@@ -1,0 +1,23 @@
+<!--
+Author      : Himanshu Kr. Varshney
+Description : This VF Page will Include reportManager.cmp, and reportManagerApplication.app
+Dependencies: It is being used in reportManagerApplication.app, reportManager.cmp, And also in VF page tab
+-->
+<apex:page standardStylesheets="false">
+    <apex:pageMessages />
+    <apex:includeLightning />
+    <!--div where LC will get displayed-->
+    <div id="lcDisplay">
+    </div>
+    <script type="text/javascript">
+    //Calling Lightning Component and Lightning Application from Vf Page
+    $Lightning.use("SA_Audit:reportManagerApplication", function(){ 
+        $Lightning.createComponent("SA_Audit:reportManager", {
+        },
+                                   "lcDisplay",
+                                   function(component){
+                                       console.log("Lightning Component Rendered Successfully !!");
+                                   });
+    });
+    </script>
+</apex:page>

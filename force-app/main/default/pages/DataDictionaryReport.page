@@ -1,0 +1,156 @@
+<apex:page controller="DataDictionary" language="{!currentLanguage}" sidebar="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#DataDictionaryReport.xls">{!xmlheader}
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+        xmlns:o="urn:schemas-microsoft-com:office:office" 
+        xmlns:x="urn:schemas-microsoft-com:office:excel"
+        xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+        xmlns:html="http://www.w3.org/TR/REC-html40">
+        
+        
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>8535</WindowHeight>
+            <WindowWidth>12345</WindowWidth>
+            <WindowTopX>480</WindowTopX>
+            <WindowTopY>90</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        
+        <Styles>
+            <Style ss:ID="Default" ss:Name="Normal">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders/>
+                <Font/>
+                <Interior/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="s67">
+                <Alignment ss:Vertical="Bottom"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Double" ss:Weight="3"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="18" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s68">
+                <Alignment style="word-wrap: break-word;" ss:WrapText="1" ss:Vertical="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+                </Borders>
+                <Font ss:Size="12" ss:Bold="1" ss:Color="#FFFFFF"/>
+                <Interior ss:Color="#4682B4" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="s69">
+               <Alignment style="word-wrap: break-word;" ss:WrapText="1" ss:Vertical="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+            </Style>
+            <Style ss:ID="s70" ss:Name="Date">
+                <Alignment ss:Vertical="Bottom"/>
+                <DateFormat ss:Format="MM/DD/YYYY"/>
+            </Style>
+            <Style ss:ID="sNO">
+                <Alignment ss:Vertical="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10" />
+                <Interior ss:Color="#FFC7CE" ss:Pattern="Solid"/>
+            </Style>
+            <Style ss:ID="sYES">
+                <Alignment ss:Vertical="Center"/>
+                <Borders>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Size="10"/>
+                <Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/>
+            </Style>
+        </Styles>
+            <Worksheet ss:Name="Sensitive Data">
+                <Table x:FullColumns="1" x:FullRows="1" >
+                    <Column ss:AutoFitWidth="0" ss:Width="34"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                     <Column ss:AutoFitWidth="0" ss:Width="350"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="200"/>
+                    <Column ss:AutoFitWidth="0" ss:Width="150"/>
+                    <Row ss:Height="30"></Row>
+                    <Row ss:Height="30">
+                        <Cell></Cell>
+                        <Cell>
+                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="300" height="50"/>
+                        </Cell>
+                        <Cell ss:MergeAcross="2"></Cell>
+                        <Cell>
+                            <apex:image id="theImage" value="{!$Resource.logo}" width="200" height="50"/>
+                        </Cell>
+                    </Row>
+                    <Row ss:Height="30">
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s67" ss:MergeAcross="4"><Data ss:Type="String"><apex:outputText value="Sensitive Fields" escape="true"/> &nbsp;Object</Data></Cell>
+                    </Row>
+                    <Row ss:Height="25">
+                        <Cell></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">Object Name</Data></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">Field Name</Data></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">Description</Data></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">Help Text</Data></Cell>
+                        <Cell ss:StyleID="s68"><Data ss:Type="String">Highlighted Data</Data></Cell>
+                    </Row>
+                    <apex:repeat value="{!sensitiveDataReportWrapperList}" var="item">
+                        <Row>
+                            <Cell ></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.objName)}" escape="true"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.fieldName)}" escape="true"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.helpText)}" escape="true"/></Data></Cell>
+                            <Cell ss:StyleID="s69"><Data ss:Type="String" ><apex:outputText value="{!HTMLENCODE(item.description)}" escape="true"/></Data></Cell>
+                            <Cell ss:StyleID="{!IF(item.sensitiveData,'sYES','sNO')}"><Data ss:Type="String" ><apex:outputText value="
+                            {!IF(item.sensitiveData,'YES','NO')}"/></Data></Cell>
+                        </Row>
+                    </apex:repeat>
+                    <Row ss:Height="30"></Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String" >Exported from Salesforce.com org id: </Data></Cell>
+                        <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Id}" rendered="{!OrgIsAccessible}"/></Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Company </Data></Cell>
+                        <Cell><Data ss:Type="String" ><apex:outputText value="{!org.Name}" rendered="{!OrgIsAccessible}"/> </Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Date of Export </Data></Cell>
+                        <Cell ss:StyleID="">
+                            <Data ss:Type="String" >
+                                <apex:outputText value="{!NOW()}"/>
+                            </Data>
+                        </Cell>
+                    </Row>
+                    <Row>
+                        <Cell></Cell>
+                        <Cell><Data ss:Type="String">Exported by : </Data></Cell>
+                        <Cell><Data ss:Type="String"><apex:outputText value="{!exportUser}"/></Data></Cell>
+                    </Row>
+                </Table>
+            </Worksheet>
+       
+    </Workbook>
+</apex:page>

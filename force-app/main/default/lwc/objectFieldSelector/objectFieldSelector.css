@@ -1,0 +1,249 @@
+.slds-table_header-fixed_container {
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    margin-top: 1rem;
+}
+
+.slds-scrollable_y {
+    overflow-y: auto;
+}
+
+.slds-table th {
+    background-color: #f6f7f9; /* softer header */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.slds-table td {
+    vertical-align: top;
+    padding: 0.75rem;
+}
+
+.slds-table th:nth-child(1) { min-width: 200px; } /* Field Name */
+.slds-table th:nth-child(2) { min-width: 100px; } /* Field Type */
+.slds-table th:nth-child(3) { min-width: 150px; } /* Description */
+.slds-table th:nth-child(4) { min-width: 150px; } /* Help Text */
+.slds-table th:nth-child(5) { min-width: 100px; } /* Sensitivity */
+.slds-table th:nth-child(6) { min-width: 100px; } /* Field Usage */
+.slds-table th:nth-child(7) { min-width: 120px; } /* Data Owner */
+.slds-table th:nth-child(8) { min-width: 180px; } /* Compliance Categorization */
+
+.slds-grid.slds-wrap > .slds-col {
+    padding: 0.25rem 0;
+}
+
+.slds-text-title_caps.slds-text-color_weak {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.slds-m-left_x-small {
+    margin-left: 0.25rem;
+}
+
+.slds-m-bottom_x-small {
+    margin-bottom: 0.25rem;
+}
+
+.slds-m-bottom_large {
+    margin-bottom: 1.5rem;
+}
+
+.slds-m-top_large {
+    margin-top: 1.5rem;
+}
+
+.slds-m-top_medium {
+    margin-top: 1rem;
+}
+
+.slds-m-top_small {
+    margin-top: 0.5rem;
+}
+
+.slds-text-align_center {
+    text-align: center;
+}
+
+.slds-notify {
+    margin: 0.75rem 0; /* slightly tighter spacing */
+}
+
+/* Make labels a bit larger and darker for Object Type and Select Object */
+.slds-form-element__label.ofs-field-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1b2a4e; /* slightly darker for better readability */
+}
+
+/* Hide the required asterisk while keeping validation intact */
+.slds-form-element__label abbr.slds-required {
+    display: none !important;
+}
+
+.slds-table_cell-buffer td {
+    padding: 0.75rem;
+}
+
+.slds-table_striped tbody tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+.slds-table_striped tbody tr:hover {
+    background-color: #f3f5f7;
+}
+
+/* Neutral banner for helper texts - ensure high contrast, remove stripes */
+.slds-notify_alert {
+    background-color: #ffffff !important;
+    background-image: none !important; /* remove diagonal texture */
+    border: 1px solid #dddbda;
+    color: #1b2a4e; /* readable text */
+    padding: 0.5rem 0.75rem; /* tighter padding */
+}
+
+.slds-notify_alert h2 {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Ensure themed alerts are solid without texture */
+.slds-notify_alert.slds-theme_info,
+.slds-notify_alert.slds-theme_warning {
+    background-image: none !important;
+    background-color: #ffffff !important;
+}
+
+/* Guard against org-level SLDS alert texture */
+.slds-theme_alert-texture,
+.slds-notify_alert.slds-theme_alert-texture,
+.slds-notify.slds-theme_alert-texture {
+    background-image: none !important;
+}
+
+/* In case texture is applied via pseudo elements */
+.slds-notify_alert::before,
+.slds-notify_alert::after {
+    background-image: none !important;
+}
+
+/* Field name styling */
+.field-name-label {
+    font-weight: 600;
+    color: #032d60;
+}
+
+.field-name-api {
+    font-size: 0.75rem;
+    color: #706e6b;
+    font-family: monospace;
+}
+
+/* Sensitivity level styling */
+.slds-text-color_error {
+    color: #c23934;
+}
+
+.slds-text-color_warning {
+    color: #ffb75d;
+}
+
+.slds-text-color_success {
+    color: #04844b;
+}
+
+.slds-text-color_weak {
+    color: #706e6b;
+}
+
+.slds-text-color_default {
+    color: #032d60;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1200px) {
+    .slds-table_header-fixed_container {
+        overflow-x: auto;
+    }
+    
+    .slds-table {
+        min-width: 1100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .slds-table_header-fixed_container {
+        overflow-x: auto;
+    }
+    
+    .slds-table {
+        min-width: 1100px;
+    }
+    
+    .slds-grid.slds-wrap > .slds-col {
+        padding: 0.5rem 0;
+    }
+}
+
+/* Collapsible Administration Panel */
+.admin-collapsible {
+    border: 1px solid #dddbda;
+    border-radius: 0.5rem;
+    background: #ffffff;
+}
+
+.admin-collapsible > summary {
+    list-style: none; /* hide default marker across browsers */
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    color: #1b2a4e;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-collapsible > summary::-webkit-details-marker { display: none; }
+
+.admin-collapsible > summary::before {
+    content: '\25B8'; /* small right-pointing triangle */
+    display: inline-block;
+    transform: rotate(0deg);
+    color: #69737d;
+}
+
+.admin-collapsible[open] > summary::before {
+    content: '\25BE'; /* small down-pointing triangle */
+}
+
+.admin-collapsible__content {
+    padding: 0.5rem 0.75rem; /* tighter content padding */
+}
+
+/* Slightly reduce card spacing to avoid unnecessary whitespace */
+.slds-m-bottom_large { margin-bottom: 1rem; }
+
+/*
+ * Side-by-side layout for Object Type and Select Object without changing markup.
+ * We apply a 2-column grid to the Object Field Selector card body only when it contains the selectors.
+ */
+/* Two-column layout applied to the Object Field Selector card body */
+.ofs-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding-bottom: 3rem; /* breathing room for long dropdown lists */
+}
+
+.ofs-card-body > .slds-notify { grid-column: 1 / -1; }
+.ofs-card-body > :not(.slds-form-element):not(.slds-notify) { grid-column: 1 / -1; }
+
+/* Responsive: stack selectors on small screens */
+@media (max-width: 768px) {
+    .ofs-card-body {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,1374 @@
+<!--
+The MultiselectPicklist component implements a multiselect picklist similar
+to that seen when adding tabs to a Force.com application.
+
+HTML elements use the same classes as the native multiselect picklist, to
+keep visual consistency in the UI.
+
+In addition to the visible elements, the component contains two hidden input
+elements, the purpose of which is to hold a string representation of the
+contents of each listbox. As options are added, removed or moved within the
+listboxes, the content of the hidden elements is synchronized to the content
+of the listboxes. When the Visualforce page is submitted, the 
+MultiselectController updates its SelectOption[] variables from these hidden 
+elements.
+-->
+<apex:component controller="MultiselectController">
+    <apex:slds />
+    <style>
+        .help-icon {
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+        color: #0070d2; /* Salesforce blue color */
+        margin-left: 5px;
+        vertical-align: middle;
+        }
+        
+        
+        .tooltip {
+        display: none; /* Hide by default */
+        position: absolute;
+        background-color: #fff;
+        color: #333;
+        border: 1px solid #ccc;
+        padding: 8px;
+        border-radius: 4px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000; /* Ensure it's above other elements */
+        max-width: 200px; /* Limit the width */
+        }
+        
+        /* width */
+        ::-webkit-scrollbar {
+        width: 20px;
+        }
+        
+        /* Track */
+        ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey; 
+        border-radius: 11px;
+        }
+        
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #8B7E74; 
+        border-radius: 11px;
+        }
+        
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #404258; 
+        }
+        .icon-button {
+        background-color: #f5f5f5; /* Light grey background */
+        border: 1px solid #ccc;    /* Light border */
+        border-radius: 5px;        /* Rounded corners */
+        padding: 8px;              /* Space around the icon */
+        cursor: pointer;           /* Pointer cursor */
+        transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+        
+        .icon-button i {
+        font-size: 16px; /* Icon size */
+        color: #333;     /* Icon color */
+        }
+        
+        .icon-button:hover {
+        background-color: #e0e0e0; /* Darker grey on hover */
+        }
+        
+        .icon-button:focus {
+        outline: none; /* Remove outline on focus */
+        box-shadow: 0 0 5px #007bff; /* Add shadow on focus */
+        }
+    </style>
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"></link> -->
+    
+    <apex:attribute name="disableComponents"
+                    description="disablecmp" type="Boolean"
+                    required="false" assignTo="{!disableComponent}"/>
+    <apex:attribute name="leftLabel" description="Label on left listbox."
+                    type="String" required="true" />
+    <apex:attribute name="rightLabel" description="Label on right listbox."
+                    type="String" required="true" />
+    
+    <apex:attribute name="size" description="Size of listboxes."
+                    type="Integer" required="true" />
+    <apex:attribute name="width" description="Width of listboxes."
+                    type="String" required="true" />
+    <apex:attribute name="showUpDownButtons" description="Should Up/Down buttons be displayed or not."
+                    type="Boolean" required="false" default="true"/>
+    
+    <apex:attribute name="leftOption"
+                    description="Options list for left listbox." type="SelectOption[]"
+                    required="true" assignTo="{!leftOptions}" />
+    <apex:attribute name="leftOption1"
+                    description="Options list for left listbox." type="SelectOption[]"
+                    required="true" assignTo="{!leftOptions1}" />
+    <apex:attribute name="rightOption"
+                    description="Options list for right listbox." type="SelectOption[]"
+                    required="true" assignTo="{!rightOptions}" />
+    
+    <apex:outputPanel id="multiselectPanel" layout="block" styleClass="duelingListBox">
+       
+
+        <table class="layout">
+            <tbody>
+                <tr>
+                    <tr>
+                        <td><apex:outputPanel layout="block" styleClass="searchBox" style="padding: 6px;"  rendered="{!NOT(leftLabel = 'Available Objects')}">
+                            <input type="text" id="searchBoxLeft" placeholder="Search Permissions..." style="max-width: 50%; padding: 2px; border-radius: 10px;padding-left: 10px;" onkeyup="filterOptions('searchBoxLeft', '{!$Component.multiselectPanel}:leftList')" />
+                            </apex:outputPanel>
+                        </td>
+                </tr>
+                <td class="selectCell">
+                    <apex:outputPanel layout="block" styleClass="selectTitle" style="text-align : left">
+                        <!-- 
+Visualforce prepends the correct prefix to the outputLabel's 
+'for' attribute
+-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:outputLabel value="{!leftLabel}" style="font-size: small;"  
+                                          for="multiselectPanel:leftList" />
+                    </apex:outputPanel>
+                    <select id="{!$Component.multiselectPanel}:leftList" 
+                            class="multilist" multiple="multiple" sze="{!size}" 
+                            style="width: 80.5%; background-color: aliceblue; padding: 8px; border-radius: 10px; height: 16em;">
+                        <apex:repeat value="{!leftOptions}" var="option">
+                            <option value="{!option.value}" >{!option.label}</option>
+                        </apex:repeat>
+                        <apex:repeat value="{!leftOptions1}" var="opt">
+                            <option value="{!opt.value}" >{!opt.label}</option>
+                        </apex:repeat>
+                    </select>
+                </td>
+                <td class="buttonCell" style="right: 56px;position: relative;">
+                    <!-- <apex:outputPanel layout="block" styleClass="text-align: center">Add</apex:outputPanel>-->
+                    <apex:outputPanel layout="block" styleClass="text-align: center">
+                        <apex:outputLink value="javascript:moveSelectedOptions('{!$Component.multiselectPanel}:leftList', 
+                                                '{!$Component.multiselectPanel}:rightList', '{!$Component.leftHidden}', 
+                                                '{!$Component.rightHidden}');"
+                                         id="btnRight">
+                            <apex:image value="{!$Resource.RightArrow}" alt="Add" title="Add" style="width: 40px;margin: 5px;margin-top: 25px;"/>
+                            <!--<div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="btnAdd">
+<span class="slds-button slds-button_icon-border-filled" title="Add">
+<svg class="slds-button__icon slds-icon" aria-hidden="true" style="fill: #00b359;">
+<use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#right')}"></use>
+</svg>
+<span class="slds-assistive-text">Add</span>
+</span>
+</div>-->
+                        </apex:outputLink>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" styleClass="text-align: center">
+                        <apex:outputLink value="javascript:moveSelectedOptions('{!$Component.multiselectPanel}:rightList', 
+                                                '{!$Component.multiselectPanel}:leftList', '{!$Component.rightHidden}', 
+                                                '{!$Component.leftHidden}');"
+                                         id="btnLeft">
+                            <apex:image value="{!$Resource.LeftArrow}" alt="Remove" title="Remove" style="width: 40px;margin: 5px;" />
+                            
+                        </apex:outputLink>
+                    </apex:outputPanel>
+                    <!--  <apex:outputPanel layout="block" styleClass="duelingText; text-align: center">
+Remove
+</apex:outputPanel> -->
+                </td>
+                <td class="selectCell" style="right: 45px;position: relative;">
+                    <apex:outputPanel layout="block" styleClass="selectTitle" style="text-align : left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <apex:outputLabel value="{!rightLabel}" style="font-size: small;" for="multiselectPanel:rightList" />
+                    </apex:outputPanel>
+                    <select id="{!$Component.multiselectPanel}:rightList" 
+                            class="multilist" multiple="multiple" size="{!size}" 
+                            style="width: 85%; background-color: aliceblue; padding: 8px; border-radius: 10px; height: 16em"> <!--#F7EFE5 -->
+                        <apex:repeat value="{!rightOptions}" var="option">
+                            <option value="{!option.value}">{!option.label}</option>
+                        </apex:repeat>
+                    </select>
+                </td>
+                
+                <td class="buttonCell" style="right: 58px;position: relative;">
+                    <!--  <apex:outputPanel layout="block" styleClass="text-align: center;" rendered="{!showUpDownButtons}">
+Up
+</apex:outputPanel> -->
+                    <apex:outputPanel layout="block" styleClass="text-align: center;" rendered="{!showUpDownButtons}">
+                        <apex:outputLink value="javascript:slideSelectedOptionsUp('{!$Component.multiselectPanel}:rightList', 
+                                                '{!$Component.rightHidden}');"
+                                         id="upBtn">
+                            <apex:image value="{!$Resource.UpArrowNew}" alt="Up" title="Up" style="width: 40px;" height="30"/>
+                            <!--<div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<span class="slds-button slds-button_icon-border-filled" title="Up">
+<svg class="slds-button__icon slds-icon" aria-hidden="true" style="fill: #3366ff;">
+<use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#up')}"></use>
+</svg>
+<span class="slds-assistive-text">Up</span>
+</span>
+</div>-->
+                        </apex:outputLink>
+                    </apex:outputPanel>
+                    
+                    
+                    <apex:outputPanel layout="block" styleClass="text-align: center;" rendered="{!showUpDownButtons}">
+                        <apex:outputLink value="javascript:slideSelectedOptionsDown('{!$Component.multiselectPanel}:rightList', 
+                                                '{!$Component.rightHidden}');"
+                                         id="downBtn">
+                            <apex:image value="{!$Resource.DownArrow2}" alt="Down" style="width: 40px; margin-top:10px;" title="Down" width="30" height="30"/>
+                            <!--<div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<span class="slds-button slds-button_icon-border-filled" title="Down">
+<svg class="slds-button__icon slds-icon" aria-hidden="true" style="fill: #3366ff;">
+<use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+</svg>
+<span class="slds-assistive-text">Down</span>
+</span>
+</div>-->
+                        </apex:outputLink>
+                    </apex:outputPanel>
+                    <apex:outputLink value="javascript:clearAllOptions('{!$Component.multiselectPanel}:rightList', 
+                                            '{!$Component.multiselectPanel}:leftList', 
+                                            '{!$Component.rightHidden}', 
+                                            '{!$Component.leftHidden}');" 
+                                     id="clearAllBtn"  >
+                        <apex:image value="{!$Resource.ClearAll}" alt="Down" style="width: 30px;   margin-top: 0px;  position: relative; left: 5px;   top: 47px;" title="Clear All" width="30" height="30"/>
+                    </apex:outputLink>
+                </td>    
+                
+                
+                
+                <tr>
+                    <!--  <td id="SelectionDiv" style="display: none;">
+<apex:outputPanel layout="block"  style="padding: 6px;" rendered="{!NOT(leftLabel = 'Available Objects')}" >
+<apex:commandButton value="Save Selection" onclick="storeOptionsInLocalStorage(); return false;" />
+
+<span class="help-icon" onmouseover="showTooltip(event)" onmouseout="hideTooltip(event)">
+&#9432;  
+</span>
+
+<div class="tooltip" id="helpTooltip">
+Clicking 'Save Selection' will save your current selections to the storage for future use.
+</div>
+</apex:outputPanel>
+
+</td>
+
+<td>
+<apex:outputPanel layout="block" styleClass="templateBox" style="padding: 6px;"  rendered="{!NOT(leftLabel == 'Available Objects' || leftLabel == 'Available Profiles/Permission Sets.')}">
+<select id="templateDropdown" onchange="loadTemplateOptions(this.value);">
+<option value="">Select a template</option>
+</select>
+</apex:outputPanel>
+</td>   -->    
+                </tr>
+                
+                
+            </tr>
+    </tbody>
+</table>
+<apex:inputHidden value="{!leftOptionsHidden}" id="leftHidden" />
+<apex:inputHidden value="{!rightOptionsHidden}" id="rightHidden" />
+</apex:outputPanel>
+
+<script type="text/javascript">
+
+
+
+var selectBox = document.getElementById("{!$Component.multiselectPanel}:leftList");
+var disableComponent = "{!disableComponent}"; // false Convert Apex boolean to JavaScript string
+console.log('hellod'+ disableComponent);
+if(disableComponent === "true") {
+    console.log('hellso'+ disableComponent);
+    selectBox.disabled = true;
+} else {
+    console.log('helloe'+ disableComponent);
+    selectBox.disabled = false;
+}
+if (!buildOutputString) {
+    console.log('aaaaa:');
+    // Create a string from the content of a listbox
+    var buildOutputString = function(listBox, hiddenInput) {
+        var str = '';
+        
+        for ( var x = 0; x < listBox.options.length; x++) {
+            str += encodeURIComponent(listBox.options[x].value) + '&'
+            + encodeURIComponent(listBox.options[x].text) + '&';
+        }
+        str.length--;
+        
+        hiddenInput.value = str.slice(0, -1);
+    }
+    }
+
+/*
+* old code
+if (!moveSelectedOptions) {
+    // Move the selected options in the idFrom listbox to the idTo
+    // listbox, updating the corresponding strings in idHdnFrom and
+    // idHdnTo
+    var moveSelectedOptions = function(idFrom, idTo, idHdnFrom, idHdnTo) {
+        
+        listFrom = document.getElementById(idFrom);
+        listTo = document.getElementById(idTo);
+        
+        for ( var x = 0; x < listTo.options.length; x++) {
+            listTo.options[x].selected = false;
+        }
+        
+        for ( var x = 0; x < listFrom.options.length; x++) {
+            if (listFrom.options[x].selected == true) {
+                listTo.appendChild(listFrom.options[x]);
+                x--;
+            }
+        }
+        
+        listTo.focus();
+        
+        buildOutputString(listFrom, document.getElementById(idHdnFrom));
+        buildOutputString(listTo, document.getElementById(idHdnTo));
+        console.log('buildOutputString',buildOutputString);
+        console.log('idHdnFrom',document.getElementById(idHdnFrom));
+        console.log('idHdnTo',document.getElementById(idHdnTo));
+        fetchval();
+    }
+    }    */
+
+if (!moveSelectedOptions) {
+    var moveSelectedOptions = function(idFrom, idTo, idHdnFrom, idHdnTo) {
+        
+        var listFrom = document.getElementById(idFrom); // Right select box (from which you're moving)
+        var listTo = document.getElementById(idTo);     // Left select box (to which you're moving)
+        
+        // Deselect all options in the destination list
+        for (var x = 0; x < listTo.options.length; x++) {
+            listTo.options[x].selected = false;
+        }
+        
+        // Loop through options in the source list (right list)
+        for (var x = 0; x < listFrom.options.length; x++) {
+            if (listFrom.options[x].selected == true) {
+                // Check if the option already exists in the destination list (left list)
+                var exists = false;
+                for (var y = 0; y < listTo.options.length; y++) {
+                    if (listTo.options[y].value === listFrom.options[x].value) {
+                        exists = true;
+                        break;
+                    }
+                }
+                
+                // If it exists in the left list, remove from the right list
+                if (exists) {
+                    listFrom.remove(x);
+                    x--; // Adjust index since we're removing an element
+                } else {
+                    // Move option to the left list if it doesn't already exist
+                    listTo.appendChild(listFrom.options[x]);
+                    x--; // Adjust index since we're removing an element
+                }
+            }
+        }
+        
+        listTo.focus();
+        
+        // Update hidden fields
+        buildOutputString(listFrom, document.getElementById(idHdnFrom));
+        buildOutputString(listTo, document.getElementById(idHdnTo)); 
+        //fetchval(); // Custom function call
+    }
+    }
+
+function clearAllOptions(rightListId, leftListId, hiddenFieldRightId, hiddenFieldLeftId) {
+    // Fetch DOM elements using their IDs
+    var rightList = document.getElementById(rightListId);
+    var leftList = document.getElementById(leftListId);
+    var hiddenFieldRight = document.getElementById(hiddenFieldRightId);
+    var hiddenFieldLeft = document.getElementById(hiddenFieldLeftId);
+    
+    // Check if both select elements exist
+    if (!rightList || !leftList) {
+        console.error("One or both select elements are missing.");
+        return;
+    }
+    
+    // Loop through all options in the right list and move them to the left list
+    while (rightList.options.length > 0) {
+        var option = rightList.options[0];
+        leftList.appendChild(option);
+    }
+    
+    // Deselect all options in the left list
+    for (var x = 0; x < leftList.options.length; x++) {
+        leftList.options[x].selected = false;
+    }
+    
+    // Update hidden fields
+    if (hiddenFieldRight) {
+        buildOutputString(rightList, hiddenFieldRight);
+    }
+    if (hiddenFieldLeft) {
+        buildOutputString(leftList, hiddenFieldLeft);
+    }
+    
+    // Additional functionality if needed
+    fetchval(); // Custom function
+}
+
+
+if (!slideSelectedOptionsUp) {
+    // Slide the selected options in the idList listbox up by one position,
+    // updating the corresponding string in idHidden
+    var slideSelectedOptionsUp = function(idList, idHidden) {
+        listBox = document.getElementById(idList);
+        
+        var len = listBox.options.length;
+        
+        if (len > 0 && listBox.options[0].selected == true) {
+            return;
+        }
+        
+        for ( var x = 1; x < len; x++) {
+            if (listBox.options[x].selected == true) {
+                listBox.insertBefore(listBox.options[x],
+                                     listBox.options[x - 1]);
+            }
+        }
+        
+        listBox.focus();
+        
+        buildOutputString(listBox, document.getElementById(idHidden));
+    }
+    }
+
+if (!slideSelectedOptionsDown) {
+    // Slide the selected options in the idList listbox down by one position,
+    // updating the corresponding string in idHidden
+    var slideSelectedOptionsDown = function(idList, idHidden) {
+        listBox = document.getElementById(idList);
+        
+        var len = listBox.options.length;
+        
+        if (len > 0 && listBox.options[len - 1].selected == true) {
+            return;
+        }
+        
+        for ( var x = listBox.options.length - 2; x >= 0; x--) {
+            if (listBox.options[x].selected == true) {
+                listBox.insertBefore(listBox.options[x + 1],
+                                     listBox.options[x]);
+            }
+        }
+        
+        listBox.focus();
+        
+        buildOutputString(listBox, document.getElementById(idHidden));
+    }
+    }
+
+// initialize the string representations
+buildOutputString(document.getElementById('{!$Component.multiselectPanel}:leftList'), 
+                  document.getElementById('{!$Component.leftHidden}'));
+buildOutputString(document.getElementById('{!$Component.multiselectPanel}:rightList'), 
+                  document.getElementById('{!$Component.rightHidden}'));
+
+function fetchval(){     
+    // Use a CSS attribute selector to find the select element by the end of its ID
+    var selectElement = document.querySelector("select[id$='rightList']");
+    if (!selectElement) {
+        console.error('Select element not found');
+        return [];
+    }
+    
+    var selectedValues = Array.from(selectElement.options) // Convert options to an array
+    .filter(option => option.selected) // Filter to only selected options
+    .map(option => option.value); // Map to their values
+    
+    console.log('val=-',selectedValues);
+    return selectedValues;
+}
+function filterOptions(searchBoxId, selectId) {
+    var searchBox = document.getElementById(searchBoxId);
+    var filter = searchBox.value.toUpperCase();
+    var select = document.getElementById(selectId);
+    var options = select.getElementsByTagName('option');
+    
+    for (var i = 0; i < options.length; i++) {
+        var txtValue = options[i].textContent || options[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            options[i].style.display = "";
+        } else {
+            options[i].style.display = "none";
+        }
+    }
+}	
+
+// Old window.onload function removed - replaced with enhanced version below
+
+//code to render the save selection div
+function renderDivIfObjectAccess() {
+    console.log("Function renderDivIfObjectAccess is called."); // Debugging line
+    
+    // Retrieve the tab name from localStorage
+    var storedTabName = localStorage.getItem('tabname');
+    console.log("Stored Tab Name:", storedTabName); // Debugging line
+    
+    // Get the reference to the SelectionDiv element
+    var conditionalDiv = document.getElementById('SelectionDiv');
+    console.log("Conditional Div Element:", conditionalDiv); // Debugging line
+    
+    if (conditionalDiv) {
+        // Check if the stored tab name matches "ObjectAccess"
+        if (storedTabName === "ObjectAccess" || storedTabName === "ObjectsAndFieldsAccess") {
+            conditionalDiv.style.display = 'block'; // Show the div if condition is met
+            console.log("Conditional div is now visible."); // Debugging line
+        } else {
+            conditionalDiv.style.display = 'none'; // Hide the div if condition is not met
+            console.log("Conditional div is now hidden."); // Debugging line
+        }
+    } else {
+        console.warn("Conditional Div not found!"); // Debugging line
+    }
+}
+
+
+// Enhanced template loading mechanism that survives AJAX rerenders
+var templateLoadingInitialized = false;
+var templateObserver = null;
+
+// Improved loadDropdown function with better error handling
+function loadDropdown() {
+    var templateDropdown = document.getElementById('templateDropdown');
+    console.log('loadDropdown called, templateDropdown:', templateDropdown);
+    
+    if (!templateDropdown) {
+        console.log('Template dropdown not found, will retry...');
+        return false;
+    }
+    
+    // Clear current options except the default one
+    templateDropdown.innerHTML = '<option value="">Select a template</option>';
+    
+    // Load options from localStorage
+    var templatesLoaded = 0;
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.startsWith('template_')) {  // Filter keys with a specific pattern
+            var option = document.createElement('option');
+            option.value = key;
+            option.text = key.replace('template_', ''); // Show clean name without prefix
+            templateDropdown.add(option);
+            templatesLoaded++;
+        }
+    }
+    
+    // Restore the last saved template selection if it exists
+    var lastSavedTemplate = localStorage.getItem('lastSavedTemplate');
+    if (lastSavedTemplate && localStorage.getItem(lastSavedTemplate)) {
+        templateDropdown.value = lastSavedTemplate;
+        console.log('Restored last saved template:', lastSavedTemplate);
+        // Clear the lastSavedTemplate after restoring to prevent it from persisting indefinitely
+        localStorage.removeItem('lastSavedTemplate');
+    }
+    
+    console.log('Templates loaded:', templatesLoaded);
+    return true;
+}
+
+// Enhanced template loading with retry mechanism
+function ensureTemplatesLoaded() {
+    var maxRetries = 10;
+    var retryCount = 0;
+    
+    function attemptLoad() {
+        if (loadDropdown()) {
+            console.log('Templates loaded successfully on attempt:', retryCount + 1);
+            return;
+        }
+        
+        retryCount++;
+        if (retryCount < maxRetries) {
+            setTimeout(attemptLoad, 100); // Retry after 100ms
+        } else {
+            console.warn('Failed to load templates after', maxRetries, 'attempts');
+        }
+    }
+    
+    attemptLoad();
+}
+
+// Initialize template loading observer
+function initializeTemplateObserver() {
+    if (templateLoadingInitialized) {
+        return;
+    }
+    
+    templateLoadingInitialized = true;
+    
+    // Create a MutationObserver to watch for DOM changes
+    templateObserver = new MutationObserver(function(mutations) {
+        var shouldReloadTemplates = false;
+        
+        mutations.forEach(function(mutation) {
+            // Check if any added nodes contain our template dropdown or its parent
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Check if the added node contains our template dropdown
+                        if (node.id === 'templateDropdown' || 
+                            (node.querySelector && node.querySelector('#templateDropdown'))) {
+                            shouldReloadTemplates = true;
+                        }
+                        // Also check for the parent containers that get rerendered
+                        if (node.id === 'selectionTable' || node.id === 'conditionalDiv' ||
+                            (node.querySelector && (node.querySelector('#selectionTable') || node.querySelector('#conditionalDiv')))) {
+                            shouldReloadTemplates = true;
+                        }
+                    }
+                });
+            }
+        });
+        
+        if (shouldReloadTemplates) {
+            console.log('DOM change detected, reloading templates...');
+            // Use a small delay to ensure the DOM is fully updated
+            setTimeout(ensureTemplatesLoaded, 50);
+        }
+    });
+    
+    // Start observing the document body for changes
+    templateObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    console.log('Template observer initialized');
+}
+
+// Enhanced window.onload function
+window.onload = function() { 
+    var tab = localStorage.getItem('tabname');
+    console.log('tab==================', tab);
+    
+    // Initialize template loading system
+    initializeTemplateObserver();
+    
+    // Load templates initially
+    setTimeout(ensureTemplatesLoaded, 100);
+    
+    // Set up periodic check as fallback
+    setInterval(function() {
+        var dropdown = document.getElementById('templateDropdown');
+        if (dropdown && dropdown.options.length <= 1) {
+            console.log('Template dropdown appears empty, reloading...');
+            ensureTemplatesLoaded();
+        }
+    }, 2000); // Check every 2 seconds
+};
+
+// Enhanced syncSelectOptions function
+function syncSelectOptions() {
+    ensureTemplatesLoaded();
+    //alert('Select options have been synced!');
+}
+
+function loadDD_Dropdown() {
+    var templateDropdown = document.getElementById('DDtemplateDropdown');
+    console.log('DDtemplateDropdown',templateDropdown);
+    
+    // Clear current options
+    // templateDropdown.innerHTML = '<option value="">Select a template</option>'; // Reset dropdown to default option
+    
+    // Load options from localStorage
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key.startsWith('Datatemplate_')) {  // Filter keys with a specific pattern
+            var option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            templateDropdown.add(option);
+        }
+    }
+    
+    // Restore the last saved DD template selection if it exists
+    var lastSavedDDTemplate = localStorage.getItem('lastSavedDDTemplate');
+    if (lastSavedDDTemplate && localStorage.getItem(lastSavedDDTemplate)) {
+        templateDropdown.value = lastSavedDDTemplate;
+        console.log('Restored last saved DD template:', lastSavedDDTemplate);
+        // Clear the lastSavedDDTemplate after restoring to prevent it from persisting indefinitely
+        localStorage.removeItem('lastSavedDDTemplate');
+    }
+}
+ 
+function loadTemplateOptions(templateKey) {
+    if (templateKey) {
+        var templateProfiles = JSON.parse(localStorage.getItem(templateKey));
+        console.log('Retrieved Template Profiles:', templateProfiles);
+        localStorage.setItem("selectedrightoption", JSON.stringify(templateProfiles));
+        
+        // Get references to the left and right list elements
+        var remainingProfilesElement = document.querySelector("select[id$='leftList']");
+        var selectedProfilesElement = document.querySelector("select[id$='rightList']");
+        
+        // Loop through all options in the right list
+        for (let i = selectedProfilesElement.options.length - 1; i >= 0; i--) {
+            var option = selectedProfilesElement.options[i];
+            var optionValue = option.value;
+            
+            // If the profile doesn't exist in the template, move it back to the left list
+            if (!(templateProfiles && templateProfiles[optionValue])) {
+                // Check if the option already exists in the left list
+                var existsInLeftList = Array.from(remainingProfilesElement.options).some(
+                    (leftOption) => leftOption.value === optionValue
+                );
+                
+                // If it exists, replace the option; otherwise, add it to the left list
+                if (!existsInLeftList) {
+                    var newOption = document.createElement('option');
+                    newOption.value = optionValue;
+                    newOption.text = option.text;
+                    remainingProfilesElement.add(newOption);
+                }
+                
+                // Remove the option from the right list
+                selectedProfilesElement.remove(i);
+            }
+        }
+        
+        // Loop through all options in the left list and mark matching ones as selected
+        for (var i = 0; i < remainingProfilesElement.options.length; i++) {
+            var optionValue = remainingProfilesElement.options[i].value;
+            
+            // If the profile exists in the template, mark it as selected
+            if (templateProfiles && templateProfiles[optionValue]) {
+                remainingProfilesElement.options[i].selected = true;
+            } else {
+                remainingProfilesElement.options[i].selected = false;
+            }
+        }
+        
+        // Call `moveSelectedOptions` to move the selected options to the right list
+        moveSelectedOptions(
+            remainingProfilesElement.id, // ID of the left list (from which to move)
+            selectedProfilesElement.id, // ID of the right list (to which to move)
+            '{!$Component.leftHidden}',  // ID of the hidden field for the left list
+            '{!$Component.rightHidden}' // ID of the hidden field for the right list
+        );
+        
+        // Update hidden input fields for left and right lists
+        buildOutputString(
+            remainingProfilesElement,
+            document.getElementById('{!$Component.leftHidden}')
+        );
+        buildOutputString(
+            selectedProfilesElement,
+            document.getElementById('{!$Component.rightHidden}')
+        );
+    } else {
+        console.error('Template key is empty or undefined.');
+    }
+}
+function loadDDTemplateOptions(templateKey) {
+    if (templateKey) {
+        var templateProfiles = JSON.parse(localStorage.getItem(templateKey));
+        console.log('Retrieved Template Profiles:', templateProfiles);
+        localStorage.setItem("selectedrightoptionDD", JSON.stringify(templateProfiles));
+        
+        // Get references to the left and right list elements
+        var remainingProfilesElement = document.querySelector("select[id$='leftList']");
+        var selectedProfilesElement = document.querySelector("select[id$='rightList']");
+        
+        // Loop through all options in the right list
+        for (let i = selectedProfilesElement.options.length - 1; i >= 0; i--) {
+            var option = selectedProfilesElement.options[i];
+            var optionValue = option.value;
+            
+            // If the profile doesn't exist in the template, move it back to the left list
+            if (!(templateProfiles && templateProfiles[optionValue])) {
+                // Check if the option already exists in the left list
+                var existsInLeftList = Array.from(remainingProfilesElement.options).some(
+                    (leftOption) => leftOption.value === optionValue
+                );
+                
+                // If it exists, replace the option; otherwise, add it to the left list
+                if (!existsInLeftList) {
+                    var newOption = document.createElement('option');
+                    newOption.value = optionValue;
+                    newOption.text = option.text;
+                    remainingProfilesElement.add(newOption);
+                }
+                
+                // Remove the option from the right list
+                selectedProfilesElement.remove(i);
+            }
+        }
+        
+        // Loop through all options in the left list and mark matching ones as selected
+        for (var i = 0; i < remainingProfilesElement.options.length; i++) {
+            var optionValue = remainingProfilesElement.options[i].value;
+            
+            // If the profile exists in the template, mark it as selected
+            if (templateProfiles && templateProfiles[optionValue]) {
+                remainingProfilesElement.options[i].selected = true;
+            } else {
+                remainingProfilesElement.options[i].selected = false;
+            }
+        }
+        
+        // Call `moveSelectedOptions` to move the selected options to the right list
+        moveSelectedOptions(
+            remainingProfilesElement.id, // ID of the left list (from which to move)
+            selectedProfilesElement.id, // ID of the right list (to which to move)
+            '{!$Component.leftHidden}',  // ID of the hidden field for the left list
+            '{!$Component.rightHidden}' // ID of the hidden field for the right list
+        );
+        
+        // Update hidden input fields for left and right lists
+        buildOutputString(
+            remainingProfilesElement,
+            document.getElementById('{!$Component.leftHidden}')
+        );
+        buildOutputString(
+            selectedProfilesElement,
+            document.getElementById('{!$Component.rightHidden}')
+        );
+    } else {
+        console.error('Template key is empty or undefined.');
+    }
+}
+function OAFloadTemplateOptions(templateKey) {
+    if (templateKey) {
+        var templateProfiles = JSON.parse(localStorage.getItem(templateKey));
+        console.log('Retrieved Template Profiles:', templateProfiles);
+        localStorage.setItem("selectedrightoptionOAF", JSON.stringify(templateProfiles));
+        
+        // Get references to the left and right list elements
+        var remainingProfilesElement = document.querySelector("select[id$='leftList']");
+        var selectedProfilesElement = document.querySelector("select[id$='rightList']");
+        
+        // Loop through all options in the right list
+        for (let i = selectedProfilesElement.options.length - 1; i >= 0; i--) {
+            var option = selectedProfilesElement.options[i];
+            var optionValue = option.value;
+            
+            // If the profile doesn't exist in the template, move it back to the left list
+            if (!(templateProfiles && templateProfiles[optionValue])) {
+                // Check if the option already exists in the left list
+                var existsInLeftList = Array.from(remainingProfilesElement.options).some(
+                    (leftOption) => leftOption.value === optionValue
+                );
+                
+                // If it exists, replace the option; otherwise, add it to the left list
+                if (!existsInLeftList) {
+                    var newOption = document.createElement('option');
+                    newOption.value = optionValue;
+                    newOption.text = option.text;
+                    remainingProfilesElement.add(newOption);
+                }
+                
+                // Remove the option from the right list
+                selectedProfilesElement.remove(i);
+            }
+        }
+        
+        // Loop through all options in the left list and mark matching ones as selected
+        for (var i = 0; i < remainingProfilesElement.options.length; i++) {
+            var optionValue = remainingProfilesElement.options[i].value;
+            
+            // If the profile exists in the template, mark it as selected
+            if (templateProfiles && templateProfiles[optionValue]) {
+                remainingProfilesElement.options[i].selected = true;
+            } else {
+                remainingProfilesElement.options[i].selected = false;
+            }
+        }
+        
+        // Call `moveSelectedOptions` to move the selected options to the right list
+        moveSelectedOptions(
+            remainingProfilesElement.id, // ID of the left list (from which to move)
+            selectedProfilesElement.id, // ID of the right list (to which to move)
+            '{!$Component.leftHidden}',  // ID of the hidden field for the left list
+            '{!$Component.rightHidden}' // ID of the hidden field for the right list
+        );
+        
+        // Update hidden input fields for left and right lists
+        buildOutputString(
+            remainingProfilesElement,
+            document.getElementById('{!$Component.leftHidden}')
+        );
+        buildOutputString(
+            selectedProfilesElement,
+            document.getElementById('{!$Component.rightHidden}')
+        );
+    } else {
+        console.error('Template key is empty or undefined.');
+    }
+}
+ 
+function SysloadTemplateOptions(templateKey) {
+    if (templateKey) {
+        var templateProfiles = JSON.parse(localStorage.getItem(templateKey));
+        console.log('Retrieved Template Profiles:', templateProfiles);
+        localStorage.setItem("selectedrightoptionSys", JSON.stringify(templateProfiles));
+        
+        // Get references to the left and right list elements
+        var remainingProfilesElement = document.querySelector("select[id$='leftList']");
+        var selectedProfilesElement = document.querySelector("select[id$='rightList']");
+        
+        // Loop through all options in the right list
+        for (let i = selectedProfilesElement.options.length - 1; i >= 0; i--) {
+            var option = selectedProfilesElement.options[i];
+            var optionValue = option.value;
+            
+            // If the profile doesn't exist in the template, move it back to the left list
+            if (!(templateProfiles && templateProfiles[optionValue])) {
+                // Check if the option already exists in the left list
+                var existsInLeftList = Array.from(remainingProfilesElement.options).some(
+                    (leftOption) => leftOption.value === optionValue
+                );
+                
+                // If it exists, replace the option; otherwise, add it to the left list
+                if (!existsInLeftList) {
+                    var newOption = document.createElement('option');
+                    newOption.value = optionValue;
+                    newOption.text = option.text;
+                    remainingProfilesElement.add(newOption);
+                }
+                
+                // Remove the option from the right list
+                selectedProfilesElement.remove(i);
+            }
+        }
+        
+        // Loop through all options in the left list and mark matching ones as selected
+        for (var i = 0; i < remainingProfilesElement.options.length; i++) {
+            var optionValue = remainingProfilesElement.options[i].value;
+            
+            // If the profile exists in the template, mark it as selected
+            if (templateProfiles && templateProfiles[optionValue]) {
+                remainingProfilesElement.options[i].selected = true;
+            } else {
+                remainingProfilesElement.options[i].selected = false;
+            }
+        }
+        
+        // Call `moveSelectedOptions` to move the selected options to the right list
+        moveSelectedOptions(
+            remainingProfilesElement.id, // ID of the left list (from which to move)
+            selectedProfilesElement.id, // ID of the right list (to which to move)
+            '{!$Component.leftHidden}',  // ID of the hidden field for the left list
+            '{!$Component.rightHidden}' // ID of the hidden field for the right list
+        );
+        
+        // Update hidden input fields for left and right lists
+        buildOutputString(
+            remainingProfilesElement,
+            document.getElementById('{!$Component.leftHidden}')
+        );
+        buildOutputString(
+            selectedProfilesElement,
+            document.getElementById('{!$Component.rightHidden}')
+        );
+    } else {
+        console.error('Template key is empty or undefined.');
+    }
+}
+ 
+function DeleteSelectOptions() {
+    // Get the selected template key from the dropdown
+    var templateDropdown = document.getElementById("templateDropdown");
+    var selectedTemplateKey = templateDropdown.value;
+    
+    if (selectedTemplateKey) {
+        // Check if the template exists in localStorage
+        if (localStorage.getItem(selectedTemplateKey)) {
+            // Remove the selected template from localStorage
+            localStorage.removeItem(selectedTemplateKey);
+            console.log('Deleted template options from localStorage: ' + selectedTemplateKey);
+            
+            // Clear the current selected profiles (right list) after deletion
+            var selectedProfilesElement = document.querySelector("select[id$='rightList']");
+            selectedProfilesElement.innerHTML = '';
+            
+            // Optionally, reset the dropdown to the default "Select a template" option
+            templateDropdown.selectedIndex = 0;
+            
+            alert('Template options have been deleted from memory.');
+        } else {
+            alert('The selected template does not exist in memory.');
+        }
+    } else {
+        alert('Please select a template to delete.');
+    }
+}
+
+function storeOptionsInLocalStorage() {
+    // Show the spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+    
+    var optionsObject = {};
+    var selectList = document.querySelector("select[id$='rightList']");
+    
+    for (var i = 0; i < selectList.options.length; i++) {
+        var optionValue = selectList.options[i].value;
+        optionsObject[optionValue] = selectList.options[i].text;
+    }
+    
+    console.log("Options Object:", optionsObject); // Debug log
+    
+    var templateName = window.prompt("Enter a name for the new template:");
+    console.log("User Input for Template Name:", templateName); // Debug log
+    
+    if (templateName === null) {
+        alert("Template saving process was canceled.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner if canceled
+        return;
+    }
+    
+    if (templateName.trim() === "") {
+        alert("Template name cannot be empty.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner on empty name
+        return;
+    }
+    
+    var uniqueKey = 'template_' + templateName.trim();
+    if (localStorage.getItem(uniqueKey)) {
+        alert("A template with this name already exists. Please choose a different name.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner on duplicate template
+        return;
+    }
+    
+    localStorage.setItem(uniqueKey, JSON.stringify(optionsObject));
+    console.log("Template saved with key:", uniqueKey); // Debug log
+    
+    // Store the last saved template for persistence after reloads
+    localStorage.setItem('lastSavedTemplate', uniqueKey);
+    
+    var templateDropdown = document.getElementById('templateDropdown');
+    var newOption = document.createElement('option');
+    newOption.value = uniqueKey;
+    newOption.text = templateName.trim();
+    templateDropdown.add(newOption);
+    
+    templateDropdown.value = uniqueKey;
+    
+    alert('Template saved successfully with name: ' + templateName);
+    
+    // Hide spinner - no need for page reload with enhanced template system
+    document.getElementById('loadingSpinner').style.display = 'none';
+}
+function DD_storeOptionsInLS() {
+    // Show the spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+    
+    var optionsObject = {};
+    var selectList = document.querySelector("select[id$='rightList']");
+    
+    for (var i = 0; i < selectList.options.length; i++) {
+        var optionValue = selectList.options[i].value;
+        optionsObject[optionValue] = selectList.options[i].text;
+    }
+    
+    console.log("Options Object:", optionsObject); // Debug log
+    
+    var templateName = window.prompt("Enter a name for the new template:");
+    console.log("User Input for Template Name:", templateName); // Debug log
+    
+    if (templateName === null) {
+        alert("Template saving process was canceled.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner if canceled
+        return;
+    }
+    
+    if (templateName.trim() === "") {
+        alert("Template name cannot be empty.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner on empty name
+        return;
+    }
+    
+    var uniqueKey = 'Datatemplate_' + templateName.trim();
+    if (localStorage.getItem(uniqueKey)) {
+        alert("A template with this name already exists. Please choose a different name.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner on duplicate template
+        return;
+    }
+    
+    localStorage.setItem(uniqueKey, JSON.stringify(optionsObject));
+    console.log("Template saved with key:", uniqueKey); // Debug log
+    
+    // Store the last saved template for restoration after page operations
+    localStorage.setItem('lastSavedDDTemplate', uniqueKey);
+    
+    var templateDropdown = document.getElementById('DDtemplateDropdown');
+    var newOption = document.createElement('option');
+    newOption.value = uniqueKey;
+    newOption.text = templateName.trim();
+    templateDropdown.add(newOption);
+    
+    templateDropdown.value = uniqueKey;
+    
+    alert('Template saved successfully with name: ' + templateName);
+    
+    // Hide spinner - no need for page reload with enhanced template system
+    document.getElementById('loadingSpinner').style.display = 'none';
+}
+
+function syncSelectOptions() {
+    ensureTemplatesLoaded();
+    
+    //alert('Select options have been synced!');
+}  
+function syncSpOptions() {
+    sysloadDropdown();
+    
+    //alert('Select options have been synced!');
+}
+function sysloadDropdown() {
+    var templateDropdownOAF = document.getElementById('SystemplateDropdown');
+    console.log('templateDropdown',templateDropdownOAF);
+    
+    // Clear current options
+    // templateDropdown.innerHTML = '<option value="">Select a template</option>'; // Reset dropdown to default option
+    
+    // Load options from localStorage
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key.startsWith('SPTemplate_')) {  // Filter keys with a specific pattern
+            var option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            templateDropdownOAF.add(option);
+        }
+    }
+    
+    // Restore the last saved SP template selection if it exists
+    var lastSavedSPTemplate = localStorage.getItem('lastSavedSPTemplate');
+    if (lastSavedSPTemplate && localStorage.getItem(lastSavedSPTemplate)) {
+        templateDropdownOAF.value = lastSavedSPTemplate;
+        console.log('Restored last saved SP template:', lastSavedSPTemplate);
+        // Clear the lastSavedSPTemplate after restoring to prevent it from persisting indefinitely
+        localStorage.removeItem('lastSavedSPTemplate');
+    }
+}
+
+function OAFloadDropdown() {
+    var templateDropdownOAF = document.getElementById('templateDropdownOAF');
+    console.log('templateDropdown',templateDropdownOAF);
+    
+    // Clear current options
+    // templateDropdown.innerHTML = '<option value="">Select a template</option>'; // Reset dropdown to default option
+    
+    // Load options from localStorage
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key.startsWith('templateOAF_')) {  // Filter keys with a specific pattern
+            var option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            templateDropdownOAF.add(option);
+        }
+    }
+    
+    // Restore the last saved OAF template selection if it exists
+    var lastSavedOAFTemplate = localStorage.getItem('lastSavedOAFTemplate');
+    if (lastSavedOAFTemplate && localStorage.getItem(lastSavedOAFTemplate)) {
+        templateDropdownOAF.value = lastSavedOAFTemplate;
+        console.log('Restored last saved OAF template:', lastSavedOAFTemplate);
+        // Clear the lastSavedOAFTemplate after restoring to prevent it from persisting indefinitely
+        localStorage.removeItem('lastSavedOAFTemplate');
+    }
+}
+function OAFstoreOptionsInLocalStorage() {
+    // Show the spinner
+    // document.getElementById('loadingSpinner').style.display = 'block';
+    
+    var optionsObject = {};
+    var selectList = document.querySelector("select[id$='rightList']");
+    if (selectList.options.length > 7) {
+        alert("You can only save up to 7 permissions in a template.");
+        return;
+    }
+    
+    for (var i = 0; i < selectList.options.length; i++) {
+        var optionValue = selectList.options[i].value;
+        optionsObject[optionValue] = selectList.options[i].text;
+    }
+    
+    console.log("Options Object:", optionsObject); // Debug log
+    
+    var templateName = window.prompt("Enter a name for the new template:");
+    console.log("User Input for Template Name:", templateName); // Debug log
+    
+    if (templateName === null) {
+        alert("Template saving process was canceled.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner if canceled
+        return;
+    }
+    
+    if (templateName.trim() === "") {
+        alert("Template name cannot be empty.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner on empty name
+        return;
+    }
+    
+    var uniqueKey = 'templateOAF_' + templateName.trim();
+    if (localStorage.getItem(uniqueKey)) {
+        alert("A template with this name already exists. Please choose a different name.");
+        document.getElementById('loadingSpinner').style.display = 'none'; // Hide spinner on duplicate template
+        return;
+    }
+    
+    localStorage.setItem(uniqueKey, JSON.stringify(optionsObject));
+    console.log("Template saved with key:", uniqueKey); // Debug log
+    
+    // Store the last saved template for restoration after page operations
+    localStorage.setItem('lastSavedOAFTemplate', uniqueKey);
+    
+    var templateDropdownOAF = document.getElementById('templateDropdownOAF');
+    var newOption = document.createElement('option');
+    newOption.value = uniqueKey;
+    newOption.text = templateName.trim();
+    templateDropdownOAF.add(newOption);
+    
+    templateDropdownOAF.value = uniqueKey;
+    
+    alert('Template saved successfully with name: ' + templateName);
+}
+
+function SysPerm_storeOptInLocalStor() {
+    var optionsObject = {};
+    var selectList = document.querySelector("select[id$='rightList']");
+    
+    // **Limit check: Allow saving only if 7 or fewer options are selected**
+    if (selectList.options.length > 7) {
+        alert("You can only store up to 7 permissions per template. Please remove some items or clear the list to start fresh.");
+        return;
+    }
+    
+    for (var i = 0; i < selectList.options.length; i++) {
+        var optionValue = selectList.options[i].value;
+        optionsObject[optionValue] = selectList.options[i].text;
+    }
+    
+    console.log("Options Object:", optionsObject); // Debug log
+    
+    var templateName = window.prompt("Enter a name for the new template:");
+    console.log("User Input for Template Name:", templateName); // Debug log
+    
+    if (templateName === null) {
+        alert("Template saving process was canceled.");
+        return;
+    }
+    
+    if (templateName.trim() === "") {
+        alert("Template name cannot be empty.");
+        return;
+    }
+    
+    var uniqueKey = 'SPTemplate_' + templateName.trim();
+    if (localStorage.getItem(uniqueKey)) {
+        alert("A template with this name already exists. Please choose a different name.");
+        return;
+    }
+    
+    localStorage.setItem(uniqueKey, JSON.stringify(optionsObject));
+    console.log("Template saved with key:", uniqueKey); // Debug log
+    
+    // Store the last saved template for restoration after page operations
+    localStorage.setItem('lastSavedSPTemplate', uniqueKey);
+    
+    var SystemplateDropdown = document.getElementById('SystemplateDropdown');
+    var newOption = document.createElement('option');
+    newOption.value = uniqueKey;
+    newOption.text = templateName.trim();
+    SystemplateDropdown.add(newOption);
+    
+    SystemplateDropdown.value = uniqueKey;
+    
+    alert('Template saved successfully with name: ' + templateName);
+}
+
+
+
+
+
+
+
+
+
+
+// JavaScript function to show the tooltip
+function showTooltip(event) {
+    var tooltip = document.getElementById('helpTooltip');
+    tooltip.style.display = 'block';
+    tooltip.style.left = event.pageX + 'px';
+    tooltip.style.top = (event.pageY + 20) + 'px'; // Adjust the position as needed
+}
+
+// JavaScript function to hide the tooltip
+function hideTooltip() {
+    var tooltip = document.getElementById('helpTooltip');
+    tooltip.style.display = 'none';
+}
+
+function OAFsyncSelectOptions() {
+    OAFloadDropdown();
+    //alert('Select options have been synced!');
+} 
+function OAFDeleteSelectOptions() {
+    // Get the selected template key from the dropdown
+    var templateDropdown = document.getElementById("templateDropdownOAF");
+    var selectedTemplateKey = templateDropdown.value;
+    
+    if (selectedTemplateKey) {
+        // Check if the template exists in localStorage
+        if (localStorage.getItem(selectedTemplateKey)) {
+            // Remove the selected template from localStorage
+            localStorage.removeItem(selectedTemplateKey);
+            console.log('Deleted template options from localStorage: ' + selectedTemplateKey);
+            
+            // Clear the current selected profiles (right list) after deletion
+            var selectedProfilesElement = document.querySelector("select[id$='rightList']");
+            selectedProfilesElement.innerHTML = '';
+            
+            // Optionally, reset the dropdown to the default "Select a template" option
+            templateDropdown.selectedIndex = 0;
+            
+            alert('Template options have been deleted from memory.');
+        } else {
+            alert('The selected template does not exist in memory.');
+        }
+    } else {
+        alert('Please select a template to delete.');
+    }
+}
+
+function sysDeleteSelectOptions() {
+    // Get the selected template key from the dropdown
+    var templateDropdown = document.getElementById("SystemplateDropdown");
+    var selectedTemplateKey = templateDropdown.value;
+    
+    if (selectedTemplateKey) {
+        // Check if the template exists in localStorage
+        if (localStorage.getItem(selectedTemplateKey)) {
+            // Remove the selected template from localStorage
+            localStorage.removeItem(selectedTemplateKey);
+            console.log('Deleted template options from localStorage: ' + selectedTemplateKey);
+            
+            // Clear the current selected profiles (right list) after deletion
+            var selectedProfilesElement = document.querySelector("select[id$='rightList']");
+            selectedProfilesElement.innerHTML = '';
+            
+            // Optionally, reset the dropdown to the default "Select a template" option
+            templateDropdown.selectedIndex = 0;
+            
+            alert('Template options have been deleted from memory.');
+        } else {
+            alert('The selected template does not exist in memory.');
+        }
+    } else {
+        alert('Please select a template to delete.');
+    }
+}
+
+
+
+
+
+</script>
+</apex:component>

@@ -1,0 +1,117 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global"  controller="CircularBarChartHomeApex" >
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:attribute name="permissionReviewData" type="List" default="[]"/>
+    
+    <aura:attribute name="dateData" type="Object[]" default="[{'name': 'date1', 'value': ''}, {'name': 'date2', 'value': ''}, {'name': 'date3', 'value': ''}, {'name': 'date4', 'value': ''}, {'name': 'date5', 'value': ''}, {'name': 'date6', 'value': ''}, {'name': 'date7', 'value': ''}]" />  
+    
+    <div class="slds-grid slds-p-top--xx-large" style="display: flex;  flex-wrap: wrap;  cursor: pointer;align-items: center;">
+        <aura:iteration items="{!v.permissionReviewData}" var="item">
+            <div class="slds-col">
+                
+                <c:CircularProgress themeAfterThreshold="blue" themeBeforeThreshold="red" size="big" totalProgress="100" actualProgress="{!item.OrgHealthCount}" Legend="Org Health" resultFormat="Percentage" threshold="49"/>              
+            </div>
+            
+            <div class="slds-col">
+                <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.Profilecount}" actualProgress="{!item.unusedProfilesCount}" Legend=" Unused Profile" resultFormat="Mix" threshold="1" />  
+            </div>
+            
+            <div class="slds-col">
+                <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.Permissioncount}" actualProgress="{!item.unusedPermissionCount}" Legend="Unused PermissionSets" resultFormat="Mix" threshold="1" />  
+            </div>
+            
+            <div class="slds-col">
+                <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.PermissionGroupcount}" actualProgress="{!item.unusedPermissionGroupCount}" Legend="Unused PermissionSetGroups" resultFormat="Mix" threshold="1" />  
+            </div>
+            <div class="slds-col">
+                <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.Rolescount}" actualProgress="{!item.unusedRolesCanDelete}" Legend="Unused Roles" resultFormat="Mix" threshold="1" />  
+            </div>
+            <div class="slds-col">
+                <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.PublicGroupcount}" actualProgress="{!item.unusedPublicGroupCanDelete}" Legend="Unused Public Groups" resultFormat="Mix" threshold="1" />  
+            </div>
+            <div class="slds-col">
+                <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.InternalRolescount}" actualProgress="{!item.unusedInternalRolesCanDelete}" Legend="Unused Internal Roles" resultFormat="Mix" threshold="1" />  
+            </div>
+            <div class="slds-col">
+                <c:CircularProgress themeAfterThreshold="red" themeBeforeThreshold="green" size="medium" totalProgress="{!item.ExternalRolescount}" actualProgress="{!item.unusedExternalRolesCanDelete}" Legend="Unused External Roles" resultFormat="Mix" threshold="1" />  
+            </div>
+        </aura:iteration>
+    </div> 
+    
+                <div class="slds-page-header__col-actions" style="margin-top: 12px;  float: right;   margin-right: 10px;">
+                    <button class="slds-button slds-button_brand" type="button" onclick="{!c.redirectToAuditApp}">
+                        For More Info  Explore The Audit App..
+                    </button>
+                </div> 
+    
+    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <h1 class="slds-page-header__title slds-truncate">
+                    Permissions Review Summary
+                </h1>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>Permissions and Last Review Date</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="slds-text-title_caps" scope="col">
+                            <div class="slds-truncate" title="Permissions">Permissions</div>
+                        </th>
+                        <th class="slds-text-title_caps" scope="col">
+                            <div class="slds-truncate" title="Last Review Date">Last Review Date</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr class="slds-hint-parent">
+                       <td class="slds-border_left slds-border_right marPad" style="border-top: 2px solid black; display: flex; flex-direction: column;">  
+                                <tr style="margin-bottom: 8px; " >
+                                    <td style="border-top: none;" class="mZero" > <h1> <ui:outputText value="Custom Profiles"/></h1>	 </td>
+                                </tr>  
+                                <tr style="margin-bottom: 8px; border-top: 1px solid lightgrey;">
+                                    <td class="mZero" style="border-top: none;"> <h1><ui:outputText value="PermissionSets"/></h1></td>
+                                </tr>
+                                <tr style="margin-bottom: 8px; border-top: 1px solid lightgrey;">   <td class="mZero" style="border-top: none;"> <h1 ><ui:outputText value="PermissionSet Groups" /></h1></td>   </tr>
+                                <tr style="margin-bottom: 8px; border-top: 1px solid lightgrey;">   <td class="mZero" style="border-top: none;"> <h1 ><ui:outputText value="Roles"/></h1></td>   </tr>
+                                <!--/*blank*/   <tr>   <td> <h1 class="mZero"><ui:outputText value="Territories"/></h1></td>   </tr>--> 
+                                <tr style="margin-bottom: 8px; border-top: 1px solid lightgrey;">   <td class="mZero" style="border-top: none;"> <h1 ><ui:outputText value="Public Groups"/></h1></td>   </tr>
+                                <tr style="margin-bottom: 8px; border-top: 1px solid lightgrey;">   <td class="mZero" style="border-top: none;"> <h1 ><ui:outputText value="Internal Roles"/></h1></td>   </tr>
+                                <tr style="margin-bottom: 8px; border-top: 1px solid lightgrey;">   <td class="mZero" style="border-top: none;"> <h1 ><ui:outputText value="External Roles"/></h1></td>   </tr>
+                            </td> 
+                   
+                    
+                            <td class="BorderTB slds-border_left slds-border_right"  style="border-top: 2px solid black;    padding-bottom: 14px; ">
+                                <aura:iteration items="{!v.dateData}" var="item">
+                                    <div class="custom-date-wrapper">
+                                    <lightning:input class="boxes"  type="date" name="{!item.name}" value="{!item.value}" disabled="true" onchange="{!c.handleDateChange}" aura:id="{!item.name}" style="font-weight: 600; color: black;  font-size: larger; margin-bottom: 12px;"/>
+                                    </div>
+                                    </aura:iteration> 
+                            </td>
+                           </tr>   
+                      
+                     
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    
+    
+    
+</aura:component>

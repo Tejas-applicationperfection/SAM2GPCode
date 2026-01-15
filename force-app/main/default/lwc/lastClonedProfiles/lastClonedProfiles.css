@@ -1,0 +1,7 @@
+.custom-table {
+    margin-top: 1rem;
+    --lwc-colorBackgroundPrimary: #f4f6f9; /* Lighter background for table */
+    --lwc-colorTextLabel: #333; /* Text color for labels */
+    --lwc-fontFamily: 'Arial', sans-serif; /* Clean font style */
+     font-size: var(--sds-text-body-medium, 1rem); /* Fallback to 1rem */
+}

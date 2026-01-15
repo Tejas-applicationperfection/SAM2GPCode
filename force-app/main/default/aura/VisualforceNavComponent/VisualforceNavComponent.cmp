@@ -1,0 +1,41 @@
+<aura:component controller="dataeditor" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+   <aura:attribute name="namespace" type="String" default="SA_Audit" />
+     <aura:attribute name="hasAccess" type="Boolean" default="true" access="public"/>
+    <aura:attribute name="pageName" type="String" default="" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="visualforcePageUrl" type="String" />
+    <aura:attribute name="isExpanded" type="Boolean" default="true"/>
+     <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <lightning:navigation aura:id="navService" />
+   <aura:if isTrue="{!v.hasAccess}">
+     <lightning:card title="Data Description Editor Tabs">
+        
+        <div class="slds-m-around_medium">
+            <lightning:button label="Data Dictionary" aura:id="DataDictionary" onclick="{!c.navigateToVf}" />
+            <lightning:button label="Object Description" aura:id="ObjectDescriptions" onclick="{!c.navigateToVf}" />
+            <lightning:button label="Profile Pset Description" aura:id="ProfilePsetDescription" onclick="{!c.navigateToVf}" />
+            <lightning:button label="Pset Group Description" aura:id="PermissionSetGroupDescriptionManager" onclick="{!c.navigateToVf}" />
+        </div>
+    </lightning:card>
+       
+    <lightning:card title="{!v.pageName}">
+        <aura:if isTrue="{!v.showSpinner}">
+            <div class="overlay">
+                <lightning:spinner variant="brand" size="medium" aura:id="spinner" alternativeText="Loading...."/>
+            </div>
+        </aura:if>
+        <iframe aura:id="vfFrame" src="{!v.visualforcePageUrl}" width="100%" height="800px" frameborder="0" onload="{!c.hideSpinner}"></iframe>
+    </lightning:card>
+        </aura:if>
+    <aura:if isTrue="{!not(v.hasAccess)}">
+        <div style="text-align: center; margin-top: 100px;">
+            <h1 style="text-align:center; font-family:verdana; color:red;">
+                Sorry, you do not have access to Data Description Editor.
+            </h1>
+            <p style="text-align:center; font-family:verdana;">
+                It looks like your current subscription does not include access to  Data Description Editor, To gain access, please purchase the feature by contacting our support team or visiting our [website](<a href="https://applicationperfection.com/contact/">ApplicationPerfection.com</a>). If you believe you should have access, please reach out to support for assistance.
+            </p>
+        </div>
+    </aura:if>
+</aura:component>

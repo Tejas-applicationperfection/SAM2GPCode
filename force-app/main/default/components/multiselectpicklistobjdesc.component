@@ -1,0 +1,374 @@
+<apex:component controller="MultiselectController">
+<apex:slds />
+    <style>
+
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 11px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #8B7E74; 
+  border-radius: 11px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #404258; 
+}
+</style>
+  <!--   <apex:attribute name="disableComponents"
+        description="disablecmp" type="Boolean"
+        required="false" assignTo="{!disableComponent}"/>-->
+    
+    
+    <apex:attribute name="leftLabel" description="Label on left listbox."
+        type="String" required="true" />
+    <apex:attribute name="rightLabel" description="Label on right listbox."
+        type="String" required="true" />
+  
+    <apex:attribute name="size" description="Size of listboxes."
+        type="Integer" required="true" />
+    <apex:attribute name="width" description="Width of listboxes."
+        type="String" required="true" />
+    <apex:attribute name="showUpDownButtons" description="Should Up/Down buttons be displayed or not."
+        type="Boolean" required="false" default="true"/>
+
+    <apex:attribute name="leftOption"
+        description="Options list for left listbox." type="SelectOption[]"
+        required="true" assignTo="{!leftOptions}" />
+    <apex:attribute name="leftOption1"
+        description="Options list for left listbox." type="SelectOption[]"
+        required="true" assignTo="{!leftOptions1}" />
+    <apex:attribute name="rightOption"
+        description="Options list for right listbox." type="SelectOption[]"
+        required="true" assignTo="{!rightOptions}" />
+
+    <apex:outputPanel id="multiselectPanel" layout="block" styleClass="duelingListBox">
+        <table class="layout">
+            <tbody>
+                <tr>
+                    <tr>
+                        <td><apex:outputPanel layout="block" styleClass="searchBox" style="padding: 6px;"  rendered="{!NOT(leftLabel = 'Available Objects')}">
+                        <input type="text" id="searchBoxLeft" placeholder="Search Permissions..." style="max-width: 50%; padding: 2px; border-radius: 10px;padding-left: 10px;" onkeyup="filterOptions('searchBoxLeft', '{!$Component.multiselectPanel}:leftList')" />
+                        </apex:outputPanel>
+                            </td>
+                    </tr>
+                    <td class="selectCell">
+                        <apex:outputPanel layout="block" styleClass="selectTitle" style="text-align : left">
+                            <!-- 
+                                Visualforce prepends the correct prefix to the outputLabel's 
+                                'for' attribute
+                            -->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <apex:outputLabel value="{!leftLabel}" style="font-size: small;"  
+                                for="multiselectPanel:leftList" />
+                        </apex:outputPanel>
+                        <select id="{!$Component.multiselectPanel}:leftList" 
+                            class="multilist" multiple="multiple" sze="{!size}" 
+                            style="width: 80.5%; background-color: aliceblue; padding: 8px; border-radius: 10px; height: 16em;">
+                            <apex:repeat value="{!leftOptions}" var="option">
+                                <option value="{!option.value}" >{!option.label}</option>
+                            </apex:repeat>
+                            <apex:repeat value="{!leftOptions1}" var="opt">
+                                <option value="{!opt.value}" >{!opt.label}</option>
+                            </apex:repeat>
+                        </select>
+                    </td>
+                    <td class="buttonCell" style="right: 45px;position: relative;">
+                       <!-- <apex:outputPanel layout="block" styleClass="text-align: center">Add</apex:outputPanel>-->
+                        <apex:outputPanel layout="block" styleClass="text-align: center">
+                            <apex:outputLink value="javascript:moveSelectedOptions('{!$Component.multiselectPanel}:leftList', 
+                                    '{!$Component.multiselectPanel}:rightList', '{!$Component.leftHidden}', 
+                                    '{!$Component.rightHidden}');"
+                                id="btnRight">
+                                <apex:image value="{!$Resource.RightArrow}" alt="Add" title="Add" style="width: 40px;margin: 5px;margin-top: 25px;"/>
+                                <!--<div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="btnAdd">
+                                    <span class="slds-button slds-button_icon-border-filled" title="Add">
+                                        <svg class="slds-button__icon slds-icon" aria-hidden="true" style="fill: #00b359;">
+                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#right')}"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Add</span>
+                                    </span>
+                                </div>-->
+                            </apex:outputLink>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="text-align: center">
+                            <apex:outputLink value="javascript:moveSelectedOptions('{!$Component.multiselectPanel}:rightList', 
+                                    '{!$Component.multiselectPanel}:leftList', '{!$Component.rightHidden}', 
+                                    '{!$Component.leftHidden}');"
+                                id="btnLeft">
+                                <apex:image value="{!$Resource.LeftArrow}" alt="Remove" title="Remove" style="width: 40px;margin: 5px;" />
+                                <!--<div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <span class="slds-button slds-button_icon-border-filled" title="Remove">
+                                        <svg class="slds-button__icon slds-icon" aria-hidden="true" style="fill: #b30000;">
+                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#left')}"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Remove</span>
+                                    </span>
+                                </div>-->
+                            </apex:outputLink>
+                        </apex:outputPanel>
+                        <!--  <apex:outputPanel layout="block" styleClass="duelingText; text-align: center">
+                                Remove
+                        </apex:outputPanel> -->
+                    </td>
+                    <td class="selectCell" style="right: 45px;position: relative;">
+                        <apex:outputPanel layout="block" styleClass="selectTitle" style="text-align : left">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <apex:outputLabel value="{!rightLabel}" style="font-size: small;" for="multiselectPanel:rightList" />
+                        </apex:outputPanel>
+                        <select id="{!$Component.multiselectPanel}:rightList" 
+                            class="multilist" multiple="multiple" size="{!size}" 
+                                style="width: 85%; background-color: aliceblue; padding: 8px; border-radius: 10px; height: 16em"> <!--#F7EFE5 -->
+                            <apex:repeat value="{!rightOptions}" var="option">
+                                <option value="{!option.value}">{!option.label}</option>
+                            </apex:repeat>
+                        </select>
+                    </td>
+                    <td class="buttonCell" style="right: 58px;position: relative;">
+                      <!--  <apex:outputPanel layout="block" styleClass="text-align: center;" rendered="{!showUpDownButtons}">
+                            Up
+                        </apex:outputPanel> -->
+                        <apex:outputPanel layout="block" styleClass="text-align: center;" rendered="{!showUpDownButtons}">
+                            <apex:outputLink value="javascript:slideSelectedOptionsUp('{!$Component.multiselectPanel}:rightList', 
+                                    '{!$Component.rightHidden}');"
+                                id="upBtn">
+                                <apex:image value="{!$Resource.UpArrowNew}" alt="Up" title="Up" style="width: 40px;" height="30"/>
+                                <!--<div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <span class="slds-button slds-button_icon-border-filled" title="Up">
+                                        <svg class="slds-button__icon slds-icon" aria-hidden="true" style="fill: #3366ff;">
+                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#up')}"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Up</span>
+                                    </span>
+                                </div>-->
+                            </apex:outputLink>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="text-align: center;" rendered="{!showUpDownButtons}">
+                            <apex:outputLink value="javascript:slideSelectedOptionsDown('{!$Component.multiselectPanel}:rightList', 
+                                    '{!$Component.rightHidden}');"
+                                id="downBtn">
+                                <apex:image value="{!$Resource.DownArrow2}" alt="Down" style="width: 40px; margin-top:10px;" title="Down" width="30" height="30"/>
+                                <!--<div class="slds" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <span class="slds-button slds-button_icon-border-filled" title="Down">
+                                        <svg class="slds-button__icon slds-icon" aria-hidden="true" style="fill: #3366ff;">
+                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Down</span>
+                                    </span>
+                                </div>-->
+                            </apex:outputLink>
+                        </apex:outputPanel>
+                       <!-- <apex:outputPanel layout="block" styleClass="text-align: center;" rendered="{!showUpDownButtons}">
+                            Down
+                        </apex:outputPanel> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <apex:inputHidden value="{!leftOptionsHidden}" id="leftHidden" />
+        <apex:inputHidden value="{!rightOptionsHidden}" id="rightHidden" />
+    </apex:outputPanel>
+    <script type="text/javascript">
+    
+    
+     console.log('hello'+ {!disableComponent});
+        var selectBox = document.getElementById("{!$Component.multiselectPanel}:leftList");
+        var disableComponent = {!disableComponent}; // false Convert Apex boolean to JavaScript string
+              console.log('hellod'+ disableComponent);
+        if(disableComponent === "true") {
+            console.log('hellso'+ disableComponent);
+            selectBox.disabled = true;
+        } else {
+            console.log('helloe'+ disableComponent);
+            selectBox.disabled = false;
+        }
+        if (!buildOutputString) {
+            console.log('aaaaa:');
+            // Create a string from the content of a listbox
+            var buildOutputString = function(listBox, hiddenInput) {
+                var str = '';
+
+                for ( var x = 0; x < listBox.options.length; x++) {
+                    str += encodeURIComponent(listBox.options[x].value) + '&'
+                            + encodeURIComponent(listBox.options[x].text) + '&';
+                }
+                str.length--;
+
+                hiddenInput.value = str.slice(0, -1);
+            }
+        }
+
+ if (!moveSelectedOptions) {
+            // Move the selected options in the idFrom listbox to the idTo
+            // listbox, updating the corresponding strings in idHdnFrom and
+            // idHdnTo
+            var moveSelectedOptions = function(idFrom, idTo, idHdnFrom, idHdnTo) {
+                listFrom = document.getElementById(idFrom);
+                listTo = document.getElementById(idTo);
+
+                for ( var x = 0; x < listTo.options.length; x++) {
+                    listTo.options[x].selected = false;
+                }
+
+                for ( var x = 0; x < listFrom.options.length; x++) {
+                    if (listFrom.options[x].selected == true) {
+                        listTo.appendChild(listFrom.options[x]);
+                        x--;
+                    }
+                }
+
+                listTo.focus();
+
+                buildOutputString(listFrom, document.getElementById(idHdnFrom));
+                buildOutputString(listTo, document.getElementById(idHdnTo));
+                console.log('buildOutputString',buildOutputString);
+                fetchval();
+            }
+            }    
+    
+/*  if (!moveSelectedOptions) {
+                var moveSelectedOptions = function(idFrom, idTo, idHdnFrom, idHdnTo) {
+                    listFrom = document.getElementById(idFrom);
+                    listTo = document.getElementById(idTo);
+                    
+                    // Cache selected options
+                    var options = Array.from(listTo.options);
+                    var selectedOptions = options.map(function(option) {
+                        return { value: option.value, label: option.text };
+                    });
+                    localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+                    
+                    for (var x = 0; x < listTo.options.length; x++) {
+                        listTo.options[x].selected = false;
+                    }
+                    
+                    for (var x = 0; x < listFrom.options.length; x++) {
+                        if (listFrom.options[x].selected == true) {
+                            listTo.appendChild(listFrom.options[x]);
+                            x--;
+                        }
+                    }
+                    
+                    listTo.focus();
+                    
+                    buildOutputString(listFrom, document.getElementById(idHdnFrom));
+                    buildOutputString(listTo, document.getElementById(idHdnTo));
+                    console.log('buildOutputString', buildOutputString);
+                    fetchval();
+                }
+                }*/
+
+        if (!slideSelectedOptionsUp) {
+            // Slide the selected options in the idList listbox up by one position,
+            // updating the corresponding string in idHidden
+            var slideSelectedOptionsUp = function(idList, idHidden) {
+                listBox = document.getElementById(idList);
+
+                var len = listBox.options.length;
+
+                if (len > 0 && listBox.options[0].selected == true) {
+                    return;
+                }
+
+                for ( var x = 1; x < len; x++) {
+                    if (listBox.options[x].selected == true) {
+                        listBox.insertBefore(listBox.options[x],
+                                listBox.options[x - 1]);
+                    }
+                }
+
+                listBox.focus();
+
+                buildOutputString(listBox, document.getElementById(idHidden));
+            }
+        }
+
+        if (!slideSelectedOptionsDown) {
+            // Slide the selected options in the idList listbox down by one position,
+            // updating the corresponding string in idHidden
+            var slideSelectedOptionsDown = function(idList, idHidden) {
+                listBox = document.getElementById(idList);
+
+                var len = listBox.options.length;
+
+                if (len > 0 && listBox.options[len - 1].selected == true) {
+                    return;
+                }
+
+                for ( var x = listBox.options.length - 2; x >= 0; x--) {
+                    if (listBox.options[x].selected == true) {
+                        listBox.insertBefore(listBox.options[x + 1],
+                                listBox.options[x]);
+                    }
+                }
+
+                listBox.focus();
+
+                buildOutputString(listBox, document.getElementById(idHidden));
+            }
+        }
+        
+        // initialize the string representations
+        buildOutputString(document.getElementById('{!$Component.multiselectPanel}:leftList'), 
+                document.getElementById('{!$Component.leftHidden}'));
+        buildOutputString(document.getElementById('{!$Component.multiselectPanel}:rightList'), 
+                document.getElementById('{!$Component.rightHidden}'));
+        
+    function fetchval(){     
+   // Use a CSS attribute selector to find the select element by the end of its ID
+    var selectElement = document.querySelector("select[id$='rightList']");
+    if (!selectElement) {
+        console.error('Select element not found');
+        return [];
+    }
+    
+    var selectedValues = Array.from(selectElement.options) // Convert options to an array
+                              .filter(option => option.selected) // Filter to only selected options
+                              .map(option => option.value); // Map to their values
+
+    console.log('val=-',selectedValues);
+    return selectedValues;
+    }
+        function filterOptions(searchBoxId, selectId) {
+            var searchBox = document.getElementById(searchBoxId);
+            var filter = searchBox.value.toUpperCase();
+            var select = document.getElementById(selectId);
+            var options = select.getElementsByTagName('option');
+            
+            for (var i = 0; i < options.length; i++) {
+                var txtValue = options[i].textContent || options[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }	
+/*   window.onload = function() {
+                var selectedOptions = localStorage.getItem('selectedOptions');
+                if (selectedOptions) {
+                    var options = JSON.parse(selectedOptions);
+                    options.forEach(function(option) {
+                        var rightList =document.querySelector("select[id$='rightList']");
+                        var optionElement = document.createElement('option');
+                        optionElement.value = option.value;
+                        optionElement.text = option.label;
+                        rightList.appendChild(optionElement);
+                    });
+                    
+                    // Update hidden fields and any other necessary logic here
+                    buildOutputString(rightList, document.getElementById('{!$Component.rightHidden}'));
+                }
+            }
+*/
+    
+    </script>
+</apex:component>

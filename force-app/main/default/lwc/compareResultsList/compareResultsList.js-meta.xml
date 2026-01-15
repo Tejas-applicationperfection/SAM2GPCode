@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Enhanced comparison results list component for displaying user permission differences with improved UX</description>
+    <masterLabel>Compare Results List</masterLabel>
+</LightningComponentBundle>

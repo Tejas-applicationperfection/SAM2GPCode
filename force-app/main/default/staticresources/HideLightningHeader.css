@@ -1,0 +1,27 @@
+/* Hide standard Salesforce page header */
+header.flexipageHeader.slds-page-header.uiBlock.oneAnchorHeader {
+    display: none !important;
+}
+
+/* Alternative selectors for different header variations */
+.flexipageHeader {
+    display: none !important;
+}
+
+.slds-page-header {
+    display: none !important;
+}
+
+.oneAnchorHeader {
+    display: none !important;
+}
+
+/* Hide any flexipage header wrapper */
+.flexipage-header {
+    display: none !important;
+}
+
+/* Hide the entire header container */
+.uiBlock.oneAnchorHeader {
+    display: none !important;
+}

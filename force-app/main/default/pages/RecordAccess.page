@@ -1,0 +1,853 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 10-14-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<apex:page id="Pagee" Controller="RecordAccess" lightningStylesheets="true" showHeader="true" sidebar="false" docType="html-5.0" readOnly="true" >
+    <apex:outputPanel rendered="{!hasAccess}">
+	<head>
+		<title>Record Access Querier </title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="{!URLFor($Resource.jQuery, 'jQuery/bootstrap/bootstrap.min.css')}" />
+		<link rel="stylesheet" href="{!URLFor($Resource.jQuery, 'jQuery/css/font-awesome.min.css')}" />
+		<apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/jquery.min.js')}"/>
+		<apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/bootstrap/bootstrap.min.js')}"/>
+		<apex:slds />
+        <script>
+        console.log('{!AccUser}'+ AccUser);
+        console.log('accuser'+ AccUser);
+            function navSObject(recordId) {
+            if (window.location.href.includes('/lightning/')) {
+                // Lightning Experience navigation
+                var url = '/lightning/r/' + recordId + '/view';
+                window.open(url, '_blank');
+            } else {
+                // Fallback for Classic or other environments
+                window.open('/' + recordId, '_blank');
+            }
+        }
+         function navigateToRecord(recordId) {
+            console.log('navigateToRecord called with recordId:', recordId);
+            if (window.location.href.includes('/lightning/')) {
+                // Handling navigation in Lightning Experience
+                var url = '/lightning/r/Permission/' + recordId + '/view';
+                window.open(url, '_blank').focus();
+            } else {
+                // Handling navigation in Salesforce Classic
+                window.open('/' + recordId, '_blank').focus();
+            }
+        }
+         function navigateToRecord(recordId) {
+            console.log('navigateToRecord called with recordId:', recordId);
+            if (window.location.href.includes('/lightning/')) {
+                // Handling navigation in Lightning Experience
+                var url = '/lightning/r/User/' + recordId + '/view';
+                window.open(url, '_blank').focus();
+            } else {
+                // Handling navigation in Salesforce Classic
+                window.open('/' + recordId, '_blank').focus();
+            }
+        }
+        /*var lookupInput = $('#inputList > name').html();
+			console.log('aaaaa:' + lookupInput);
+			function inputSearch(event) {
+				var l = event.key;
+				var x = $('#inputList').children().html();
+				//var name = $('#inputList > input').val();
+				//console.log('name:::' + name);
+				console.log('intra:::' + l);
+				console.log('input:::' + x);
+				////var userName = document.getElementById('userSearch').value;
+				var userName = name + l;
+				var userName = l;
+				console.log('userName::' + userName);
+				Visualforce.remoting.Manager.invokeAction(
+					'{!$RemoteAction.RecordAccess.getUser}',
+					userName,
+					function(result, event){
+						if (event.status) {
+							console.log('result::' + result);
+							// Get DOM IDs for HTML and Visualforce elements like this
+							console.log('lungime::' + result.length);
+							if(result.length == 1) {
+								$('#inputList > input').val(result[0]);
+							}
+							
+							var listItems = $('#inputList > datalist').children();
+							console.log('listItems:::' + listItems);
+							
+							for(i = 0; i < result.length; i++) {
+								console.log('result[' + i + ']:::' + result[i]);
+								console.log('listItems[' + i + ']:::' + listItems[i]);
+								listItems[i].value = result[i];
+								listItems[i].text = result[i];
+								if (result.length != listItems.length) {
+									var newOption = $(listItems[i]).clone();
+									newOption.appendTo('#inputList > datalist');
+									listItems.push(newOption[0]);	  
+								}
+								//x = $('#inputList').html();
+								//x.value = result[i];
+								//x.text = result[i];
+							}
+							if(result.length < listItems.length) {
+								for(i = result.length; i < listItems.length; i++) {
+									listItems[i].remove();
+								}
+							}							   
+							x = $('#inputList').children().html();
+							console.log('change::' + x);
+							
+						} else if (event.type === 'exception') {
+							document.getElementById("responseErrors").innerHTML =
+								event.message + "<br/>\n<pre>" + event.where + "</pre>";
+						} else {
+							document.getElementById("responseErrors").innerHTML = event.message;
+						}
+					},
+					{escape: true}
+				);
+			};*/
+        
+		</script>
+        <style type="text/css">
+            .slds-scope p{
+            
+            padding: 2px;
+            
+            }
+          body button:hover,body .btn:hover,body .btnCancel:hover,body .menuButton .menuButtonButton:hover { background-position:right 0px; background-color: #f3f4f6; box-shadow: -1px 2px 5px rgba(81,41,10,0.15),0px 1px 1px rgba(81,41,10,0.15);  transform: translateY(0.125rem);   }
+        
+         body button:focus,body .btn:focus,body .btnCancel:focus,body .menuButton .menuButtonButton:focus {
+        box-shadow: rgba(72, 35, 7, .46) 0 0 0 4px, -6px 8px 10px rgba(81,41,10,0.1), 0px 2px 2px rgba(81,41,10,0.2);
+        }
+              .table-responsive::-webkit-scrollbar {
+            width: 10px; /* width of the entire scrollbar */
+            }
+            
+            .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1; /* color of the tracking area */
+            }
+            
+            .table-responsive::-webkit-scrollbar-thumb {
+            background-color: #888; /* color of the scroll thumb */
+            border-radius: 10px; /* roundness of the scroll thumb */
+            border: 2px solid #f1f1f1; /* creates padding around scroll thumb */
+            }
+        </style>
+	</head>
+	<body style=" margin:15px;  width: 100%;">
+       <!-- <apex:form >
+
+           <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                <div class="slds-p-horizontal_small slds-size_1-of-1">
+                    <div class="slds-scope">
+                    <div class="slds-form-element">
+                       <table class="slds-table slds-table_bordered" width="100%">
+                            <thead>
+                                <tr>
+
+                                    <th style="text-align: left; background-color: transparent; width: 15%;">
+                                        <div class="slds-truncate" title="Application Perfection">
+                                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                        </div>
+                                    </th>
+                                    
+
+                                    <th style="background-color: transparent; text-align: left;">
+                                        <div class="slds-truncate">
+                                            <h2>
+                                                Compare individual users access to a specific record. 
+                                            </h2>
+                                        </div>
+                                    </th>
+                                    
+ 
+                                    <th style="background-color: transparent; width: 35%;">
+                                        <div style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px;">
+                                            <apex:commandLink value="Help/Training" action="{!openHelpTraining}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="FAQ's" action="{!openFAQ}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Release Notes" action="{!openReleaseNotes}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                        </div>
+                                    </th>
+                               
+                                    <th style="text-align: right; width: 10%; background-color: transparent;">
+                                        <div class="slds-truncate" title="Security & Access Manager">
+                                            <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                     </div>
+                </div>
+            </div>
+            </div>
+        
+             </apex:form> -->
+	<div class="container" width="100%" style="display:flex; overflow-y: auto; width: 100%; height: 100%;"  >
+		<apex:form id="form" style="min-width:48.5vw; background-color: #c5c5c51c; border-radius: 7px; padding-right: 139px; padding: 5px;margin-top: 2.5%;">
+			
+			<apex:pageMessages id="errorSection"/>
+			<div class="table-striped" width="100%">
+				<div class="row" style="width: 615px;">
+					<div class="col-sm-4" id="inputList" width=" 112px">
+						<!-- <apex:inputText value="{!selectedUser}" list="{!userNameList}" html-placeholder="Username" onkeypress="inputSearch(event)" id="inputSearch"/> -->
+						<apex:inputField value="{!dummycontact.UserId__c}" styleClass="slds-lookup__search-input" style=" display: flex; font-size: 1.5rem; width: 407px;position: relative; top: 2px; margin-bottom: 12px; white-space: nowrap; align-items: center;" id="lookupInput"/>
+                        <apex:inputText styleclass="slds-input" style="margin-top: 10px;width: 166px;font-size: 1.3rem;" value="{!currentId}" label="Record ID:" html-placeholder="Enter Record ID" id="Id_validation" /><br></br>
+         
+					</div>
+                    <br></br>
+					<div class="col-sm-4">   						             
+					</div>
+				</div>
+				<br></br>
+
+				<div class="row">
+					
+                 <!--   <div class="col-sm-2">
+						<apex:commandButton action="{!ExportExcel}" value="Export To Excel"  style="width: 150px;" status="tableStatus"/> 
+						<br/>
+							  <div class="col-sm-2">
+						<apex:commandButton action="{!ExportComplete}" value="Export To Excel"  style="width: 150px;" status="tableStatus"/> 
+						<br/>
+					</div> 
+					</div> -->
+                    <br></br>
+        			<br></br>
+					<div class="col-sm-6" style="font-size:1rem;margin-top: 25px;">
+						<apex:outputPanel rendered="{!noError}">
+                            This is an {!sObjLabel} Id. {!sObjLabel} name: <br></br>
+							<b><apex:outputText value="{!sObj['Name']}" rendered="{!sObjName!='Case'}"/></b>
+							<b><apex:outputText value="{!sObj['CaseNumber']}" rendered="{!sObjName=='Case'}"/></b>
+						 </apex:outputPanel>
+					</div>
+                    <div>
+                        <apex:commandButton action="{!Go}"   styleclass="slds-button slds-button_brand" value="Go"  style="left: 18px;text-decoration:none; font-size: small;border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;flex: 1;font-weight: 700;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" reRender="form" status="tableStatus"  /> 
+                        
+                    </div>
+					<br/>
+					<apex:outputPanel rendered="{!pushGo}">
+						<div class="col-xs-2 col-sm-2  col-md-2 col-lg-2 left">
+                            
+							<apex:commandLink value="Generate PDF" action="{!printPDF}" styleclass="slds-button slds-button_brand" immediate="true" target="_blank" style="text-decoration:none; font-size: small;border: none;width: 180px;font-size: small;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: small;flex: 1;font-weight: 700 ;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);">
+								<apex:param name="isPdf" value="true" assignTo="{!isPdf}"/>
+							</apex:commandLink><br></br> 
+                             
+                        
+						</div>
+					</apex:outputPanel>
+				</div>
+				<br></br>
+			</div>
+			<apex:actionStatus id="tableStatus" layout="block">
+				<apex:facet name="start">
+					<p class="lead text-center text-warning">
+						<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+						<span class="sr-only">Loading...</span> 
+					</p>
+				</apex:facet>
+				<apex:facet name="stop"></apex:facet>
+			</apex:actionStatus>
+			<apex:outputPanel rendered="{!noError}" layout="none">
+				<div class="table-responsive" style="display:flex; overflow-y: auto; width: 100%; height: 650px;font-size: 1.2rem;">
+				<table style=" width: 98%; margin-top: 40px;" class="table table-striped" >
+					<thead>
+                        
+						<tr>
+							<td style="width:26%;"><strong>Organization Wide Default: </strong> <br></br>
+								<apex:commandLink action="{!ExpandOrg}" rendered="{!!isExpandOrg}" id="organization" reRender="form">
+									<span class="glyphicon glyphicon-triangle-bottom"></span>
+								</apex:commandLink>
+								<apex:commandLink action="{!ExpandOrg}" rendered="{!isExpandOrg}" reRender="form">
+									<span class="glyphicon glyphicon-triangle-top"></span>
+								</apex:commandLink>
+							</td>
+							<td colspan="5"></td>
+						</tr>
+						<apex:outputPanel rendered="{!isExpandOrg}" layout="none" id="org">
+							<tr>
+								<td width="25%"></td>
+								<td width="15%"> Name: </td>
+                                <td width="15%"> <apex:outputField value="{!organization['Name']}"/> </td> <!-- <apex:outputlink value="/{!organization['Id']}" target="_blank"> </apex:outputlink>-->
+								<td width="15%" style="white-space: nowrap;"><apex:outputText value="Default {!sObjLabel} Access:" rendered="{!fieldOrg != ''}"/> </td>
+								<td width="15%"><apex:outputField value="{!organization[fieldOrg]}" rendered="{!fieldOrg != '' && !isCustom}"/>
+									<apex:outputText value="{!customShr}" rendered="{!isCustom}"/>
+								</td>
+								<td width="15%"></td>
+							</tr>
+						</apex:outputPanel>
+					</thead>
+					<tbody style="height:110px">
+						<tr>
+							<td width="25%"><strong>User Profile:</strong>
+								<apex:commandLink action="{!ExpandProf}" rendered="{!!isExpandProf}" id="profile" reRender="form">
+									<span class="glyphicon glyphicon-triangle-bottom"></span>
+								</apex:commandLink>
+								<apex:commandLink action="{!ExpandProf}" rendered="{!isExpandProf}" reRender="form">
+									<span class="glyphicon glyphicon-triangle-top"></span>
+								</apex:commandLink>
+							</td>
+							<td width="15%"></td>
+							<td colspan="4"><strong><apex:outputText value="Object Permissions:" escape="true"/></strong></td>
+						</tr>
+						<apex:outputPanel rendered="{!isExpandProf}" layout="none" id="profil">
+							<tr>
+								<td width="25%"></td>
+                                <td width="15%"> Name: <u><a href="javascript:void(0);"  onclick="navSObject('{!profileId}');" ><b><apex:outputText value=" {!profilename} "/></b></a></u></td>
+								<td width="15%">
+									<div style="float:left">Create:</div>
+									<div style="float:left"><apex:outputField value="{!objPermission.PermissionsCreate}"/></div>
+								</td>
+								<td width="15%"><div style="float:left">Read:</div>
+									<div style="float:left"><apex:outputField value="{!objPermission.PermissionsRead}"/></div>
+								</td>
+								<td width="15%"><div style="float:left">Edit:</div>
+									<div style="float:left"><apex:outputField value="{!objPermission.PermissionsEdit}"/></div>
+								</td>
+								<td width="15%"><div style="float:left">Delete:</div>
+									<div style="float:left"><apex:outputField value="{!objPermission.PermissionsDelete}"/></div>
+								</td>
+							</tr>
+							<tr>
+								<td width="25%"></td>
+								<td width="15%"><apex:outputText value=""/></td>
+								<td width="15%"><div style="float:left; white-space: nowrap;">Modify All Data:</div>
+									<div style="float:left; white-space: nowrap;"><apex:outputField value="{!userPermission.PermissionsModifyAllData}"/></div>
+								</td>
+								<td width="15%"><div style="float:left; white-space: nowrap;">Modify All Records:</div>
+									<div style="float:left; white-space: nowrap; "><apex:outputField value="{!objPermission.PermissionsModifyAllRecords}"/></div>
+								</td>
+								<td width="15%"><div style="float:left; white-space: nowrap;">View All Records:</div>
+									<div style="float:left; white-space: nowrap;"><apex:outputField value="{!objPermission.PermissionsViewAllRecords}"/></div>
+								</td>
+								<td width="15%"></td>
+							</tr>
+						</apex:outputPanel>
+                       
+                       <!-- <tr>
+							<td width="25%"><strong>Manager:</strong>
+								<apex:commandLink action="{!ExpandMan}" rendered="{!!isExpandMan}" >
+									<span class="glyphicon glyphicon-triangle-bottom"></span>
+								</apex:commandLink>
+								<apex:commandLink action="{!ExpandMan}" rendered="{!isExpandMan}">
+									<span class="glyphicon glyphicon-triangle-top"></span>
+								</apex:commandLink>
+							</td>
+							<td width="15%"></td>
+							<td colspan="4"><strong><apex:outputText value="Manager:" /></strong></td>
+						</tr>
+                         <apex:outputPanel rendered="{!isExpandMan}" layout="none">
+                             <apex:repeat value="{!wrp}" var="wrap">
+                             	<tr>
+										<td width="25%"></td>
+										<td width="15%">Manager Name :</td>
+										<td width="15%">Manager Profile Name :</td>
+									
+									</tr>
+									<tr>
+										<td width="25%"></td>
+										<td width="15%"><apex:outputText value="{!wrap.ManagerName['Manager Name :']}" label=""/> </td>
+										<td width="15%"><apex:outputText value="{!wrap.ManagerProfName['Manager Profile Name :']}" label=""/></td>
+										
+									</tr>
+									
+								</apex:repeat>
+                        </apex:outputPanel> -->
+                        
+                        
+						<apex:outputPanel rendered="{!prSet}" layout="none">
+							<tr>
+								<td width="25%"><apex:outputText value="<b>Permission Sets: </b>" escape="true"/>
+									<apex:commandLink action="{!ExpandPerm}" rendered="{!!isExpandPerm && prSet}}" id="permision" reRender="form">
+										<span class="glyphicon glyphicon-triangle-bottom"></span>
+									</apex:commandLink>
+									<apex:commandLink action="{!ExpandPerm}" rendered="{!isExpandPerm && prSet}}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-top"></span>
+									</apex:commandLink>
+								</td>
+								<td colspan="5"></td>
+							</tr>
+							<apex:outputPanel rendered="{!isExpandPerm}" layout="none" id="perm">
+								<apex:repeat value="{!permissionSetMap}" var="perm">
+									<tr>
+										<td width="25%"></td>
+                                        <td width="15%"><u><a href="javascript:void(0);" onclick="navigateToRecord('{!perm.Id}');"><b><apex:outputText value="{!perm.Label} "/></b></a></u></td>
+										<td width="15%">Create:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsCreate}"/></td>
+										<td width="15%">Read:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsRead}"/></td>
+										<td width="15%">Edit:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsEdit}"/></td>
+										<td width="15%">Delete:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsDelete}"/></td>
+									</tr>
+									<tr>
+										<td width="25%"></td>
+										<td width="15%"><apex:outputText value=""/></td>
+										<td width="15%">Modify All Data:&nbsp;<apex:outputField value="{!perm.PermissionsModifyAllData}"/></td>
+										<td width="15%">Modify All Records:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsModifyAllRecords}"/></td>
+										<td width="15%">View All Records:&nbsp;<apex:outputField value="{!permissionSetMap[perm].PermissionsViewAllRecords}"/></td>
+										<td width="15%"></td>
+									</tr>
+								</apex:repeat>
+							</apex:outputPanel>
+						</apex:outputPanel>
+						<tr>
+							<td width="25%">
+								<strong>User Role:
+                                 <apex:outputText value=" {!userRoleMap[user.UserRoleId].Name}" rendered="{!user.UserRoleId != null}"/> 
+								</strong>
+								<apex:commandLink action="{!ExpandRole}" rendered="{!!isExpandRole}" reRender="form">
+									<span class="glyphicon glyphicon-triangle-bottom"></span>
+								</apex:commandLink>
+								<apex:commandLink action="{!ExpandRole}" rendered="{!isExpandRole}" reRender="form">
+									<span class="glyphicon glyphicon-triangle-top"></span>
+                                </apex:commandLink> <br></br>
+								<apex:outputText value=" No User Role defined" rendered="{!user.UserRoleId == null}"/>
+							</td>
+							<td colspan="5"></td>
+						</tr>
+						<apex:outputPanel rendered="{!isExpandRole}" layout="none">
+							<tr>
+								<apex:repeat value="{!userSharingRoleMap}" var="sharingRole">
+									<td width="25%"></td>
+									<apex:variable value="{!userSharingRoleMap[sharingRole]}" var="index"/>
+									<td colspan="5"><apex:outputText value="This record was shared with user {!sharingRole.Name} - role  {!userSharingRoleMap[sharingRole][index.size - 1].Name} :"/>
+									</td>
+									
+									<apex:repeat value="{!userSharingRoleMap[sharingRole]}" var="userRole">
+										<tr><td width="25%"></td>
+											<td style="padding-left:20px" colspan="5">
+												<apex:outputText value=" - {!userRole.Name}" label=""/>
+											</td>
+										</tr>
+									</apex:repeat>
+								</apex:repeat>
+							</tr>
+						</apex:outputPanel>
+						<apex:outputPanel rendered="{!enableEnterpriseTerritory}" layout="none">
+							<tr>
+								<td width="25%"> <strong>Territory Management:</strong>
+									<apex:commandLink action="{!ExpandTerritory}" rendered="{!!isExpandTerritory}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-bottom"></span>
+									</apex:commandLink>
+									<apex:commandLink action="{!ExpandTerritory}" rendered="{!isExpandTerritory}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-top"></span>
+									</apex:commandLink>
+								</td>
+								<td colspan="5"></td>
+							</tr>
+							<apex:outputPanel rendered="{!isExpandTerritory}" layout="none">
+								
+								<apex:repeat value="{!territory2WrapperList}" var="territory2wrp">
+									<apex:outputPanel rendered="{!territory2wrp.existParentTer2}" layout="none">
+										<apex:outputPanel rendered="{!!territory2wrp.isRoleTerritory}" layout="none">
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5">
+													<apex:outputText escape="true" value="<b>{!user.Name}</b> is assigned to territory <b>{!territory2wrp.territory2Hierarchy[0]['Name']}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'Territory2Forecast'}"/>
+													<apex:outputText escape="true" value="<b>{!user.Name}</b> is assigned to territory <b>{!territory2wrp.territory2Hierarchy[0]['Name']}</b> and account of {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'ImplicitChild'}"/>
+												</td>
+											</tr>
+										</apex:outputPanel>
+										<tr>
+											<td  width="25%"></td>
+											<td colspan="5">
+												<apex:outputText escape="true" value="<b>Territory Hierarchy</b>"/>
+											</td>
+										</tr>
+										<apex:variable var="ind" value="{!territory2wrp.territory2Hierarchy.size}" />
+										<apex:repeat value="{!territory2wrp.territory2Hierarchy}" var="terHierarchy">
+											<apex:variable var="ind" value="{!ind-1}"/>
+											<tr>
+												<td  width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+                                                    <apex:outputText value=" - {!territory2wrp.territory2Hierarchy[ind]['Name']}" label=""/>
+												</td>
+											</tr>
+										</apex:repeat>
+									</apex:outputPanel> 
+									<apex:outputPanel rendered="{!territory2wrp.isRoleTerritory}" layout="none">
+										<tr>
+											<td  width="25%"></td>
+											<td colspan="5">
+												<apex:outputText value="<i>User assigned to territory</i> : <b>{!territory2wrp.territory2Hierarchy[territory2wrp.lastTerritory]['Name']}</b> is <b>{!territory2wrp.userTerritory.Name}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'Territory2Forecast'}" escape="true"/>
+												<apex:outputText value="<i>User assigned to territory</i> : <b>{!territory2wrp.territory2Hierarchy[territory2wrp.lastTerritory]['Name']}</b> is <b>{!territory2wrp.userTerritory.Name}</b> and Account of {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territory2wrp.territory2['Name']}</b>" rendered="{!objTer2IdMap[territory2wrp.territory2['ID']] == 'ImplicitChild'}" escape="true"/>
+											</td>
+										</tr>
+										<tr> 
+											<td  width="25%"></td>
+											<td colspan="5">
+                                                <b>Roles above:</b><u> <a href="javascript:void(0);" onclick="navigateToRecord('{!userRoleMap[territory2wrp.userTerritory.UserRoleId]}');"><b><apex:outputText value=" <i>{!userRoleMap[territory2wrp.userTerritory.UserRoleId]['Name']}</i> assigned to <i>{!territory2wrp.userTerritory.Name}</i>" escape="true"/></b></a>
+											</u></td>
+										</tr>
+										<apex:variable var="ind" value="{!territory2wrp.userRolelist.size}" />
+										<apex:repeat value="{!territory2wrp.userRolelist}" var="terUserRole">
+											<apex:variable var="ind" value="{!ind-1}"/>
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+                                                    <b><u><apex:outputLink value="/{!territory2wrp.userRolelist[ind].Id}" target="_blank"><apex:outputText value=" - {!territory2wrp.userRolelist[ind].Name}" label=""/>
+												</apex:outputLink></u></b></td>
+											</tr>
+											
+										</apex:repeat>
+											<tr>
+												<td  width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+												        <b><u><apex:outputLink value="/{!userRoleMap[territory2wrp.userTerritory.UserRoleId]['Id']}" target="_blank"><apex:outputText value=" - {!userRoleMap[territory2wrp.userTerritory.UserRoleId]['Name']}" label=""/>
+												</apex:outputLink></u></b></td>
+											</tr>
+									</apex:outputPanel>
+									<tr>
+										<td width="25%"></td>
+										<td width="15%"><Strong>Name</Strong></td>
+										<td width="15%">Account Access</td>
+										<td width="15%">Contact Access</td>
+										<td width="15%">Opportunity Access</td>
+										<td width="15%">Case Access</td>
+									</tr>
+									<tr>
+										<td width="25%"></td>
+										<td width="15%"><Strong><apex:outputText value="{!territory2wrp.territory2['Name']}" label=""/></Strong></td>
+										<td width="15%"><apex:outputText value="{!territory2wrp.territory2['AccountAccessLevel']}" label=""/></td>
+										<td width="15%"><apex:outputText value="{!territory2wrp.territory2['ContactAccessLevel']}" label=""/></td>
+										<td width="15%"><apex:outputText value="{!territory2wrp.territory2['OpportunityAccessLevel']}" label=""/></td>
+										<td width="15%"><apex:outputText value="{!territory2wrp.territory2['CaseAccessLevel']}" label=""/></td>
+									</tr>
+									
+								</apex:repeat>
+							</apex:outputPanel>
+						</apex:outputPanel>
+						<apex:outputPanel rendered="{!enableTerritory}" layout="none">
+							<tr>
+								<td width="25%"> <strong>Territory Management: </strong>
+									<apex:commandLink action="{!ExpandTerritory}" rendered="{!!isExpandTerritory}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-bottom"></span>
+									</apex:commandLink>
+									<apex:commandLink action="{!ExpandTerritory}" rendered="{!isExpandTerritory}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-top"></span>
+									</apex:commandLink>
+								</td>
+								<td colspan="5"></td>
+							</tr>
+							<apex:outputPanel rendered="{!isExpandTerritory}" layout="none">
+								<apex:repeat value="{!territoryWrapperList}" var="territorywrp">
+									<apex:outputPanel rendered="{!territorywrp.existParentTer}" layout="none">
+										<apex:variable var="ind" value="{!territorywrp.territoryHierarchy.size}" />
+										<apex:outputPanel rendered="{!!territorywrp.isRoleTerritory}" layout="none">
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5">
+													<apex:outputText escape="true" value="<b>{!user.Name}</b> is assigned to territory <b>{!territorywrp.territoryHierarchy[ind-1]['Name']}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territorywrp.territory['Name']}</b>"/>
+													
+												</td>
+											</tr>
+										</apex:outputPanel>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5">
+												<apex:outputText value="Territory Hierarchy" rendered="{!territorywrp.existParentTer}"/>
+											</td>
+										</tr>
+										
+										<apex:repeat value="{!territorywrp.territoryHierarchy}" var="terHierarchy" rendered="{!territorywrp.existParentTer}">
+											<apex:variable var="ind" value="{!ind-1}"/>
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+                                                    <b><u><apex:outputLink value="/{!territorywrp.territoryHierarchy[ind]['Id']}"><apex:outputText value=" - {!territorywrp.territoryHierarchy[ind]['Name']}" label=""/>
+												</apex:outputLink></u></b></td>
+											</tr>
+										</apex:repeat>
+									</apex:outputPanel>
+									<apex:outputPanel rendered="{!territorywrp.isRoleTerritory}" layout="none">
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+												<apex:outputText value="<i>User assigned to territory</i> : {!territorywrp.territoryHierarchy[territorywrp.lastTerritory]['Name']} is <b>{!territorywrp.userTerritory.Name}</b> and {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territorywrp.territory['Name']}</b>" escape="true"/>
+												<!--<apex:outputText value="<i>User assigned to territory</i> : {!territorywrp.territoryHierarchy[territorywrp.lastTerritory]['Name']} is <b>{!territorywrp.userTerritory.Name}</b> and account of {!sObjLabel} <b>{!sObj['Name']}</b> is assigned to territory <b>{!territorywrp.territory['Name']}</b>" rendered="{!objTer2IdMap[territorywrp.territory['ID']] == 'ImplicitChild'}" escape="true"/>-->
+											</td>   
+										</tr>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+												<apex:outputText value="<b>Roles above:</b> <i>{!userRoleMap[territorywrp.userTerritory.UserRoleId]['Name']}</i> assigned to <i>{!territorywrp.userTerritory.Name}</i>" escape="true"/>
+											</td>
+										</tr>
+										<apex:variable var="ind" value="{!territorywrp.userRolelist.size}" />
+										<apex:repeat value="{!territorywrp.userRolelist}" var="terUserRole" rendered="{!territorywrp.isRoleTerritory}">
+											<apex:variable var="ind" value="{!ind-1}"/>
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+													<apex:outputLink ></apex:outputLink><apex:outputText value=" - {!territorywrp.userRolelist[ind].Name}" label=""/>
+												</td>
+											</tr>
+										</apex:repeat>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="padding-left:20px">
+												<apex:outputText value=" - {!userRoleMap[territorywrp.userTerritory.UserRoleId]['Name']}" label=""/>
+											</td>
+										</tr>
+									</apex:outputPanel>
+									<tr>
+										<td width="25%"></td>
+										<td width="15%"><Strong>Name</Strong></td>
+										<td width="15%">Account Access</td>
+										<td width="15%">Contact Access</td>
+										<td width="15%">Opportunity Access</td>
+										<td width="15%">Case Access</td>
+									</tr>
+									<tr>
+										<td width="25%"></td>
+										<td width="15%"><Strong><apex:outputField value="{!territorywrp.territory['Name']}" label="Territory Name"/></Strong></td>
+										<td width="15%"><apex:outputField value="{!territorywrp.territory['AccountAccessLevel']}"/></td>
+										<td width="15%"><apex:outputField value="{!territorywrp.territory['ContactAccessLevel']}"/></td>
+										<td width="15%"><apex:outputField value="{!territorywrp.territory['OpportunityAccessLevel']}"/></td>
+										<td width="15%"><apex:outputField value="{!territorywrp.territory['CaseAccessLevel']}"/></td>
+									</tr>
+								</apex:repeat>
+							</apex:outputPanel>
+						</apex:outputPanel>
+						<apex:outputPanel rendered="{!!noSharing && !owdRW}" layout="none">
+							<tr>
+								<td width="25%"> <strong>Record Sharing Settings:</strong>
+									<apex:commandLink action="{!ExpandSharing}" rendered="{!!isExpandSharing}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-bottom"></span>
+									</apex:commandLink>
+									<apex:commandLink action="{!ExpandSharing}" rendered="{!isExpandSharing}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-top"></span>
+									</apex:commandLink>
+								</td>
+								<td colspan="5"></td>
+							</tr>
+							<apex:outputPanel rendered="{!isExpandSharing}" layout="none">
+								<apex:outputpanel layout="none" rendered="{!!owdRW}">
+									<apex:repeat value="{!shrObjList}" var="shrObj">
+										<tr>
+											<td width="25%"></td>
+											<td width="15%"><apex:outputText value="{!access1}:"/></td>
+											<td width="15%"><apex:outputText value="{!shrObj[access]}"/></td>
+											<td width="15%"><apex:outputText value="Row Cause:"/></td>
+											<td width="15%">
+												<apex:outputText value="{!shrObj['RowCause']}"/>
+											</td>
+											<td width="15%"></td>
+										</tr>
+									</apex:repeat>
+								</apex:outputpanel>
+								<apex:outputpanel layout="none" rendered="{!owdRW && !isGroupShr}">
+									<tr>
+										<td width="25%"></td>
+										<td colspan="5">There no sharing for this record with this user</td>
+									</tr>
+								</apex:outputpanel>
+							</apex:outputPanel>
+						</apex:outputPanel>
+						<apex:outputpanel layout="none" rendered="{!isGroupShr}">
+							<tr>
+								<td width="25%"> <strong>Public Group Sharing Settings: </strong>
+									<apex:commandLink action="{!ExpandGroupSharing}" rendered="{!!isExpandGroupSharing}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-bottom"></span>
+									</apex:commandLink>
+									<apex:commandLink action="{!ExpandGroupSharing}" rendered="{!isExpandGroupSharing}" reRender="form">
+										<span class="glyphicon glyphicon-triangle-top"></span>
+									</apex:commandLink>
+								</td>
+								<td colspan="5"></td>
+							</tr>
+							<apex:outputPanel rendered="{!isExpandGroupSharing}" layout="none">
+								<apex:repeat value="{!groupList}" var="groupItem">
+									<tr>
+										<td width="25%"></td>
+										<td width="15%"><strong><apex:outputText value="Group Name:"/></strong></td>
+                                        <td width="15%"><b><u><apex:outputLink value="/{!groupItem.Id}" target="_blank"><apex:outputText value="{!IF(groupItem.Name!= null, groupItem.Name, groupItem.DeveloperName)}"/></apex:outputLink></u></b></td>
+										<td width="15%">{!sObjLabel} Access:</td>
+										<td width="15%"><apex:outputText value="{!shrGroupMap[groupItem][access]}" label="{!access}"/></td>
+										<td width="15%">{!shrGroupMap[groupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[groupItem.DeveloperName]}" rendered="{!shrGroupMap[groupItem]['RowCause']=='Rule'}"/></td>
+										<!-- <td><apex:outputText value="{!shrGroupMap[groupItem]['RowCause']}"/></td> -->
+									</tr>
+								</apex:repeat>
+								<apex:outputPanel rendered="{!isRolePublicGroupShare}" layout="none">
+									<apex:repeat value="{!roleGroupSharingMap}" var="rolePublicGroupItem">
+										<tr>
+											<td width="25%"></td>
+											<td width="15%"><apex:outputText value="<b>Group Name:</b>" escape="true"/></td>
+                                            <td width="15%"><u><b><apex:outputLink value="/{!rolePublicGroupItem.Id}" target="_blank"><apex:outputText value="{!rolePublicGroupItem.Name}"/></apex:outputLink></b></u></td>
+											<td width="15%">{!sObjLabel} Access:</td>
+											<td width="15%"><apex:outputText value="{!shrGroupMap[rolePublicGroupItem][access]}" label="{!access}"/></td>
+											<td width="15%">{!shrGroupMap[rolePublicGroupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[rolePublicGroupItem.DeveloperName]}" rendered="{!shrGroupMap[rolePublicGroupItem]['RowCause']=='Rule' }"/></td>
+											<!--<td><apex:outputText value="{!shrGroupMap[roleGroupItem]['RowCause']}"/></td>-->
+										</tr>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+												<apex:variable value="{!roleGroupSharingMap[rolePublicGroupItem]}" var="index"/>
+                                                This group contains user :<u><b><apex:outputLink value="/{!userGroupSharingMap[rolePublicGroupItem].Id}" target="_blank"><apex:outputText value="{!userGroupSharingMap[rolePublicGroupItem].Name}"></apex:outputText></apex:outputLink></b></u>
+                                                <b> with Role :<u><apex:outputLink value="/{!roleGroupSharingMap[rolePublicGroupItem][index.size - 1].Id}"  target="_blank"><apex:outputText value="{!roleGroupSharingMap[rolePublicGroupItem][index.size - 1].Name}" style="font-style:italic"></apex:outputText></apex:outputLink></u>
+                                                </b> </td>   
+										</tr>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+												<apex:outputText value="Roles above:" escape="true"/>
+											</td>
+										</tr>
+										<apex:repeat value="{!roleGroupSharingMap[rolePublicGroupItem]}" var="groupUserRole">
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+                                                    <b><u><apex:outputLink value="/{!groupUserRole.Id}"><apex:outputText value=" - {!groupUserRole.Name}" label=""/>
+												</apex:outputLink></u></b></td>
+											</tr>
+										</apex:repeat>
+									</apex:repeat>
+								</apex:outputPanel>
+								
+								<apex:outputPanel rendered="{!isRoleGroupShare}" layout="none">
+									<apex:repeat value="{!roleGroupMap}" var="roleGroupItem">
+										<tr>
+											<td width="25%"></td>
+											<td width="15%"><apex:outputText value="<b>Group Name:</b>" rendered="{!IF(roleGroupItem.Name != '', true, false)}" escape="true"/>
+												<apex:outputText value="<b>Group Type:</b>" rendered="{!IF(roleGroupItem.Name != '', false, true)}" escape="true"/>
+											</td>
+											<td width="15%"><apex:outputText value="{!roleGroupItem.Name}" rendered="{!IF(roleGroupItem.Name != '', true, false)}"/>
+												<apex:outputText value="{!roleGroupItem.Type}" rendered="{!IF(roleGroupItem.Name != '', false, true)}"/>
+											</td>
+											<td width="15%">{!sObjLabel} Access:</td>
+											<td width="15%"><apex:outputText value="{!shrGroupMap[roleGroupItem][access]}" label="{!access}"/></td>
+											<td width="15%">{!shrGroupMap[roleGroupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[roleGroupItem.DeveloperName]}" rendered="{!shrGroupMap[roleGroupItem]['RowCause']=='Rule'}"/></td>
+											<!--<td><apex:outputText value="{!shrGroupMap[roleGroupItem]['RowCause']}"/></td>-->
+										</tr>
+										
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+                                               This record was shared with Role : <b><u><apex:outputLink value="/{!userRoleMap[roleGroupItem.RelatedId]['Id']}" target="_blank"><apex:outputText value=" {!userRoleMap[roleGroupItem.RelatedId]['Name']}"  style="font-style:italic"/>
+											</apex:outputLink></u></b></td>   
+										</tr>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+												<apex:outputText value="Roles above:" escape="true"/>
+											</td>
+										</tr>
+										<apex:repeat value="{!roleGroupMap[roleGroupItem]}" var="groupUserRole">
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+                                                    <b><u><apex:outputLink value="/{!groupUserRole.Id}" target="_blank"><apex:outputText value=" - {!groupUserRole.Name}" label=""/>
+												</apex:outputLink></u></b></td>
+											</tr>
+										</apex:repeat>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="padding-left:20px">
+                                                <b><u><apex:outputLink value="/{!userRoleMap[roleGroupItem.RelatedId]['Id']}" target="_blank"><apex:outputText value=" - {!userRoleMap[roleGroupItem.RelatedId]['Name']}" label=""/></apex:outputLink></u></b>
+											</td>
+										</tr>
+									</apex:repeat>
+								</apex:outputPanel>
+								<apex:outputPanel rendered="{!isRoleSubordinatesGroupShare}" layout="none">
+									<apex:repeat value="{!roleAndSubordinatesGroupMap}" var="roleAndSubordinatesGroupItem">
+										<tr>
+											<td width="25%"></td>
+											<td width="15%"><apex:outputText value="<b>Group Name:</b>" rendered="{!roleAndSubordinatesGroupItem.Name != ''}" escape="true"/>
+												<apex:outputText value="<b>Group Type:</b>" rendered="{!roleAndSubordinatesGroupItem.Name == ''}" escape="true"/>
+											</td>
+											<td width="15%"><apex:outputText value="{!roleAndSubordinatesGroupItem.Name}" rendered="{!roleAndSubordinatesGroupItem.Name != ''}"/>
+												<apex:outputText value="{!roleAndSubordinatesGroupItem.Type}" rendered="{!roleAndSubordinatesGroupItem.Name == ''}" />
+											</td>
+											<td width="15%">{!sObjLabel} Access:</td>
+											<td width="15%"><apex:outputText value="{!shrGroupMap[roleAndSubordinatesGroupItem][access]}" label="{!access}"/></td>
+											<td width="15%">{!shrGroupMap[roleAndSubordinatesGroupItem]['RowCause']}:&nbsp;<apex:outputText value="{!sharingCriteriaRuleMap[roleAndSubordinatesGroupItem.DeveloperName]}" rendered="{!shrGroupMap[roleAndSubordinatesGroupItem]['RowCause']=='Rule'}"/></td>
+											<!--<td><apex:outputText value="{!shrGroupMap[roleGroupItem]['RowCause']}"/></td>-->
+										</tr>
+										
+										<tr>
+											<td  width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+												<apex:outputText value="This record was shared with Role : {!userRoleMap[roleAndSubordinatesGroupItem.RelatedId]['Name']}"  style="font-style:italic"/>
+											</td>   
+										</tr>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="text-align: left;">
+												<apex:outputText value="Roles under : " escape="true"/>
+											</td>
+										</tr>
+										<apex:repeat value="{!roleAndSubordinatesGroupMap[roleAndSubordinatesGroupItem]}" var="groupUserRole">
+											<tr>
+												<td width="25%"></td>
+												<td colspan="5" style="padding-left:20px">
+													<apex:outputText value=" - {!groupUserRole.Name}" label=""/>
+												</td>
+											</tr>
+										</apex:repeat>
+										<tr>
+											<td width="25%"></td>
+											<td colspan="5" style="padding-left:20px">
+												<apex:outputText value=" - {!userRoleMap[user.UserRoleId]['Name']}" label=""/>
+											</td>
+										</tr>
+									</apex:repeat>
+								</apex:outputPanel>
+							</apex:outputPanel>
+						</apex:outputpanel>
+						<tr>
+							<td width="25%"><strong>{!existRT}</strong>
+								<apex:commandLink action="{!ExpandRecordType}" rendered="{!!isExpandRecordType}" reRender="form">
+									<span class="glyphicon glyphicon-triangle-bottom"></span>
+								</apex:commandLink>
+								<apex:commandLink action="{!ExpandRecordType}" rendered="{!isExpandRecordType}" reRender="form">
+									<span class="glyphicon glyphicon-triangle-top"></span>
+								</apex:commandLink>
+							</td>
+							<td colspan="5"></td>
+						</tr>
+						<apex:outputPanel rendered="{!isExpandRecordType}" layout="none">
+							<apex:repeat value="{!recTypeList}" var="rT">
+								<tr>
+									<td width="25%"></td>
+									<td width="15%">Name:</td>
+                                    <td width="15%"><apex:outputlink value="/{!rT.Id}" target="_blank"><apex:outputText value="{!rT.Name}" /></apex:outputlink></td>
+									<td width="15%">Developer Name:</td>
+									<td width="15%"><apex:outputText value="{!rT.DeveloperName}" /></td>
+									<td width="15%"></td>
+								</tr>
+							</apex:repeat>
+						</apex:outputPanel>
+                        
+                    
+					</tbody>
+				</table>
+				</div>
+                
+			</apex:outputPanel>
+       
+		 </apex:form>
+
+  <apex:include pageName="RecordAccess2"/> 
+	
+	 </div>
+  	 <!-- <div style="margin-top:107px;">
+        <p style="text-align: center; font-size: 10px; font-weight: bold; position: absolute; bottom: 12px ;">Security &amp; Access Manager Functionality Copyright © 2017, Application Perfection Ltd.</p> 
+        <p style="text-align: center; font-size: 10px; font-weight: bold; position: absolute; bottom: 0;">All rights reserved.</p>
+        
+    </div> -->
+    </body>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!NOT(hasAccess)}">
+ <div style="text-align: center; margin-top: 100px;">
+            <h1 style="text-align:center; font-family:verdana; color:red;">
+                Sorry, you do not have access to RecordAccess .
+            </h1>
+            <p style="text-align:center; font-family:verdana;">
+                It looks like your current subscription does not include access to RecordAccess. To gain access, please purchase the feature by contacting our support team or visiting our [website](<a href="https://applicationperfection.com/contact/">ApplicationPerfection.com</a>). If you believe you should have access, please reach out to support for assistance.
+            </p>
+        </div>
+</apex:outputPanel>
+</apex:page>

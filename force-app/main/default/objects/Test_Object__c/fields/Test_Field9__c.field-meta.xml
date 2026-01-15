@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Test_Field9__c</fullName>
+    <deprecated>false</deprecated>
+    <description>adgadf</description>
+    <displayLocationInDecimal>false</displayLocationInDecimal>
+    <inlineHelpText>adgadf</inlineHelpText>
+    <label>Test Field9</label>
+    <required>false</required>
+    <scale>12</scale>
+    <trackTrending>false</trackTrending>
+    <type>Location</type>
+</CustomField>

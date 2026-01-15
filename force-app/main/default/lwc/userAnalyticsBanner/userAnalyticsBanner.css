@@ -1,0 +1,130 @@
+.critical-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background-color: #ffdde1;
+    color: #c23934;
+    font-size: 0.75rem;
+    margin: 2px;
+}
+
+.slds-theme_warning {
+    background-color: #fff3e0;
+    border-color: #ffb75d;
+}
+
+.access-card {
+    background-color: #ffffff;
+    border: 1px solid #dddbda;
+    transition: box-shadow 0.3s ease;
+}
+
+.access-card:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.permission-section {
+    padding: 0.5rem;
+}
+
+.permission-header {
+    font-weight: 600;
+    color: #080707;
+    margin-bottom: 0.25rem;
+}
+
+.permission-source {
+    font-size: 0.75rem;
+    color: #3e3e3c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-item {
+    border-bottom: 1px solid #dddbda;
+    transition: background-color 0.2s ease;
+}
+
+.user-item:hover {
+    background-color: #f3f3f3;
+}
+
+.permission-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: 
+        max-height 0.3s ease-out,
+        opacity 0.2s ease-in,
+        transform 0.2s ease;
+    transform: translateY(-10px);
+}
+
+.user-item.expanded .permission-details {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.critical-permission {
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.25rem 0;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.user-item[data-is-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+}
+
+.slds-badge {
+    --slds-c-badge-color-background: #fff3e0;
+    --slds-c-badge-text-color: #8a3800;
+    border: 1px solid #ffb75d;
+}
+
+.header-row {
+    background-color: blanchedalmond;
+    border-bottom: 1px solid #dddbda;
+     
+    padding: 0.5rem;
+}
+
+.header-row .slds-text-heading_label {
+    font-weight: 700;
+    color: #2b2826;
+}
+
+@media (max-width: 480px) {
+    .header-row {
+        display: none;
+    }
+}
+
+.slds-pagination__controls {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #dddbda;
+}
+
+.slds-pagination__button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    background: #f3f3f3;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+}
+
+.slds-pagination__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.slds-pagination__info {
+    padding: 0 1rem;
+    color: #706e6b;
+}

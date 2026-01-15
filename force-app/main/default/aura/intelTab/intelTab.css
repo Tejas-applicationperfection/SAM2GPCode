@@ -1,0 +1,428 @@
+/*
+Author     : Himanshu Kr. Varshney
+Description: CSS for Intel Tab.
+*/
+/*.THIS .mainHeader{
+    font-size: 30px;
+    margin-top: 20px;
+    margin-left: 20px;
+}*/
+ 
+.THIS.custom-modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's on top of everything */
+}
+
+.THIS .custom-card {
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10000; /* Ensure the card is on top of the backdrop */
+    position: relative;
+}
+.THIS .custom-card__content{
+    display: flex;
+}
+
+.THIS .custom-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 9998; /* Ensure it's below the modal but above everything else */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.THIS .inline-container {
+    display: inline-flex;
+}
+.THIS .bgcWhite {
+     background-color:white;
+    
+}
+.THIS .custom-checkbox {
+    display: inline-block;
+    position: relative;
+    padding-left: 24px; /* Space for the custom checkbox */
+    cursor: not-allowed; /* Cursor for disabled state */
+    line-height: 16px; /* Align text with checkbox */
+}
+
+.THIS .custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0; /* Hide default checkbox */
+    cursor: not-allowed; /* Cursor for disabled state */
+}
+
+.THIS .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: #e0e0e0; /* Light grey background for disabled */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 2px; /* Rounded corners */
+}
+
+.THIS input[type="checkbox"]:checked + .checkmark {
+    background-color: #0070d2; /* Blue background for checked state */
+    border: 1px solid #0070d2; /* Match border color */
+}
+
+.THIS input[type="checkbox"]:checked + .checkmark:after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid white; /* Checkmark color */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+
+
+.THIS .padding-right {
+    padding-right: 20px;
+}
+.THIS .appLogo{
+    height: 180px;
+    width: 300px;
+    float: right;
+}
+.THIS .companyLogo{
+    float: left;
+    width: 300px;
+    height: 120px;
+}
+.THIS{
+    background-color: white;
+    min-height: 100%;
+}
+.THIS .radioButtonSection{
+    /*margin-top: 80px;*/
+    margin-left: 30px;
+}
+.THIS .viewdataB{
+    font-weight: bold;
+}
+
+.THIS .BorderTB{
+     border-top: 2px solid black;  
+    border-bottom: 2px solid black;
+}
+
+.THIS .buttonCSS{
+    margin-top: 20px;
+    float: right;
+    margin: 2px;
+}
+.THIS .table{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass1{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass0{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass2{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass3{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass4{
+    border: 1px solid;
+    cursor: pointer;
+}
+
+.THIS .headClass5{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .table{
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+.THIS .td{
+  border: 2px solid black;
+  padding: 0;
+  margin: 0px;
+  overflow: auto; 
+}
+.THIS .div{
+  resize: both;
+  overflow: auto;
+  width: 120px;
+  height: 120px;
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid black;
+  display: block;
+}
+.THIS .fontCSS{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.THIS .horizontalCSS{
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+.THIS .requestButton{
+    background-color: #4bca81; 
+    border: none;
+}
+.THIS .requestButton:hover{
+    background-color: #4bca81;
+}
+
+
+.THIS .button-container {
+    display: flex;
+    flex-direction: row-reverse;
+    float: right;
+    margin-bottom: 11px;
+        width: 28%;
+}
+.THIS .footer-container {
+    display: flex;
+     flex-direction: row-reverse;
+width: 100%;}
+
+.THIS .button-containerADvertising {
+    display: flex;
+    float: right;
+      width: min-content;
+    top: 19px;
+}
+
+.THIS .slds-scope .slds-table .slds-radio [type=radio]+.slds-radio__label .slds-radio_faux {
+     margin-right:0;
+} 
+
+.THIS .Heading-text {
+    text-decoration: auto;
+    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1.6rem;
+}
+.THIS .subHeading-text{ 
+    padding: 5px;
+     font-size: 1.1rem;
+}
+
+/* CSS */
+.THIS .button-83 {
+    width: inherit;
+    appearance: button;
+    background-color: #8694f4;
+    background-image: linear-gradient(to bottom, #fff, #eceae787);
+    border: 1px solid #d4d2d2;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    color: #444444;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 100%;
+    flex: 1;
+    font-weight: 700;
+    line-height: 13px;
+    margin: 3px;
+    outline: 2px solid transparent;
+    padding: 0.6rem 1.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow:-6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);
+}
+
+.THIS .HeadingShadow{
+    
+    padding: 2px;
+}
+
+.THIS .syncbuttonb{
+    display: inline-flex;
+    width: 142px;
+    height: 42px;
+   
+}
+.THIS .topMargin10{
+        margin-top: 10px;
+}
+
+
+
+.THIS .subHeading-text .slds-form-element__label {
+    font-size:1.1rem;
+    margin-left:6px;
+}
+.THIS .button-exportAllplusSyncbutton {
+    background-color: #8694f4/*#79ff64 pale green ,8694f4 blue*/
+}
+.THIS .button-export {
+    width: inherit;
+    appearance: button;
+    background-color: #8694f4;
+    background-image: linear-gradient(to bottom, #fff, #eceae787);
+    border: 1px solid #d4d2d2;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    color: #444444;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 100%;
+    flex: 1;
+    font-weight: 700;
+    line-height: 13px;
+    margin: 3px;
+    outline: 2px solid transparent;
+    padding: 0.6rem 1.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow:-6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);
+}
+.THIS .button-83:active {
+    background-color: #f3f4f6;
+    box-shadow: -1px 2px 5px rgba(81,41,10,0.15),0px 1px 1px rgba(81,41,10,0.15);
+    transform: translateY(0.125rem);
+}
+
+.THIS .button-83:focus {
+    box-shadow: rgba(72, 35, 7, .46) 0 0 0 4px, -6px 8px 10px rgba(81,41,10,0.1), 0px 2px 2px rgba(81,41,10,0.2);
+}
+
+.THIS .inline-container {
+    display: inline-flex;
+}
+
+.THIS .padding-right {
+    padding-right: 20px;
+}
+.THIS .appLogo{
+    height: 180px;
+    width: 300px;
+    float: right;
+}
+.THIS .companyLogo{
+    float: left;
+    width: 300px;
+    height: 120px;
+}
+.THIS{
+    background-color: white;
+    min-height: 100%;
+}
+.THIS .radioButtonSection{
+    /*margin-top: 80px;*/
+    margin-left: 30px;
+}
+.THIS .buttonCSS{
+    margin-top: 20px;
+    float: right;
+    margin: 2px;
+}
+.THIS .table{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass1{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass0{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass2{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass3{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .headClass4{
+    border: 1px solid;
+    cursor: pointer;
+}
+
+.THIS .headClass5{
+    border: 1px solid;
+    cursor: pointer;
+}
+.THIS .table{
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.THIS .td{
+    border: 2px solid black;
+    padding: 0;
+    margin: 0px;
+    overflow: auto; 
+}
+.THIS .div{
+    resize: both;
+    overflow: auto;
+    width: 120px;
+    height: 120px;
+    margin: 0px;
+    padding: 0px;
+    border: 1px solid black;
+    display: block;
+}

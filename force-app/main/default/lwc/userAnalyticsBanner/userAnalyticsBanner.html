@@ -1,0 +1,112 @@
+<template>
+    <article class="slds-card slds-m-around_medium">
+        <div class="slds-card__header slds-p-around_medium">
+            <h2 class="slds-text-heading_medium slds-grid slds-grid_align-spread">
+                <span>🔐 Users with Critical Access</span>
+                <span class="slds-badge slds-theme_warning">{criticalUsers.length} Users</span>
+            </h2>
+        </div>
+        <div class="slds-card__body">
+            <!-- Header Row -->
+            <div class="slds-grid slds-text-title_caps slds-p-around_small header-row" style="font-family: system-ui;font-weight: 600;">
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_5-of-12">
+                    <div class="slds-text-heading_label slds-truncate">User Information</div>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_5-of-12">
+                    <div class="slds-text-heading_label slds-truncate">Access Types</div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-text-align_right">
+                    <div class="slds-text-heading_label slds-truncate">Actions</div>
+                </div>
+            </div>
+
+            <div class="slds-list slds-has-dividers_top">
+                <template for:each={paginatedUsers} for:item="user">
+                    <div key={user.userId} class="slds-list__item user-item slds-p-around_small">
+                        <div class="slds-grid slds-wrap slds-grid_vertical-align-center" 
+                             onclick={handleUserClick} 
+                             data-userid={user.userId}>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_8-of-12">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <div class="slds-truncate slds-text-heading_small" title={user.userName}>
+                                        {user.userName}
+                                    </div>
+                                    <div class="slds-grid"   >
+                                        <template if:true={user.modifySources}>
+                                            <span class="slds-badge slds-m-left_x-small"  >🔓 Modify All Access</span>
+                                        </template>
+                                        <template if:true={user.apexSources}>
+                                            <span class="slds-badge slds-m-left_x-small"  >⚡ Author Apex Access</span>
+                                        </template>
+                                        <template if:true={user.apiSources}>
+                                            <span class="slds-badge slds-m-left_x-small"  >🔌 API Enabled Access</span>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                                    {user.profileName} • Last active: {user.lastLogin}
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-12 slds-text-align_right">
+                                <button class="slds-button slds-button_neutral">
+                                    {user.buttonLabel}
+                                    <lightning-icon icon-name={user.chevronIcon} 
+                                                   size="x-small" 
+                                                   class="slds-m-left_xx-small">
+                                    </lightning-icon>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-details slds-m-top_small" data-userid={user.userId}>
+                            <div class="slds-box slds-theme_default">
+                                <div class="slds-grid slds-wrap">
+                                    <template if:true={user.modifySources}>
+                                        <div class="slds-col slds-size_1-of-1 slds-p-bottom_small" style="font-family: system-ui;font-weight: 600;">
+                                            <div class="slds-text-title slds-m-bottom_xx-small" >🔓 Modify All Data Sources:</div>
+                                            <div class="slds-text-body_small slds-p-left_medium">{user.modifySources}</div>
+                                        </div>
+                                    </template>
+                                    <template if:true={user.apexSources}>
+                                        <div class="slds-col slds-size_1-of-1 slds-p-bottom_small" style="font-family: system-ui;font-weight: 600;">
+                                            <div class="slds-text-title slds-m-bottom_xx-small">⚡ Author Apex Sources:</div>
+                                            <div class="slds-text-body_small slds-p-left_medium">{user.apexSources}</div>
+                                        </div>
+                                    </template>
+                                    <template if:true={user.apiSources}>
+                                        <div class="slds-col slds-size_1-of-1 slds-p-bottom_small" style="font-family: system-ui;font-weight: 600;" >
+                                            <div class="slds-text-title slds-m-bottom_xx-small">🔌 API Access Sources:</div>
+                                            <div class="slds-text-body_small slds-p-left_medium">{user.apiSources}</div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <template if:false={hasData}>
+                <div class="slds-align_absolute-center slds-p-vertical_medium">
+                    No critical access users found
+                </div>
+            </template>
+
+            <!-- Add pagination controls at bottom -->
+            <div class="slds-p-around_medium slds-grid slds-grid_align-center">
+                <button class="slds-button slds-button_neutral" 
+                        onclick={handlePrevious}
+                        disabled={isPreviousDisabled}>
+                    Previous
+                </button>
+                <span class="slds-p-horizontal_small">
+                    Page {currentPage} of {totalPages}
+                </span>
+                <button class="slds-button slds-button_neutral" 
+                        onclick={handleNext}
+                        disabled={isNextDisabled}>
+                    Next
+                </button>
+            </div>
+        </div>
+    </article>
+</template>

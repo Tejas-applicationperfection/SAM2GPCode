@@ -1,0 +1,115 @@
+.THIS .labelClass1{
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+.THIS .labelClass2{
+    font-size: 18px;
+    margin-left: 7px;
+}   
+.THIS .selectDropdownClass{
+    margin-left: 15px;
+    width: 100%;
+}
+.THIS .buttonClass{
+    float: right;
+    margin: 5px;
+}
+.THIS .unarchiveClass{
+    float: left;
+    margin: 5px;
+}
+.THIS .csvButtonClass{
+    float: right;
+    margin: 5px;
+    display: None;
+}
+
+.THIS .selectDateClass{
+    overflow: hidden;
+}
+.THIS .thClass{
+    color: #FFFFFF !important;
+    background: #4682B4 !important;
+    border: 1px solid;
+}
+.THIS .tdClass{
+    border: 3px solid rgb(217, 219, 221);
+    font-weight: bold;
+}
+.THIS .labelClass3{
+    font-size: 18px;
+    margin-left: 15px;
+}
+.THIS .labelClass4{
+    font-size: 15px;
+}
+/*.THIS .tableClass{
+    width: auto !important;
+}
+.THIS .table{
+    width: auto !important;
+}*/
+.THIS .customCheckBoxCSS .slds-form-element__label{
+    font-size: 15px;
+}
+.THIS .slds-scope fieldset legend{
+    font-weight: none !important;
+}
+.THIS .folderDivClass{
+    height: 150px; 
+    overflow: auto; 
+    border: 3px solid rgb(217, 219, 221); 
+    padding: 5px;
+}
+.THIS .lightningLayoutItemClass{
+    margin-left: 30px;
+    cursor: pointer;
+}
+.THIS .saveClass{
+    margin-top: 20px;
+    cursor: pointer;
+}
+.THIS .requestButton{ 
+    background-color: #4bca81 !important; 
+    border: none !important;
+    float: right !important;
+    margin: 5px;
+}
+.THIS .helpIconClass{
+    height: 15px;
+    cursor: pointer;
+    float: right;
+}
+.THIS .firstSectionHelpIcon{
+    height: 15px;
+    cursor: pointer;
+    margin-left: 2px;
+}
+.THIS .checkboxClass{
+    margin-left: 25px;
+}
+.THIS .helpIconClass2{
+    margin-top: 3px;
+    margin-left: -10px;
+}
+.THIS .archiveNowButton{
+    margin-top: 25px;
+}
+.THIS .bottomButtons{
+    margin-top: 25px;
+    margin-left: 25px;
+}
+.THIS .layoutClass{
+    border: 1px solid rgb(217, 219, 221);
+    margin-left: 20px;
+    margin-top: 5px;
+    width: max-content;
+}
+.THIS .scheduleArchiveBox{
+    height: fit-content;
+}
+.THIS .advertisementBox{
+    height: 300px;
+    width: 500px;
+}

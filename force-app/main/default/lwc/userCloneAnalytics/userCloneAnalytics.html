@@ -1,0 +1,112 @@
+<template>
+    <lightning-card title="User Clone Analytics" icon-name="standard:dashboard">
+        <div class="slds-p-around_medium">
+            <!-- Custom Tab Navigation -->
+            <div class="slds-button-group slds-align_absolute-center slds-m-bottom_medium" role="group">
+                <div class="custom-tab-group">
+                    <button class={licenseTabClass} onclick={handleLicenseTab}>
+                        <lightning-icon icon-name="utility:company" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        License Utilization
+                    </button>
+                    <button class={cloningTabClass} onclick={handleCloningTab}>
+                        <lightning-icon icon-name="utility:copy" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        Cloning Activity
+                    </button>
+                    <button class={permissionTabClass} onclick={handlePermissionTab}>
+                        <lightning-icon icon-name="utility:key" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                        Permission Distribution
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Tab Content -->
+            <div class="slds-p-around_medium tabcntent">
+                <!-- License Content -->
+                <div class={licenseContentClass}>
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <h3 class="slds-card__header-title">License Utilization by Type</h3>
+                        <button class="slds-button slds-button_icon slds-m-left_x-small" 
+                                onclick={toggleLicenseSection} 
+                                title="Toggle License Section">
+                            <lightning-icon 
+                                icon-name={licenseToggleIcon} 
+                                size="x-small"
+                                class="slds-button__icon">
+                            </lightning-icon>
+                        </button>
+                    </div>
+                    <div class="slds-p-around_medium" if:true={isLicenseSectionOpen}>
+                        <template if:true={licenseData}>
+                            <div class="slds-box slds-theme_default slds-theme_alert-texture slds-m-bottom_medium">
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:info" size="small" variant="inverse"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-text-heading_small slds-m-bottom_xx-small">
+                                            Important Information About License and Profile Assignment
+                                        </h2>
+                                        <div class="slds-text-body_regular">
+                                            <ul class="slds-list_dotted">
+                                                <li>Each Salesforce license type supports specific profiles only</li>
+                                                <li>Standard and System Administrator profiles require full Salesforce licenses</li>
+                                                <li>Consider using a different profile type if compatible with business needs</li>
+                                                <li>Contact your administrator to review available license-profile combinations</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <template for:each={licenseData} for:item="license">
+                                <div key={license.licenseName} class="slds-box slds-m-bottom_medium">
+                                    <div class="slds-grid slds-gutters">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <div class="slds-text-heading_medium slds-m-bottom_small">
+                                                {license.licenseName}
+                                            </div>
+                                            <lightning-progress-ring 
+                                                value={license.percentage}
+                                                variant={license.variant}>
+                                            </lightning-progress-ring>
+                                            <div class="slds-text-title">{license.warningMessage}</div>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning-datatable
+                                                key-field="userEmail"
+                                                data={license.users}
+                                                columns={userColumns}
+                                                hide-checkbox-column>
+                                            </lightning-datatable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Cloning Content -->
+                <div class={cloningContentClass}>
+                    <div class="chart-container" style="position: relative; height:400px; width:100%">
+                        <canvas class="cloning-chart" lwc:dom="manual"></canvas>
+                    </div>
+                    <div class="slds-text-align_center slds-p-top_medium">
+                        <div class="slds-text-heading_medium">{totalClonesThisMonth} Clones This Month</div>
+                    </div>
+                </div>
+
+                <!-- Permission Content -->
+                <div class={permissionContentClass}>
+                    <div class="chart-container" style="position: relative; height:400px; width:100%">
+                        <canvas class="permission-chart" lwc:dom="manual"></canvas>
+                    </div>
+                    <div class="slds-m-top_medium slds-align_absolute-center">
+                        <lightning-button label="Previous" onclick={handlePreviousPage} disabled={isFirstPage}></lightning-button>
+                        <lightning-button label="Next" onclick={handleNextPage} disabled={isLastPage}></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

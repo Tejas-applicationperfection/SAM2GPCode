@@ -1,0 +1,40 @@
+<apex:page controller="AddAttachmentController" showHeader="true" sidebar="false">
+    <head>
+        <title>Profile page</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{!URLFor($Resource.jQuery, 'jQuery/bootstrap/bootstrap.min.css')}" />
+        <link rel="stylesheet" href="{!URLFor($Resource.jQuery, 'jQuery/css/font-awesome.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/bootstrap/bootstrap.min.js')}"/>
+    </head>
+    <apex:actionStatus id="tableStatus" layout="block">
+        <apex:facet name="start">
+            <p class="lead text-center text-warning">
+                <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+                <span class="sr-only">Loading...</span> 
+            </p>
+        </apex:facet>
+        <apex:facet name="stop"></apex:facet>
+    </apex:actionStatus>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:actionRegion >
+            <apex:pageBlockSection columns="1">
+                <div style="font-weight: bold; color: red; padding-left: 20px;">Please upload files CSV extract generated from Fields</div>
+                <apex:pageBlockSectionItem />
+                <apex:pageBlockSectionItem >
+                    Upload Fields extract in .csv format:<apex:inputFile value="{!body}" filename="{!fname}" id="file"/>
+                </apex:pageBlockSectionItem>
+                <br/><br/>
+                <apex:pageBlockSectionItem >
+                    <div style="padding-left: 150px;"></div>
+                    <apex:outputPanel >
+                        <apex:commandButton value="Upload" action="{!saveAtt}" status="tableStatus"/>&nbsp;
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            </apex:actionRegion>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

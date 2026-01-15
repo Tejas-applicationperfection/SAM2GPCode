@@ -1,0 +1,275 @@
+<template>
+    <lightning-card title="Privileged System Permissions Management" icon-name="standard:permission_set">
+        
+        <!-- Loading State - Checking Feature Access -->
+        <template if:true={isCheckingAccess}>
+            <div class="slds-p-around_medium">
+                <div class="slds-align_absolute-center" style="height: 200px;">
+                    <lightning-spinner alternative-text="Checking access" size="medium"></lightning-spinner>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Access Denied Message -->
+        <template if:false={hasAccess}>
+            <template if:false={isCheckingAccess}>
+                <div class="slds-p-around_medium">
+                    <div class="slds-align_absolute-center" style="margin-top: 50px; margin-bottom: 50px;">
+                        <div class="slds-text-align_center">
+                            <lightning-icon icon-name="utility:lock" size="large" class="slds-m-bottom_medium"></lightning-icon>
+                            <h1 class="slds-text-heading_large slds-text-color_error slds-m-bottom_medium">
+                                Sorry, you do not have access to Privileged Permissions Manager.
+                            </h1>
+                            <p class="slds-text-body_regular slds-m-bottom_small">
+                                It looks like your current subscription does not include access to Privileged Permissions Manager.
+                            </p>
+                            <p class="slds-text-body_regular slds-m-bottom_medium">
+                                To gain access, please purchase the feature by contacting our support team or visiting 
+                                <a href="https://applicationperfection.com/contact/" target="_blank" class="slds-text-link">ApplicationPerfection.com</a>.
+                            </p>
+                            <p class="slds-text-body_small">
+                                If you believe you should have access, please reach out to support for assistance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+        
+        <!-- Main Content -->
+        <template if:true={hasAccess}>
+            
+            <!-- Statistics Section -->
+            <div class="slds-p-around_medium slds-border_bottom">
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Permissions</div>
+                            <div class="stat-value">{statistics.totalPermissions}</div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="stat-card">
+                            <div class="stat-label">Privileged Count</div>
+                            <div class="stat-value stat-privileged">{statistics.privilegedCount}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search and Actions Bar -->
+            <div class="slds-p-around_medium slds-border_bottom">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-3">
+                        <lightning-input
+                            type="search"
+                            label="Search Permissions"
+                            placeholder="Search by name, API name, or description..."
+                            value={searchTerm}
+                            onchange={handleSearch}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <lightning-button
+                                    label="Refresh"
+                                    icon-name="utility:refresh"
+                                    onclick={handleRefresh}
+                                    class="slds-m-top_large">
+                                </lightning-button>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-button
+                                    label="Export CSV"
+                                    icon-name="utility:download"
+                                    onclick={handleExport}
+                                    variant="brand"
+                                    class="slds-m-top_large">
+                                </lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Options -->
+                <div class="slds-m-top_small">
+                    <lightning-checkbox-group
+                        name="filterOptions"
+                        label="Filter"
+                        options={filterOptions}
+                        value={selectedFilters}
+                        onchange={handleFilterChange}>
+                    </lightning-checkbox-group>
+                </div>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-is-relative slds-p-around_xx-large">
+                    <lightning-spinner alternative-text="Loading permissions..."></lightning-spinner>
+                </div>
+            </template>
+            
+            <!-- Permissions Table -->
+            <template if:false={isLoading}>
+                <template if:true={hasPermissions}>
+                    <div class="slds-p-around_medium">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col" style="width: 5%;">
+                                        <div class="slds-truncate" title="Privileged">Privileged</div>
+                                    </th>
+                                    <th scope="col" style="width: 25%;">
+                                        <div class="slds-truncate" title="Permission Label">Permission Label</div>
+                                    </th>
+                                    <th scope="col" style="width: 25%;">
+                                        <div class="slds-truncate" title="API Name">API Name</div>
+                                    </th>
+                                    <th scope="col" style="width: 40%;">
+                                        <div class="slds-truncate" title="Description">Description</div>
+                                    </th>
+                                    <th scope="col" style="width: 5%;">
+                                        <div class="slds-truncate" title="Actions">Actions</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={displayedPermissions} for:item="permission">
+                                    <tr key={permission.apiName} class="slds-hint-parent">
+                                        <td>
+                                            <lightning-input
+                                                type="checkbox"
+                                                name={permission.apiName}
+                                                checked={permission.isPrivileged}
+                                                onchange={handleTogglePrivileged}
+                                                data-permission={permission.apiName}
+                                                data-label={permission.label}
+                                                data-description={permission.description}>
+                                            </lightning-input>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate" title={permission.label}>
+                                                <lightning-badge
+                                                    label={permission.label}
+                                                    class={permission.badgeClass}>
+                                                </lightning-badge>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate" title={permission.apiName}>
+                                                <code>{permission.apiName}</code>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="description-cell">
+                                                <template if:false={permission.isEditingDescription}>
+                                                    <span title={permission.description}>{permission.description}</span>
+                                                </template>
+                                                <template if:true={permission.isEditingDescription}>
+                                                    <lightning-textarea
+                                                        value={permission.description}
+                                                        data-permission={permission.apiName}
+                                                        onchange={handleDescriptionChange}
+                                                        max-length="1000">
+                                                    </lightning-textarea>
+                                                </template>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <template if:false={permission.isEditingDescription}>
+                                                <lightning-button-icon
+                                                    icon-name="utility:edit"
+                                                    alternative-text="Edit Description"
+                                                    title="Edit Description"
+                                                    onclick={handleEditDescription}
+                                                    data-permission={permission.apiName}>
+                                                </lightning-button-icon>
+                                            </template>
+                                            <template if:true={permission.isEditingDescription}>
+                                                <lightning-button-icon
+                                                    icon-name="utility:check"
+                                                    alternative-text="Save Description"
+                                                    title="Save Description"
+                                                    onclick={handleSaveDescription}
+                                                    data-permission={permission.apiName}
+                                                    variant="brand">
+                                                </lightning-button-icon>
+                                                <lightning-button-icon
+                                                    icon-name="utility:close"
+                                                    alternative-text="Cancel"
+                                                    title="Cancel"
+                                                    onclick={handleCancelDescription}
+                                                    data-permission={permission.apiName}>
+                                                </lightning-button-icon>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                        
+                        <!-- Pagination -->
+                        <div class="slds-p-top_medium">
+                            <div class="slds-grid slds-grid_align-spread">
+                                <div class="slds-col">
+                                    <p class="slds-text-body_small">
+                                        Showing {startRecord} to {endRecord} of {totalRecords} permissions
+                                    </p>
+                                </div>
+                                <div class="slds-col">
+                                    <lightning-layout horizontal-align="end">
+                                        <lightning-layout-item>
+                                            <lightning-button
+                                                label="Previous"
+                                                icon-name="utility:chevronleft"
+                                                onclick={handlePrevious}
+                                                disabled={isFirstPage}>
+                                            </lightning-button>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="slds-p-horizontal_small">
+                                            <span class="slds-text-body_regular">
+                                                Page {currentPage} of {totalPages}
+                                            </span>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item>
+                                            <lightning-button
+                                                label="Next"
+                                                icon-name="utility:chevronright"
+                                                icon-position="right"
+                                                onclick={handleNext}
+                                                disabled={isLastPage}>
+                                            </lightning-button>
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                
+                <!-- No Results -->
+                <template if:false={hasPermissions}>
+                    <div class="slds-p-around_large slds-text-align_center">
+                        <lightning-icon icon-name="utility:search" size="large"></lightning-icon>
+                        <p class="slds-p-top_small">No permissions found matching your search criteria.</p>
+                    </div>
+                </template>
+            </template>
+        </template>
+        
+    </lightning-card>
+    
+    <!-- Toast Messages -->
+    <template if:true={showToast}>
+        <div class="slds-notify_container slds-is-relative">
+            <div class={toastClass} role="status">
+                <span class="slds-assistive-text">{toastVariant}</span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small">{toastMessage}</h2>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,30 @@
+<!--
+Author     : Himanshu Kr. Varshney
+Description: This VF Page will Include intelTab.cmp
+-->
+<apex:page controller="IntelController" standardStylesheets="false" sidebar="false" >
+    <apex:pageMessages />
+    <apex:includeLightning />
+    <div id="lcDisplay">
+    </div> 
+    <script src="../../soap/ajax/41.0/connection.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    //Calling Lightning Component from Vf Page
+    $Lightning.use("SA_Audit:intelApp", function(){ 
+        $Lightning.createComponent("SA_Audit:intelTab",{
+        },
+                                   "lcDisplay",
+                                   function(component){
+                                       console.log("Lightning Component Rendered Successfully!!");
+                                       //$A.eventService.addHandler({ "event": "c:ToastMessage", "handler": showToast });
+                                   });
+    });
+    function showToast(event) {
+        sforce.one.showToast({
+            "title": "Success",
+            "message": "Welcome to salesforce code crack.",
+            "type": "success"
+        });
+    }
+    </script>
+</apex:page>

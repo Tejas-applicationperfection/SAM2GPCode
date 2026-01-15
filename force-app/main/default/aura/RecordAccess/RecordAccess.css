@@ -1,0 +1,327 @@
+.THIS .buttonWidth {
+    width: 150px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.THIS .buttonWidth:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(1, 118, 211, 0.3);
+}
+
+/* Input Section Styling */
+.THIS .slds-form--stacked {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.THIS .demo-only--sizing {
+    padding: 0.5rem 0;
+}
+
+/* Toggle Styling */
+.THIS .slds-m-bottom--small {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+.THIS .divHidden {
+    display: none;
+}
+
+/* Hide all print-only headers on screen */
+.THIS .print-only-header {
+    display: none;
+}
+
+.THIS .divShow {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.THIS .divHiddenPermSet {
+    display: none;
+}
+
+.THIS .divShowPermSet {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.THIS.exampleHolder{
+    position: relative;
+    display: inline-block;
+    margin-left: 15px;
+    width: 55px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Modern Comparison View Styling */
+.THIS .comparison-column {
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    background-color: #fafafa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.THIS .comparison-column:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.THIS .comparison-column:first-child {
+    margin-right: 1rem;
+}
+
+.THIS .comparison-column:last-child {
+    margin-left: 0;
+}
+
+/* Scenario Header Styling */
+.THIS .slds-theme_shade {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.25rem;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.THIS .slds-theme_alt-inverse {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    padding: 1.25rem;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.THIS .slds-theme_shade h3,
+.THIS .slds-theme_alt-inverse h3 {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.THIS .slds-theme_shade p,
+.THIS .slds-theme_alt-inverse p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+    margin: 0.5rem 0 0 0;
+    font-weight: 400;
+}
+
+/* Content Area Styling */
+.THIS .comparison-content {
+    padding: 1.25rem;
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+}
+
+.THIS .comparison-column > div:not(.slds-box) {
+    padding: 0;
+    background-color: transparent;
+}
+
+.THIS .comparison-column > div:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
+/* Section Styling */
+.THIS .divShow,
+.THIS .divShowPermSet {
+    margin-bottom: 1.25rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+}
+
+.THIS .divShow:hover,
+.THIS .divShowPermSet:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    border-color: #e0e0e0;
+}
+
+.THIS .divShow:last-child,
+.THIS .divShowPermSet:last-child {
+    margin-bottom: 0;
+}
+
+/* Typography Improvements */
+.THIS .slds-text-heading_medium {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.THIS .slds-text-body_small {
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Icon Styling */
+.THIS .slds-m-right--x-small {
+    margin-right: 0.5rem;
+}
+
+/* Grid Layout for Comparison */
+.THIS .slds-grid.slds-gutters {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.THIS .slds-col {
+    flex: 1;
+}
+
+.THIS .slds-size_1-of-2 {
+    width: 50%;
+    flex: 0 0 50%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .THIS .slds-grid.slds-gutters {
+        flex-wrap: wrap;
+    }
+    
+    .THIS .slds-size_1-of-2 {
+        width: 100%;
+        flex: 0 0 100%;
+    }
+    
+    .THIS .comparison-column:first-child {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Ensure side-by-side on larger screens */
+@media (min-width: 769px) {
+    .THIS .slds-grid.slds-gutters {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    
+    .THIS .slds-size_1-of-2 {
+        width: 50%;
+        flex: 0 0 50%;
+    }
+}
+
+/* Animation for Comparison View */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.THIS .comparison-column {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.THIS .comparison-column:first-child {
+    animation-delay: 0.1s;
+}
+
+.THIS .comparison-column:last-child {
+    animation-delay: 0.2s;
+}
+
+/* Page Header Improvements */
+.THIS .slds-page-header {
+    background-color: #fafafa;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+/* Scenario Label Styling */
+.THIS .slds-text-heading--small {
+    font-weight: 600;
+    color: #0176d3;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+/* Icon Color Override for Headers */
+.THIS .slds-theme_shade .slds-icon,
+.THIS .slds-theme_alt-inverse .slds-icon {
+    fill: white;
+}
+
+/* Print Styles */
+@media print {
+    /* Hide everything with no-print class */
+    .THIS .no-print {
+        display: none !important;
+    }
+    
+    /* By default, hide both views and both headers in print */
+    .THIS .single-view-content,
+    .THIS .comparison-view-content,
+    .THIS .print-single-header,
+    .THIS .print-comparison-header {
+        display: none !important;
+    }
+    
+    /* Show single view content and header when printing single view */
+    .THIS.printing-single-view .single-view-content {
+        display: block !important;
+    }
+    
+    .THIS.printing-single-view .print-single-header {
+        display: block !important;
+    }
+    
+    /* Show comparison view content and header when printing comparison view */
+    .THIS.printing-comparison-view .comparison-view-content {
+        display: flex !important;
+        page-break-inside: avoid;
+    }
+    
+    .THIS.printing-comparison-view .print-comparison-header {
+        display: block !important;
+    }
+    
+    /* Optimize comparison columns for print */
+    .THIS .comparison-column {
+        box-shadow: none !important;
+        border: 1px solid #d8dde6;
+        page-break-inside: avoid;
+        animation: none !important;
+    }
+    
+    /* Ensure proper sizing */
+    .THIS .slds-card,
+    .THIS .divShow,
+    .THIS .divShowPermSet {
+        page-break-inside: avoid;
+        margin-bottom: 1rem;
+    }
+    
+    /* Remove background colors for better print */
+    .THIS .slds-page-header {
+        background-color: white !important;
+        padding: 0;
+    }
+    
+    /* Keep gradient headers for comparison view */
+    .THIS .slds-theme_shade,
+    .THIS .slds-theme_alt-inverse {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

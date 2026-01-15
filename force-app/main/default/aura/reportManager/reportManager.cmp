@@ -1,0 +1,28 @@
+<aura:component implements="force:appHostable" controller="ReportManagerController">
+    <aura:attribute name="hasAccess" type="Boolean" default="false" access="public"/>
+    
+    <!-- Load the access information when the component is initialized -->
+     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <!-- Conditionally render the content based on hasAccess -->
+    <aura:if isTrue="{!v.hasAccess}">
+        <div style="text-align: center; margin-top: 100px;">
+            <img src="{!$Resource.Reportmanagerlogos}" width="300" height="30"/>
+        </div>
+        <h1 style="text-align:center; font-family:verdana;">
+            Note : As a Security And Access Manager Customer you also have access to Report Manager Pro at no additional cost.
+            Please reach out for the latest package via logging a support ticket.
+            <strong><a href="https://applicationperfection.com/contact/">Click here</a></strong>
+        </h1>
+    </aura:if>
+     <aura:if isTrue="{!not(v.hasAccess)}">
+        <div style="text-align: center; margin-top: 100px;">
+            <h1 style="text-align:center; font-family:verdana; color:red;">
+                Sorry, you do not have access to Report Manager Pro.
+            </h1>
+            <p style="text-align:center; font-family:verdana;">
+                It looks like your current subscription does not include access to Report Manager Pro. To gain access, please purchase the feature by contacting our support team or visiting our [website](<a href="https://applicationperfection.com/contact/">ApplicationPerfection.com</a>). If you believe you should have access, please reach out to support for assistance.
+            </p>
+        </div>
+    </aura:if>
+</aura:component>

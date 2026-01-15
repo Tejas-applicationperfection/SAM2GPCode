@@ -1,0 +1,576 @@
+<apex:page controller="ProfilePsetDescription" sidebar="false" showHeader="false" docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true">
+    <apex:includeLightning />
+     
+    <apex:stylesheet value="/slds/assets/styles/salesforce-lightning-design-system.min.css"/>
+     <head>
+        <title>profile pset Description</title>
+        <meta charset="utf-8" />
+        <link href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" rel="stylesheet"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+        <apex:slds />
+        
+        <style type="text/css">
+            /* LWC-style CSS improvements */
+            .lwc-container {
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 1rem;
+                font-family: 'Salesforce Sans', Arial, sans-serif;
+            }
+            
+            .lwc-card {
+                background: white;
+                border-radius: 0.25rem;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+                border: 1px solid #dddbda;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-card-header {
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #dddbda;
+                background-color: #f3f2f2;
+            }
+            
+            .lwc-card-body {
+                padding: 1rem;
+            }
+            
+            .lwc-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+            
+            .lwc-header-title {
+                font-size: 1.125rem;
+                font-weight: bold;
+                color: #080707;
+                margin: 0;
+            }
+            
+            .lwc-button-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .lwc-button {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                color: #0070d2;
+                cursor: pointer;
+                display: inline-block;
+                font-size: 0.75rem;
+                font-weight: 400;
+                line-height: 1.875rem;
+                padding: 0 1rem;
+                text-decoration: none;
+                transition: border 0.15s linear;
+                position: relative;
+                text-align: center;
+                vertical-align: middle;
+                white-space: normal;
+            }
+            
+            .lwc-button:hover {
+                background-color: #f4f6f9;
+                color: #005fb2;
+            }
+            
+            .lwc-button_brand {
+                background-color: #0070d2;
+                border: 1px solid #0070d2;
+                color: #fff;
+            }
+            
+            .lwc-button_brand:hover {
+                background-color: #005fb2;
+                border-color: #005fb2;
+                color: #fff;
+            }
+            
+            .lwc-section {
+                margin: 1rem 0;
+            }
+            
+            .lwc-section__title {
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-progress-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-progress-card {
+                flex: 1;
+                min-width: 180px;
+                background: white;
+                border-radius: 0.25rem;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+                border: 1px solid #dddbda;
+                padding: 1rem;
+                text-align: center;
+            }
+            
+            .lwc-progress-value {
+                font-size: 1.5rem;
+                font-weight: 300;
+                margin: 0.5rem 0;
+            }
+            
+            .lwc-progress-label {
+                font-size: 0.75rem;
+                color: #3e3e3c;
+            }
+            
+            .lwc-form-element {
+                margin-bottom: 0.75rem;
+            }
+            
+            .lwc-form-element__label {
+                display: block;
+                font-size: 0.75rem;
+                color: #3e3e3c;
+                margin-bottom: 0.25rem;
+                font-weight: 400;
+            }
+            
+            .lwc-select {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                height: 32px;
+                padding: 0 1rem 0 0.5rem;
+                font-size: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-input {
+                background-color: #fff;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                width: 100%;
+                padding: 0 1rem 0 0.75rem;
+                font-size: 0.75rem;
+                color: #080707;
+                height: 32px;
+            }
+            
+            .lwc-input:focus {
+                outline: 0;
+                border-color: #1589ee;
+                background-color: #fff;
+                box-shadow: 0 0 3px #0070D2;
+            }
+            
+            .lwc-table-container {
+                overflow-x: auto;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+            }
+            
+            .lwc-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+            
+            .lwc-table th {
+                background-color: #f3f2f2;
+                border-top: 1px solid #dddbda;
+                border-bottom: 1px solid #dddbda;
+                font-weight: 600;
+                text-align: left;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+                color: #3e3e3c;
+            }
+            
+            .lwc-table td {
+                padding: 0.5rem 0.75rem;
+                border-bottom: 1px solid #dddbda;
+                font-size: 0.75rem;
+                color: #080707;
+            }
+            
+            .lwc-table tr:last-child td {
+                border-bottom: none;
+            }
+            
+            .lwc-table tr:hover td {
+                background-color: #f3f2f2;
+            }
+            
+            .lwc-spinner-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+            }
+            
+            .lwc-spinner {
+                display: inline-block;
+                position: relative;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .lwc-spinner div {
+                box-sizing: border-box;
+                display: block;
+                position: absolute;
+                width: 44px;
+                height: 44px;
+                margin: 3px;
+                border: 3px solid #0070d2;
+                border-radius: 50%;
+                animation: lwc-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                border-color: #0070d2 transparent transparent transparent;
+            }
+            
+            .lwc-spinner div:nth-child(1) {
+                animation-delay: -0.45s;
+            }
+            
+            .lwc-spinner div:nth-child(2) {
+                animation-delay: -0.3s;
+            }
+            
+            .lwc-spinner div:nth-child(3) {
+                animation-delay: -0.15s;
+            }
+            
+            @keyframes lwc-spinner {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            
+            .lwc-alert {
+                padding: 0.5rem;
+                border-radius: 0.25rem;
+                margin-bottom: 1rem;
+            }
+            
+            .lwc-alert_error {
+                background-color: #feded9;
+                border: 1px solid #c23934;
+                color: #c23934;
+            }
+            
+            .lwc-alert_success {
+                background-color: #cdefc4;
+                border: 1px solid #4bca81;
+                color: #04844b;
+            }
+
+            /* Grouped stats layout (mirrors ObjectDescriptions) */
+            .lwc-group-row {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+            .lwc-group-box {
+                background: #f8f9fb;
+                border: 1px solid #dddbda;
+                border-radius: 0.25rem;
+                padding: 1rem;
+            }
+            
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .lwc-header {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                
+                .lwc-button-group {
+                    justify-content: center;
+                }
+                
+                .lwc-progress-container {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        
+   
+    <apex:form id="theForm">
+        
+        <apex:actionStatus id="tableStatus" layout="block">
+                <apex:facet name="start">
+                    <p >
+                        <div class="slds-spinner_container slds-is-fixed">
+                            <div role="status" class="slds-spinner slds-spinner_large">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                    </div>
+                </p>
+            </apex:facet>
+            <apex:facet name="stop"></apex:facet>
+        </apex:actionStatus>
+        
+        <table class="slds-table slds-table_bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <!-- Logo Column -->
+                                    <th style="text-align: left; background-color: transparent; width: 15%;">
+                                        <div class="slds-truncate" title="Application Perfection">
+                                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Description Column -->
+                                    <th style="background-color: transparent; text-align: left;">
+                                        <div class="slds-truncate">
+                                            <h2>
+                                                Review and edit profiles and permission sets metadata to create or update a complete Profile and Permission sets dictionary. 
+                                            </h2>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Button Group Column -->
+                                    <th style="background-color: transparent; width: 35%;">
+                                        <div class="lwc-button-group">
+                                            <apex:commandLink value="Help/Training" action="{!openHelpTraining}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                            <apex:commandLink value="FAQ's" action="{!openFAQ}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                            <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                            <apex:commandLink value="Release Notes" action="{!openReleaseNotes}" immediate="true" target="_blank" styleClass="lwc-button"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Security Logo -->
+                                    <th style="text-align: right; width: 10%; background-color: transparent;">
+                                        <div class="slds-truncate" title="Security & Access Manager">
+                                            <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+        
+       
+
+        <!-- Grouped Statistics mirroring ObjectDescriptions -->
+        <div class="lwc-section">
+            <div class="lwc-group-row">
+                <!-- Profiles: High level statistics -->
+                <div class="lwc-group-box">
+                    <h3 class="lwc-section__title">High level profile statistics</h3>
+                    <div class="lwc-progress-container">
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!totalProfiles}</div>
+                            <div class="lwc-progress-label">Total Profiles</div>
+                            <div class="lwc-progress-help">All custom and standard profiles in the org.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!profilesWithDescriptionPopulated}</div>
+                            <div class="lwc-progress-label">Profiles with description populated</div>
+                            <div class="lwc-progress-help">Profiles whose “Description” field contains text.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!profilesWithDescriptionBlank}</div>
+                            <div class="lwc-progress-label">Profiles with description not populated</div>
+                            <div class="lwc-progress-help">Profiles whose “Description” field is blank.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profiles: Action stats -->
+                <div class="lwc-group-box">
+                    <h3 class="lwc-section__title">Action - Profile Descriptions that can be updated</h3>
+                    <div class="lwc-progress-container">
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!editableProfileCount}</div>
+                            <div class="lwc-progress-label">Profiles with Editable Description</div>
+                            <div class="lwc-progress-help">Custom, non‑managed profiles whose Description can be updated here.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!editableProfileBlankCount}</div>
+                            <div class="lwc-progress-label">Profiles with Blank Editable Description</div>
+                            <div class="lwc-progress-help">Editable profiles where the “Description” field is blank.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profiles: No Action stats -->
+                <div class="lwc-group-box">
+                    <h3 class="lwc-section__title">No Action - Profile Descriptions that cant be updated</h3>
+                    <div class="lwc-progress-container">
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!uneditableProfileBlankCount}</div>
+                            <div class="lwc-progress-label">Profiles with uneditable description blank</div>
+                            <div class="lwc-progress-help">Non‑editable profiles where the “Description” field is blank.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lwc-section">
+            <div class="lwc-group-row">
+                <!-- Permission Sets: High level statistics -->
+                <div class="lwc-group-box">
+                    <h3 class="lwc-section__title">High level permission set statistics</h3>
+                    <div class="lwc-progress-container">
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!totalPermissionSets}</div>
+                            <div class="lwc-progress-label">Total Permission Sets</div>
+                            <div class="lwc-progress-help">All permission sets in the org.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!permissionSetsWithDescriptionPopulated}</div>
+                            <div class="lwc-progress-label">Permission Sets with description populated</div>
+                            <div class="lwc-progress-help">Permission sets whose “Description” field contains text.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!permissionSetsWithDescriptionBlank}</div>
+                            <div class="lwc-progress-label">Permission Sets with description not populated</div>
+                            <div class="lwc-progress-help">Permission sets whose “Description” field is blank.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Permission Sets: Action stats -->
+                <div class="lwc-group-box">
+                    <h3 class="lwc-section__title">Action - Permission Set Descriptions that can be updated</h3>
+                    <div class="lwc-progress-container">
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!editablePermissionSetCount}</div>
+                            <div class="lwc-progress-label">Permission Sets with Editable Description</div>
+                            <div class="lwc-progress-help">Custom, non‑managed permission sets whose Description can be updated here.</div>
+                        </div>
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!editablePermissionSetBlankCount}</div>
+                            <div class="lwc-progress-label">Permission Sets with Blank Editable Description</div>
+                            <div class="lwc-progress-help">Editable permission sets where the “Description” field is blank.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Permission Sets: No Action stats -->
+                <div class="lwc-group-box">
+                    <h3 class="lwc-section__title">No Action - Permission Set Descriptions that cant be updated</h3>
+                    <div class="lwc-progress-container">
+                        <div class="lwc-progress-card">
+                            <div class="lwc-progress-value">{!uneditablePermissionSetBlankCount}</div>
+                            <div class="lwc-progress-label">Permission Sets with uneditable description blank</div>
+                            <div class="lwc-progress-help">Non‑editable permission sets where the “Description” field is blank.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+        <div class="slds-p-horizontal_small slds-size_2-of-10 butss" style="margin-top: 36px;font-weight: bold;">
+                Type of permission:
+            </div>
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap butss" >
+			<div class="slds-p-horizontal_small slds-size_3-of-10 selectO" style="width: 50%">
+				<apex:selectList value="{!selectedPerm}" size="1" styleClass="slds-select selectO">
+					<apex:selectOptions value="{!PermissionType}"/>
+					<apex:actionSupport event="onchange" rerender="theForm, profilesTable" action="{!changePermType}" status="tableStatus"/>
+				</apex:selectList>
+			</div>
+		</div>
+        <div class="slds-grid slds-wrap slds-p-around_medium" style="place-items: end;">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-p-around_small">
+            
+            <c:multiselectpicklistobjdesc id="multiselectComponents"
+                                          leftLabel="Available Permissions"
+                                          leftOption="{!allCustomProfiles}"
+                                          leftOption1=""
+                                          rightLabel="Selected Permissions"
+                                          rightOption="{!selectedProfileIds}"
+                                          size="8"
+                                          width="180px"/>
+            </div>
+            
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-grid slds-wrap slds-p-around_small slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                    <apex:commandButton styleClass="lwc-button lwc-button_brand"
+                                        value="Fetch Descriptions"
+                                        status="tableStatus"
+                                        action="{!fetchProfileDescriptions}" 
+                                        rerender="profileDescriptionsPanel"
+                                        />
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                    <apex:commandButton styleClass="lwc-button"
+                                        value="Edit" status="tableStatus"
+                                        action="{!toggleEdit}" 
+                                        rerender="profileDescriptionsPanel"
+                                        />
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                    <apex:commandButton styleClass="lwc-button lwc-button_brand"
+                                        value="Save Changes" status="tableStatus"
+                                        action="{!SaveDescriptionMap}" 
+                                        rerender="profileDescriptionsPanel"
+                                        />
+                </div>
+                
+                <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                        <apex:commandButton styleClass="lwc-button"
+                                            value="Export To Excel" status="tableStatus"
+                                            action="{!ExportToExcel}" rendered="{!!isEdit}"
+                                            />
+                    </div>
+                
+            </div>
+
+    </div>
+            
+        
+        <apex:outputPanel id="profileDescriptionsPanel">
+            <div class="slds-grid slds-wrap slds-p-around_medium">
+            <div class="slds-col slds-size_1-of-1">
+           
+                <apex:pageMessages id="messagesPanel"/> <!-- Error messages will be displayed here -->
+            <apex:pageBlock rendered="{!NOT(ISNULL(profileDescriptions))}">
+                <apex:pageBlockTable value="{!profileDescriptions}" var="profileDesc">
+                    <apex:column headerValue="Sr. No." value="{!profileDesc.serialNumber}"/>
+                    <apex:column headerValue="Permissions Name" value="{!profileDesc.profileName}"/>
+                    
+                    <apex:column headerValue="Description">
+                            <apex:outputText rendered="{!NOT(isEdit)}" value="{!profileDesc.description}"/>
+                            <apex:inputText rendered="{!isEdit}" value="{!profileDesc.description}" style="width: 300px; height: 50px;"  disabled="{!profileDesc.isManaged}"/>
+                        </apex:column>
+
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+         </body>
+</apex:page>

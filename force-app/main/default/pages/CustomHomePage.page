@@ -1,0 +1,135 @@
+<!--
+@description       : 
+@author            : ChangeMeIn@UserSettingsUnder.SFDoc
+@group             : 
+@last modified on  : 10-14-2021
+@last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<apex:page controller="UserProfileAcces">
+    <apex:includeLightning />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/bootstrap/bootstrap.min.js')}"/>
+        <apex:slds />
+    </head>
+    
+    <style type="text/css">
+        .custPopup{
+        background-color: white;
+        border-width: 2px;
+        border-style: solid;
+        z-index: 9999;
+        left: 50%;
+        padding:20px;
+        position: fixed;
+        font-size: 100%;
+        /* These are the 3 css properties you will need to change so the popup 
+        displays in the center of the screen. First set the width. Then set 
+        margin-left to negative half of what the width is. You can add 
+        the height property for a fixed size pop up if you want.*/
+        width: 600px;
+        margin-left: -250px;
+        top:100px;
+        }
+        .popupBackground{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 9998;
+        }
+        
+    </style>
+    
+    <body>
+        
+        <apex:form id="theForm">
+            <div class="slds-scope" style="margin:10px;">
+                <div class="slds-page-header">
+                    <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                        <div class="slds-p-horizontal_small slds-size_1-of-1">
+                            <table class="slds-table slds-table_bordered " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="text-align: left;background: transparent;">
+                                            <div class="slds-truncate" title="Application Perfection">
+                                                <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                            </div>
+                                        </th>
+                                        <th scope="col" style="display: flex;  float: right;    margin-bottom: 11px; width: 31em;    background-color: transparent;margin-top: 13px;">
+                                            <apex:commandLink value="Help/Training" action="{!openHelpTraining}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Release Notes" action="{!openReleaseNotes}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                        </th>
+                                        <th scope="col" style="text-align: right; width: 160px;background: transparent;">
+                                            <div class="slds-truncate" title="Security & Access Manager">
+                                                <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!--
+                <div style="text-align: center; margin-top: 10px;">
+                  <apex:image id="theAppLogo" value="{!$Resource.logo}" width="300" height="150"/>
+                </div> -->
+                 <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <h1 style="font-family: system-ui;font-size: x-large;" class="slds-page-header__title slds-truncate">
+                                Org Status
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="loadingSpinner" class="slds-spinner_container">
+                    <div role="status" class="slds-spinner slds-spinner_medium">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+                <div id="datatable"></div>
+                
+                <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    $Lightning.use("SA_Audit:CircularBarChartHomePageApp", function() {
+                        $Lightning.createComponent(
+                            "SA_Audit:CircularBarChartHomePage",
+                            {},
+                            "datatable",
+                            function(cmp, status, errorMessage) {
+                                if (status === "SUCCESS") {
+                                    console.log("Lightning Aura Component is Loaded...");
+                                    document.getElementById("loadingSpinner").style.display = "none";
+                                } else {
+                                    console.error("Error loading Lightning Aura Component: " + errorMessage);
+                                    document.getElementById("loadingSpinner").style.display = "none";
+                                    // Display an error message to the user if needed
+                                }
+                            }
+                        );
+                    });
+                });
+                
+                
+                </script>
+ 
+                
+                
+            </div>
+        </apex:form>
+    </body>
+</apex:page>

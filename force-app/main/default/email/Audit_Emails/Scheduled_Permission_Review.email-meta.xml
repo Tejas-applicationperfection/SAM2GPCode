@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Scheduled Permission Review</name>
+    <style>none</style>
+    <subject>Permission Review Check Scheduled</subject>
+    <textOnly>Review Check Scheduled
+
+Dear {!User.Name},
+
+This is to inform you that the review check has been scheduled successfully. You will receive the review check every month.
+
+Best regards,
+ Team</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

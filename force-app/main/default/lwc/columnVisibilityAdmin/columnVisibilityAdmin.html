@@ -1,0 +1,238 @@
+<template>
+    <lightning-card title="Manage Column Visibility by Profile or User" icon-name="standard:settings">
+        <div class="slds-p-around_medium">
+            
+            <!-- Configuration Type Selection -->
+            <div class="slds-form-element slds-m-bottom_medium">
+                <label class="slds-form-element__label">
+                    Configuration Type
+                </label>
+                <div class="slds-form-element__control">
+                    <lightning-radio-group
+                        name="configurationType"
+                        options={configurationTypeOptions}
+                        value={selectedConfigurationType}
+                        onchange={handleConfigurationTypeChange}
+                        type="button">
+                    </lightning-radio-group>
+                </div>
+            </div>
+
+            <!-- Target Selection -->
+            <template if:true={availableTargets.length}>
+                <div class="slds-form-element slds-m-bottom_medium">
+                    <label class="slds-form-element__label" for="target-select">
+                        Select {selectedConfigurationType}
+                    </label>
+                    <div class="slds-form-element__control">
+                        <template if:true={isLoading}>
+                            <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+                        </template>
+                        <template if:false={isLoading}>
+                            <lightning-combobox
+                                id="target-select"
+                                name="targetSelect"
+                                placeholder={selectedConfigurationType}
+                                options={availableTargets}
+                                value={selectedTargetId}
+                                onchange={handleTargetChange}>
+                            </lightning-combobox>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Target Information -->
+            <template if:true={hasSelectedTarget}>
+                <div class="slds-form-element slds-m-bottom_medium">
+                    <div class="slds-box slds-theme_shade slds-p-around_medium">
+                        <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                            Selected {selectedConfigurationType}:
+                        </h3>
+                        <p class="slds-text-body_regular">
+                            User-specific settings take precedence over profile settings. 
+                            If a user doesn't have specific settings, they'll inherit their profile's settings.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Column Visibility Configuration -->
+                <div class="slds-form-element slds-m-bottom_large">
+                    <label class="slds-form-element__label">
+                        <strong>Column Visibility Settings</strong>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <!-- First Column -->
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-field-name" 
+                                                   data-column="fieldName"
+                                                   checked={showFieldName}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-field-name">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Field Name Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-field-type" 
+                                                   data-column="fieldType"
+                                                   checked={showFieldType}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-field-type">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Field Type Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-description" 
+                                                   data-column="description"
+                                                   checked={showDescription}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-description">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Description Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-help-text" 
+                                                   data-column="helpText"
+                                                   checked={showHelpText}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-help-text">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Help Text Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Second Column -->
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-sensitivity" 
+                                                   data-column="sensitivity"
+                                                   checked={showSensitivity}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-sensitivity">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Sensitivity Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-field-usage" 
+                                                   data-column="fieldUsage"
+                                                   checked={showFieldUsage}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-field-usage">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Field Usage Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-data-owner" 
+                                                   data-column="dataOwner"
+                                                   checked={showDataOwner}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-data-owner">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Data Owner Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-m-bottom_small">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-checkbox">
+                                            <input type="checkbox" 
+                                                   id="show-compliance" 
+                                                   data-column="complianceCategorizaton"
+                                                   checked={showComplianceCategorizaton}
+                                                   onchange={handleColumnVisibilityChange} />
+                                            <label class="slds-checkbox__label" for="show-compliance">
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label">Show Compliance Categorization Column</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <lightning-button
+                            variant="brand"
+                            label="Save Settings"
+                            title="Save column visibility settings"
+                            onclick={handleSaveConfiguration}
+                            disabled={isSaveDisabled}
+                            class="slds-m-right_small">
+                        </lightning-button>
+                        <lightning-button
+                            variant="neutral"
+                            label="Cancel"
+                            title="Cancel changes"
+                            onclick={handleCancel}>
+                        </lightning-button>
+                        <template if:true={isSaving}>
+                            <lightning-spinner alternative-text="Saving..." size="small" class="slds-m-left_small"></lightning-spinner>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- No Target Selected Message -->
+            <template if:false={hasSelectedTarget}>
+                <template if:false={isLoading}>
+                    <div class="slds-notify slds-notify_alert slds-theme_info" role="alert">
+                        <span class="slds-assistive-text">Info</span>
+                        <h2>Please select a {selectedConfigurationType} to configure column visibility.</h2>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

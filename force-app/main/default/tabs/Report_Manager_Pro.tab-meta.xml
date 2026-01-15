@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>It is Visualforce tab which is using one VF Page named ReportManagerTab.vfp</description>
+    <label>Report Manager Pro</label>
+    <motif>Custom56: Bottle</motif>
+    <page>ReportManagerTab</page>
+</CustomTab>

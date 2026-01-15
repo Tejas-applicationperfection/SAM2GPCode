@@ -1,0 +1,48 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="CircularProgressControllerDictionaryApex">
+    
+    <aura:attribute name="recordId" type="Id" description="Id of record on which this component is hosted." access="Global" />
+    <aura:attribute name="sObjectName" type="String" description="API name of record on which this component is hosted." access="Global"  />
+    <aura:attribute name="resultFormat" type="String" default="Percentage"  description="Format of result to be displayed inside Circular Progress Bar.
+                                                                   Allowed values are Percentage, Actual Number, Mix." access="Global" />
+    <aura:attribute name="Legend" type="String" description="Legend to display" access="Global"  />
+    
+	<aura:attribute name="perText" type="String" default="0%" description="Text to display inside circle. It is auto calculated field and used internally." access="Global" />
+    <aura:attribute name="cirDeg" type="String" default="0" description="Degree of Progress to show. It is auto calculated field and used internally." access="Global" />
+    
+    <aura:attribute name="totalProgress" type="String" default="100" description="Total progress. It can be number OR API name of field." access="Global"/>
+    <aura:attribute name="actualProgress" type="String" default="50" description="Actual progress. It can be number OR API name of field." access="Global" />
+    
+    <aura:attribute name="themeBeforeThreshold" type="String" default="green" description="Theme of Circular Progress Bar. Possible values are blue, green, orange." access="Global" />
+    <aura:attribute name="themeAfterThreshold" type="String" default="red" description="Theme of Circular Progress Bar. Possible values are blue, green, orange." access="Global" />
+    <aura:attribute name="theme" type="String" default="green" description="Internally used attribute to decide final theme on basis of threshold value" access="Global" />  
+     
+    <aura:attribute name="size" type="String" default="small" description="Size of Circular Progress Bar. Possible values are small, medium, big." access="Global" />
+    <aura:attribute name="threshold" type="String" default="50" description="This field can be used to support multiple theme after threshold value" access="Global"  /> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <div class="clearFloats slds-align--absolute-center"> 
+        <div aura:id="containerId" class="{! ( v.cirDeg > 179 ) ? 'container p50plus '+v.theme+' '+v.size : 'container '+v.theme +' '+v.size }">
+            <span>
+                <aura:if isTrue="{! v.resultFormat == 'Percentage' }">
+                    {!v.perText} 
+                </aura:if> 
+                <aura:if isTrue="{! v.resultFormat == 'Actual Number' }">
+                    {!v.actualProgress} 
+                </aura:if> 
+                <aura:if isTrue="{! v.resultFormat == 'Mix' }">
+                    {!v.actualProgress}/{!v.totalProgress} 
+                </aura:if>   
+                             
+            </span>
+            <div class="slice">
+                <div class="bar" 
+                     style="{! '-webkit-transform: rotate('+v.cirDeg+'deg); -moz-transform: rotate('+v.cirDeg+'deg); -ms-transform: rotate('+v.cirDeg+'deg); -o-transform: rotate('+v.cirDeg+'deg); transform: rotate('+v.cirDeg+'deg); -ms-transform: rotate('+v.cirDeg+'deg);'}"></div>
+                <div class="fill"></div>
+            </div>
+        </div>         
+    </div>
+    
+    <div class="{!v.size + ' clearFloats slds-align--absolute-center legend  '}"> 
+        {!v.Legend}
+    </div>
+</aura:component>

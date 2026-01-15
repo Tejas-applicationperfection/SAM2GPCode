@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Test_Field13__c</fullName>
+    <deprecated>false</deprecated>
+    <description>adgadf</description>
+    <inlineHelpText>adfga</inlineHelpText>
+    <label>Test Field13</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Line 1</fullName>
+                <default>false</default>
+                <label>Line 1</label>
+            </value>
+            <value>
+                <fullName>Line 2</fullName>
+                <default>false</default>
+                <label>Line 2</label>
+            </value>
+            <value>
+                <fullName>Line 3</fullName>
+                <default>false</default>
+                <label>Line 3</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

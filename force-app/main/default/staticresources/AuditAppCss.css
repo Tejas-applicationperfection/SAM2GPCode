@@ -1,0 +1,77 @@
+.THIS h1 {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 8px;
+    margin-bottom:5px;
+    padding-top: 6px;
+     cursor: pointer;
+}
+.THIS .stepname{
+        cursor: pointer;
+    
+}
+/*to show the spinner as the height of window */
+.THIS .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Adjust this if needed to make sure it's above other content */
+    cursor: pointer;
+}
+.THIS .circular-button {
+    border-radius: 50%;  
+    width: 40px; 
+    height: 40px; 
+        padding: 12px;
+    
+}
+.THIS .container{
+    
+    max-width: 100%;  overflow-x: auto;
+}
+.THIS table{
+     width: 100%;
+   
+  border-collapse: collapse;
+}
+
+.THIS .links {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 8px;
+    padding-top: 6px;
+}
+.THIS .button-83 {
+    width: inherit;
+    appearance: button;
+    background-color: #8694f4;
+    background-image: linear-gradient(to bottom, #fff, #eceae787);
+    border: 1px solid #d4d2d2;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    color: #444444;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 100%;
+    flex: 1;
+    font-weight: 700;
+    line-height: 19px;
+    margin: 3px;
+    outline: 2px solid transparent;
+    padding: 0.6rem 1.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow:-6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);
+}

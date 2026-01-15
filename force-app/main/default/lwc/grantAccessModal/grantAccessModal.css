@@ -1,0 +1,15 @@
+.section-container {
+    border: 1px solid #dddbda;
+    border-radius: 0.5rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--lwc-colorBackgroundAlt, #ffffff);
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    box-shadow: var(--lwc-shadowDropDown, 0 2px 3px 0 rgba(0, 0, 0, 0.16));
+}
+.slds-text-heading_small {
+    font-weight: 600;
+    color: #080707;
+}

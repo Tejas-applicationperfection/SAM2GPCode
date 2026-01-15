@@ -5,10 +5,10 @@ public class AuditObjectiveExportToExcelTest2 {
     @isTest
     static void testConvertPermissionReviewDataToMap() {
         // Test data setup
-        List<SA_Audit.AuditObjectiveController.PermissionReviewItem> testPermissionReviewData = new List<SA_Audit.AuditObjectiveController.PermissionReviewItem>();
+        List<AuditObjectiveController.PermissionReviewItem> testPermissionReviewData = new List<AuditObjectiveController.PermissionReviewItem>();
         
         // Add test data for PermissionReviewItem
-        SA_Audit.AuditObjectiveController.PermissionReviewItem testItem = new SA_Audit.AuditObjectiveController.PermissionReviewItem();
+        AuditObjectiveController.PermissionReviewItem testItem = new AuditObjectiveController.PermissionReviewItem();
         testItem.index = 1;
         testItem.type = 'TestType';
         testItem.Profilecount = 10;

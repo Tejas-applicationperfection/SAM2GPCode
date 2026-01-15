@@ -11,10 +11,10 @@ public with sharing class AuditObjectiveExportToExcelContoller2 {
         system.debug('result='+permissionReviewDataMap);
     }
 
-    public List<Map<String, Object>> convertPermissionReviewDataToMap(List<SA_Audit.AuditObjectiveController.PermissionReviewItem> permissionReviewData) {
+    public List<Map<String, Object>> convertPermissionReviewDataToMap(List<AuditObjectiveController.PermissionReviewItem> permissionReviewData) {
         List<Map<String, Object>> result = new List<Map<String, Object>>();
 
-        for (SA_Audit.AuditObjectiveController.PermissionReviewItem item : permissionReviewData) {
+        for (AuditObjectiveController.PermissionReviewItem item : permissionReviewData) {
             Map<String, Object> itemMap = new Map<String, Object>();
             itemMap.put('Index', item.index);
             itemMap.put('Type', item.type);

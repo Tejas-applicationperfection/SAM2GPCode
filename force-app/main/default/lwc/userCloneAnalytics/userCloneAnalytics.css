@@ -1,0 +1,58 @@
+.custom-tab-group {
+    display: flex;
+    justify-content: center;
+    border-bottom: 2px solid #d8dde6;
+    margin-bottom: 1rem; /* Add space between tabs and content */
+}
+
+.custom-tab {
+    background-color: #f4f6f9;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 20px;
+    margin: 0 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #0070d2;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px 4px 0 0;
+}
+
+.tabcntent{
+    width: 70vw;
+    margin: auto;
+}
+
+.custom-tab:hover {
+    background-color: #e0e5eb;
+}
+
+.custom-tab.active {
+    border-bottom: 3px solid #0070d2 !important;
+    color: #0070d2 !important;
+    background-color: #f3f8fe !important;
+    position: relative;
+}
+
+.custom-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0070d2;
+}
+
+.custom-tab lightning-icon {
+    vertical-align: middle;
+}
+
+.chart-container {
+    border: 2px solid #0070d2; /* Match the active tab color */
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background-color: #f9fafb;
+    transition: border-color 0.3s; /* Smooth transition for border color */
+}

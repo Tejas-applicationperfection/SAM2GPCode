@@ -1,0 +1,330 @@
+<apex:page controller="UserDictionaryController" sidebar="false" showHeader="true" docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true" action="{!loadColumnVisibilityForSelection}">
+    <apex:slds />
+    <head>
+        <title>User Dictionary Column Configuration</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+    
+    <body>
+        <apex:form id="theForm">
+            <div class="slds-scope">
+                <!-- Hidden field to track user specific settings state -->
+                <apex:inputHidden id="userSpecificSettingsHidden" value="{!isUserSpecificSettings}"/>
+                
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-standard-settings">
+                                        <svg class="slds-icon slds-icon_medium" aria-hidden="true">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#settings"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate" title="User Dictionary Column Configuration">User Dictionary Column Configuration</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    <p class="slds-page-header__name-meta">Manage column visibility by profile or user</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <apex:outputPanel id="errorSection">
+                    <apex:pageMessages />
+                </apex:outputPanel>
+                
+                <div class="slds-grid slds-gutters slds-p-around_medium">
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="slds-form-element">
+                            <fieldset class="slds-form-element">
+                                <legend class="slds-form-element__legend slds-form-element__label">Configuration Type</legend>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-radio_button-group">
+                                        <span class="slds-button slds-radio_button">
+                                            <input type="radio" id="profileRadio" name="configType" onchange="toggleConfigType('profile');" checked="{!!isUserSpecificSettings}"/>
+                                            <label class="slds-radio_button__label" for="profileRadio">
+                                                <span class="slds-radio_faux">By Profile</span>
+                                            </label>
+                                        </span>
+                                        <span class="slds-button slds-radio_button">
+                                            <input type="radio" id="userRadio" name="configType" onchange="toggleConfigType('user');" checked="{!isUserSpecificSettings}"/>
+                                            <label class="slds-radio_button__label" for="userRadio">
+                                                <span class="slds-radio_faux">By User</span>
+                                            </label>
+                                        </span>
+                                        <span class="slds-button slds-radio_button">
+                                            <input type="radio" id="permissionSetRadio" name="configType" onchange="toggleConfigType('permissionset');"/>
+                                            <label class="slds-radio_button__label" for="permissionSetRadio">
+                                                <span class="slds-radio_faux">By Permission Set</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slds-grid slds-gutters slds-p-around_medium">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element" id="profileSelectContainer">
+                            <label class="slds-form-element__label" for="profileSelect">Select Profile</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!selectedProfileForColumnVisibility}" size="1" id="profileSelect" styleClass="slds-select">
+                                    <apex:selectOptions value="{!profilesForColumnVisibility}"/>
+                                    <apex:actionSupport event="onchange" action="{!loadColumnVisibilityForProfile}" reRender="columnVisibilitySettings, errorSection" status="columnVisibilityStatus"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element" id="userSelectContainer" style="display: none;">
+                            <label class="slds-form-element__label" for="userSelect">Select User</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!selectedUserForColumnVisibility}" size="1" id="userSelect" styleClass="slds-select">
+                                    <apex:selectOptions value="{!usersForColumnVisibility}"/>
+                                    <apex:actionSupport event="onchange" action="{!loadColumnVisibilityForUser}" reRender="columnVisibilitySettings, errorSection" status="loadingStatus"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element" id="permissionSetSelectContainer" style="display: none;">
+                            <label class="slds-form-element__label" for="permissionSetSelect">Select Permission Set</label>
+                            <div class="slds-form-element__control">
+                                <apex:selectList value="{!selectedPermissionSetForColumnVisibility}" size="1" id="permissionSetSelect" styleClass="slds-select">
+                                    <apex:selectOptions value="{!permissionSetsForColumnVisibility}"/>
+                                    <apex:actionSupport event="onchange" action="{!loadColumnVisibilityForPermissionSet}" reRender="columnVisibilitySettings, errorSection" status="loadingStatus"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="slds-grid slds-gutters slds-p-around_medium">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">Profile Information</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-box slds-theme_shade">
+                                    <p>
+                                        <strong>Selected Profile:</strong> <span id="selectedProfileName"></span>
+                                    </p>
+                                    <p class="slds-text-body_small slds-m-top_x-small">
+                                        User-specific settings take precedence over profile settings. If a user doesn't have specific settings, they'll inherit their profile's settings.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <apex:actionStatus id="loadingStatus">
+                    <apex:facet name="start">
+                        <div class="slds-spinner_container slds-is-fixed">
+                            <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </apex:facet>
+                    <apex:facet name="stop"></apex:facet>
+                </apex:actionStatus>
+                
+                <apex:outputPanel id="columnVisibilitySettings">
+                    <div class="slds-card slds-m-around_medium">
+                        <div class="slds-card__header slds-grid">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-standard-custom">
+                                        <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/standard-sprite/svg/symbols.svg#custom"></use>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <span>Column Visibility Settings</span>
+                                    </h2>
+                                </div>
+                            </header>
+                        </div>
+                        <div class="slds-card__body slds-card__body_inner">
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showFieldNameColumn}" id="showFieldNameColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showFieldNameColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Field Name Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showFieldTypeColumn}" id="showFieldTypeColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showFieldTypeColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Field Type Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showDescriptionColumn}" id="showDescriptionColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showDescriptionColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Description Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showHelpTextColumn}" id="showHelpTextColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showHelpTextColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Help Text Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showHighlightedDataColumn}" id="showHighlightedDataColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showHighlightedDataColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Highlighted Data Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showSensitivityColumn}" id="showSensitivityColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showSensitivityColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Sensitivity Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showFieldUsageColumn}" id="showFieldUsageColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showFieldUsageColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Field Usage Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showDataOwnerColumn}" id="showDataOwnerColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showDataOwnerColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Data Owner Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col slds-size_1-of-2 slds-p-vertical_x-small">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <apex:inputCheckbox value="{!showComplianceCategorizationColumn}" id="showComplianceCategorizationColumn" styleClass="slds-checkbox">
+                                                <apex:outputLabel for="showComplianceCategorizationColumn" styleClass="slds-checkbox__label">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Show Compliance Categorization Column</span>
+                                                </apex:outputLabel>
+                                            </apex:inputCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <footer class="slds-card__footer">
+                            <div class="slds-grid slds-grid_align-center">
+                                <apex:commandButton value="Save Settings" action="{!saveColumnVisibilitySettings}" rerender="errorSection" status="loadingStatus" styleClass="slds-button slds-button_brand"/>
+                                <apex:commandButton value="Back to User Dictionary" action="{!cancel}" styleClass="slds-button slds-button_neutral slds-m-left_x-small"/>
+                            </div>
+                        </footer>
+                    </div>
+                </apex:outputPanel>
+                
+                <!-- Action function moved inside the form -->
+                <apex:actionFunction name="toggleUserSpecificSettings" action="{!toggleUserSpecificSettings}" rerender="columnVisibilitySettings, errorSection, userSpecificSettingsHidden" status="loadingStatus"/>
+            </div>
+        </apex:form>
+        
+        <script type="text/javascript">
+            function toggleConfigType(type) {
+                var profileContainer = document.getElementById('profileSelectContainer');
+                var userContainer = document.getElementById('userSelectContainer');
+                var permissionSetContainer = document.getElementById('permissionSetSelectContainer');
+                var userSpecificSettingsHidden = document.getElementById('{!$Component.theForm.userSpecificSettingsHidden}');
+                
+                // Hide all containers first
+                profileContainer.style.display = 'none';
+                userContainer.style.display = 'none';
+                permissionSetContainer.style.display = 'none';
+                
+                // Show the appropriate container based on type
+                if (type === 'profile') {
+                    profileContainer.style.display = 'block';
+                    userSpecificSettingsHidden.value = 'false';
+                } else if (type === 'user') {
+                    userContainer.style.display = 'block';
+                    userSpecificSettingsHidden.value = 'true';
+                } else if (type === 'permissionset') {
+                    permissionSetContainer.style.display = 'block';
+                    userSpecificSettingsHidden.value = 'false';
+                }
+                
+                // Trigger rerender of the form
+                rerenderForm();
+            }
+            
+            function rerenderForm() {
+                // Add any additional rerender logic if needed
+            }
+        </script>
+        
+    </body>
+</apex:page>

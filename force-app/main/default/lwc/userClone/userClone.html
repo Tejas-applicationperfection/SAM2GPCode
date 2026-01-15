@@ -1,0 +1,2515 @@
+<template>
+    <lightning-card>
+        <div class="slds-p-around_medium main-container">
+            <lightning-spinner if:true={isLoading}  style="z-index: 10000;" alternative-text="Loading" size="medium"></lightning-spinner>
+
+            <!-- Source User Section -->
+            <article class="slds-card" style="padding-top: 28px;">
+
+                <div class="slds-box slds-theme_shade neumorphic-header" style="margin-top: 0;">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure neumorphic-icon">
+                                    <lightning-icon icon-name='action:clone' alternative-text='clone' size='small'
+                                        title='clone'></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1 style="font-weight: inherit; font-size: 1em;">
+                                                <span>Cloner</span>
+                                                <span class="slds-page-header__title slds-hyphenate neumorphic-title"
+                                                    title=" Instant User Cloner">
+                                                    Instant User Cloner
+                                                </span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                </div>
+
+
+                <div class="slds-p-around_medium">
+                    <!-- First Row: 3 columns -->
+                    <div class="slds-grid slds-wrap slds-gutters" style="max-width: 75vw; margin: 0 auto;">
+                        <!-- Source User -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="neumorphic-container" style="height: 100%;">
+                                <h2 class="combohead">Select Source User</h2>
+
+                                <!-- Unified Search & Select User Dropdown -->
+                                <div class="slds-form-element slds-form-element_required">
+                                    <label class="slds-form-element__label" for="user-dropdown">
+                                        <abbr class="slds-required" title="required">*</abbr>
+                                        <span class="slds-text-title_caps">Search & Select User</span>
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-combobox_container custom-centre">
+                                            <div class={comboboxClass} data-dropdown-open={showDropdown}>
+                                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left">
+                                                        <lightning-icon icon-name="utility:search" size="x-small"></lightning-icon>
+                                                    </span>
+                                                    <input type="text" 
+                                                           class="slds-input slds-combobox__input custom-input" 
+                                                           placeholder="Type to search for a user..."
+                                                           value={searchTerm}
+                                                           oninput={handleUserSearch}
+                                                           onfocus={handleSearchFocus}
+                                                           onblur={handleSearchBlur}
+                                                           required />
+                                                    <template if:true={isSearching}>
+                                                        <span class="slds-icon_container slds-icon-utility-spinner slds-input__icon slds-input__icon_right">
+                                                            <lightning-spinner   style="z-index: 10000;" alternative-text="Searching" size="x-small"></lightning-spinner>
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                                <template if:true={showDropdown}>
+                                                    <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox" onmousedown={handleDropdownMouseDown}>
+                                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                            <template for:each={userOptions} for:item="user">
+                                                                <li key={user.value} class="slds-listbox__item" role="presentation">
+                                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" 
+                                                                         role="option" 
+                                                                         data-user-id={user.value}
+                                                                         onclick={handleUserSelection}>
+                                                                        <span class="slds-media__figure slds-listbox__option-icon">
+                                                                            <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
+                                                                        </span>
+                                                                        <span class="slds-media__body">
+                                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{user.label}</span>
+                                                                            <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">{user.email}</span>
+                                                                        </span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                            <template if:false={userOptions.length}>
+                                                                <li class="slds-listbox__item" role="presentation">
+                                                                    <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_center" role="option">
+                                                                        <span class="slds-media__body">
+                                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">No users found</span>
+                                                                        </span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- New User Email -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="neumorphic-container" style="height: 100%;">
+                                <h2 class="combohead">New User Email</h2>
+                                <lightning-input type="email" required class="custom-input" onchange={handleEmailChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- Username -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="neumorphic-container" style="height: 100%;">
+                                <h2 class="combohead">Username</h2>
+                                <lightning-input type="text" required value={username} class="custom-input" onchange={handleUsernameChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Second Row: 3 columns -->
+                    <div class="slds-grid slds-wrap slds-gutters" style="max-width: 75vw; margin: 0 auto; margin-top: 0.5rem;">
+                        <!-- New User First Name -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="neumorphic-container" style="height: 100%;">
+                                <h2 class="combohead">New User First Name</h2>
+                                <lightning-input type="text" required class="custom-input" onchange={handleFirstNameChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                        
+                        <!-- New User Last Name -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="neumorphic-container" style="height: 100%;">
+                                <h2 class="combohead">New User Last Name</h2>
+                                <lightning-input type="text" required class="custom-input" onchange={handleLastNameChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        <!-- Alias -->
+                        <div class="slds-col slds-size_1-of-3 slds-p-around_small">
+                            <div class="neumorphic-container" style="height: 100%;">
+                                <h2 class="combohead">Alias</h2>
+                                <lightning-input type="text" required value={alias} maxlength="5" class="custom-input" onchange={handleAliasChange}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <template if:true={error}>
+                        <div class="slds-form-element__help slds-text-color_error">
+                            Error loading users. Please try again.
+                        </div>
+                    </template>
+
+                    <div class="slds-align_absolute-center slds-p-top_large button-container">
+                        <div class="button-group">
+                            <button style="margin-top: 10px; height: 36px;" onclick={showConfirmationModal}
+                                class="slds-button slds-button_brand button-83">
+                                Clone User
+                            </button>
+                            <button style="margin-top: 10px; height: 36px;" onclick={showFreezeConfirmationModal}
+                                class="slds-button slds-button_brand button-83">
+                                Deactivate &amp; Clone
+                            </button>
+                            <button style="margin-top: 10px; height: 36px;" onclick={showPermissionsModal}
+                                class="slds-button slds-button_brand button-83">
+                                 Clone User Permissions
+                            </button>
+                            <button style="margin-top: 10px; height: 36px;" onclick={navigateToNewUser}
+                                class="slds-button slds-button_brand button-83">
+                                New User
+                            </button>
+                            <button style="margin-top: 10px; height: 36px;" onclick={showHistoryModal}
+                                class="slds-button slds-button_neutral button-83">
+                                View History
+                            </button>
+                            <button style="margin-top: 10px; height: 36px;" onclick={clearAllFields}
+                                class="slds-button slds-button_destructive button-83"
+                                title="Clear all input fields">
+                                Clear All
+                            </button>
+                            
+                            <!-- Phase 1 Feature Buttons 
+                            <button style="margin-top: 10px; height: 36px;" onclick={showCompareUsersModal}
+                                class="slds-button slds-button_outline-brand button-83"
+                                title="Compare permissions between users">
+                                Compare Users
+                            </button>-->
+
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Success Message -->
+        <template if:true={newUserId}>
+            <div class="slds-p-top_medium success-container">
+                <div class="slds-grid slds-grid_vertical-align-center slds-p-around_medium">
+                    <lightning-icon icon-name="utility:success" size="small"
+                        class="slds-m-right_small success-icon"></lightning-icon>
+                    <p class="slds-text-heading_small slds-m-right_medium success-text">User cloned successfully!</p>
+                    <lightning-button label="View Cloned User" variant="brand" onclick={navigateToUser}
+                        icon-name="utility:preview" class="custom-button-success">
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Permissions Clone Modal -->
+        <template if:true={isPermissionsModalOpen}>
+            <div class="slds-backdrop slds-backdrop_open" style="z-index: 9998;"></div>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" style="z-index: 9999;">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closePermissionsModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Clone User Permissions</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+                                <p>Select a target user to receive permissions from the source user:</p>
+                            </div>
+                            
+                            <!-- Source User Display -->
+                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+                                <div class="slds-box slds-theme_shade">
+                                    <h3 class="slds-text-heading_small">Source User</h3>
+                                    <p>{selectedUserName}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Target User Selection -->
+                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="target-user-dropdown">
+                                        <abbr class="slds-required" title="required">*</abbr>
+                                        <span class="slds-text-title_caps">Target User</span>
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-combobox_container custom-centre">
+                                            <div class={targetComboboxClass} data-dropdown-open={showTargetDropdown}>
+                                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left" role="none">
+                                                    <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left">
+                                                        <lightning-icon icon-name="utility:search" size="x-small"></lightning-icon>
+                                                    </span>
+                                                    <input type="text" 
+                                                           class="slds-input slds-combobox__input custom-input" 
+                                                           placeholder="Type to search for a target user..."
+                                                           value={targetSearchTerm}
+                                                           oninput={handleTargetUserSearch}
+                                                           onfocus={handleTargetSearchFocus}
+                                                           onblur={handleTargetSearchBlur}
+                                                           required />
+                                                    <template if:true={isTargetSearching}>
+                                                        <span class="slds-icon_container slds-icon-utility-spinner slds-input__icon slds-input__icon_right">
+                                                            <lightning-spinner  style="z-index: 10000;" alternative-text="Searching" size="x-small"></lightning-spinner>
+                                                        </span>
+                                                    </template>
+                                                </div>
+                                                <template if:true={showTargetDropdown}>
+                                                    <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox" onmousedown={handleTargetDropdownMouseDown}>
+                                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                            <template for:each={targetUserOptions} for:item="user">
+                                                                <li key={user.value} class="slds-listbox__item" role="presentation">
+                                                                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" 
+                                                                         role="option" 
+                                                                         data-user-id={user.value}
+                                                                         onclick={handleTargetUserSelection}>
+                                                                        <span class="slds-media__figure slds-listbox__option-icon">
+                                                                            <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
+                                                                        </span>
+                                                                        <span class="slds-media__body">
+                                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{user.label}</span>
+                                                                            <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">{user.email}</span>
+                                                                        </span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                            <template if:false={targetUserOptions.length}>
+                                                                <li class="slds-listbox__item" role="presentation">
+                                                                    <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_center" role="option">
+                                                                        <span class="slds-media__body">
+                                                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">No users found</span>
+                                                                        </span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- License Assistant Section 
+                            <template if:true={selectedTargetUserId}>
+                                <div class="slds-col slds-size_1-of-1 slds-p-top_medium slds-p-bottom_small">
+                                    <div class="slds-text-align_center">
+                                        <button class="slds-button slds-button_outline-brand" onclick={showLicenseAssistant}
+                                            title="Get license compatibility suggestions for the selected users">
+                                            <lightning-icon icon-name="utility:help" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            License Assistant
+                                        </button>
+                                        <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                            Check profile compatibility between source and target users
+                                        </p>
+                                    </div>
+                                </div>
+                            </template>-->
+                            
+                            <!-- Clone Options Section -->
+                            <div class="slds-col slds-size_1-of-1 slds-p-top_medium slds-p-bottom_medium">
+                                <div class="slds-box slds-theme_shade">
+                                    <h3 class="slds-text-heading_small slds-p-bottom_small">Select Items to Clone</h3>
+                                    
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input type="checkbox" name="userPermissions" id="userPermissions" checked data-option="userPermissions" onchange={handleCloneOptionChange} />
+                                                <label class="slds-checkbox__label" for="userPermissions">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">User Permissions</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input type="checkbox" name="userRole" id="userRole" checked data-option="userRole" onchange={handleCloneOptionChange} />
+                                                <label class="slds-checkbox__label" for="userRole">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">User Role</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input type="checkbox" name="profile" id="profile" checked data-option="profile" onchange={handleCloneOptionChange} />
+                                                <label class="slds-checkbox__label" for="profile">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Profile</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input type="checkbox" name="permissionSets" id="permissionSets" checked data-option="permissionSets" onchange={handleCloneOptionChange} />
+                                                <label class="slds-checkbox__label" for="permissionSets">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Permission Sets</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input type="checkbox" name="permissionSetGroups" id="permissionSetGroups" checked data-option="permissionSetGroups" onchange={handleCloneOptionChange} />
+                                                <label class="slds-checkbox__label" for="permissionSetGroups">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Permission Set Groups</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input type="checkbox" name="publicGroups" id="publicGroups" checked data-option="publicGroups" onchange={handleCloneOptionChange} />
+                                                <label class="slds-checkbox__label" for="publicGroups">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Public Group Membership</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input type="checkbox" name="queueMembership" id="queueMembership" checked data-option="queueMembership" onchange={handleCloneOptionChange} />
+                                                <label class="slds-checkbox__label" for="queueMembership">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">Queue Membership</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closePermissionsModal}>Cancel</button>
+                        <button class="slds-button slds-button_outline-brand" onclick={showDryRunPreview}
+                            title="Preview changes before cloning">
+                          Preview Changes
+                        </button>
+                        <!-- <button class="slds-button slds-button_brand" onclick={handleClonePermissions}>Clone Permissions</button> -->
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Permissions Clone Summary Modal -->
+        <template if:true={showPermissionsSummary}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03" aria-modal="true"
+                aria-describedby="modal-content-id-3" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closePermissionsSummaryModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Permissions Clone Summary</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+                                <div class="slds-box slds-theme_success">
+                                    <lightning-icon icon-name="utility:success" size="small" class="slds-m-right_small"></lightning-icon>
+                                    <span>Permissions cloned successfully!</span>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+                                <div class="slds-box slds-theme_shade">
+                                    <h3 class="slds-text-heading_small">Source User</h3>
+                                    <p>{selectedUserName}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+                                <div class="slds-box slds-theme_shade">
+                                    <h3 class="slds-text-heading_small">Target User</h3>
+                                    <p>{selectedTargetUserName}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_medium">
+                                <div class="slds-box">
+                                    <h3 class="slds-text-heading_small">Summary</h3>
+                                    <ul class="slds-list_dotted">
+                                        <li>Profile: {permissionsCloneResult.profileName}</li>
+                                        <li>User Role: {permissionsCloneResult.userRole}</li>
+                                        <li>User Permissions Cloned: {permissionsCloneResult.userPermissionsCloned}</li>
+                                        <li>Permission Sets Cloned: {permissionsCloneResult.permissionSetsCloned}</li>
+                                        <li>Permission Set Groups Cloned: {permissionsCloneResult.permissionSetGroupsCloned}</li>
+                                        <li>Public Groups Cloned: {permissionsCloneResult.groupsCloned}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand" onclick={closePermissionsSummaryModal}>Close</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Clone Summary Modal -->
+        <template if:true={showSummary}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open custom-modal"
+                style="z-index: 9999;">
+                <div class="slds-modal__container" style="max-width: 90vw; width: 1200px; max-height: 90vh;">
+                    <header class="slds-modal__header custom-modal-header">
+                        <h2 class="slds-modal__title slds-hyphenate">
+                            <lightning-icon icon-name="utility:success" size="small"
+                                class="slds-m-right_small"></lightning-icon>
+                            User Clone Summary
+                        </h2>
+                        <lightning-button-icon icon-name="utility:close" onclick={resetForm} alternative-text="Close"
+                            title="Close" class="slds-modal__close">
+                        </lightning-button-icon>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium" style="overflow-y: auto; max-height: 70vh;">
+                        <div class="slds-text-heading_medium slds-m-bottom_medium">The following items were successfully cloned:</div>
+                        
+                        <!-- Profile & Role Section -->
+                        <div class="slds-card slds-m-bottom_medium">
+                            <div class="slds-card__header">
+                                <header class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:shield" size="small"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title slds-text-heading_small">Security & Access</h2>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="slds-card__body slds-card__body_inner">
+                                <div class="slds-grid slds-wrap slds-gutters_small">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label slds-text-body_small">Profile</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-badge label={cloneSummary.profileName} variant="success">
+                                                </lightning-badge>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label slds-text-body_small">Role</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning-badge label={cloneSummary.userRole} variant="success">
+                                                </lightning-badge>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Permission Sets Section -->
+                        <div class="slds-card slds-m-bottom_medium">
+                            <div class="slds-card__header">
+                                <header class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:permission_sets" size="small"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title slds-text-heading_small">Permission Sets</h2>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="slds-card__body slds-card__body_inner">
+                                <div class="slds-grid slds-wrap slds-gutters_small">
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <lightning-badge label={cloneSummary.permissionSetsCloned} class="slds-m-right_x-small" variant="success"></lightning-badge>
+                                                <span class="slds-text-body_regular">Permission Sets successfully cloned</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Permission Set Groups Section -->
+                        <div class="slds-card slds-m-bottom_medium">
+                            <div class="slds-card__header">
+                                <header class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:permission_sets" size="small"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title slds-text-heading_small">Permission Set Groups</h2>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="slds-card__body slds-card__body_inner">
+                                <div class="slds-grid slds-wrap slds-gutters_small">
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <lightning-badge label={cloneSummary.permissionSetGroupsCloned} class="slds-m-right_x-small" variant="success"></lightning-badge>
+                                                <span class="slds-text-body_regular">Permission Set Groups successfully cloned</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Public Groups Section -->
+                        <div class="slds-card slds-m-bottom_medium">
+                            <div class="slds-card__header">
+                                <header class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:groups" size="small"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title slds-text-heading_small">Public Groups</h2>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="slds-card__body slds-card__body_inner">
+                                <div class="slds-grid slds-wrap slds-gutters_small">
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <lightning-badge label={cloneSummary.groupsCloned} class="slds-m-right_x-small" variant="success"></lightning-badge>
+                                                <span class="slds-text-body_regular">Public Groups successfully cloned</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Permissions Section -->
+                        <div class="slds-card slds-m-bottom_medium">
+                            <div class="slds-card__header">
+                                <header class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:user" size="small"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title slds-text-heading_small">User Permissions</h2>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="slds-card__body slds-card__body_inner">
+                                <div class="slds-grid slds-wrap slds-gutters_small">
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <template if:true={cloneSummary.hasUserPermissions}>
+                                                    <lightning-badge label={cloneSummary.userPermissionsCloned} class="slds-m-right_x-small" variant="success"></lightning-badge>
+                                                </template>
+                                                <template if:false={cloneSummary.hasUserPermissions}>
+                                                    <lightning-badge label="0" class="slds-m-right_x-small" variant="info"></lightning-badge>
+                                                </template>
+                                                <span class="slds-text-body_regular">User permission flags cloned</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Success state - permissions were cloned -->
+                                <template if:true={cloneSummary.hasUserPermissions}>
+                                    <div class="slds-box slds-box_xx-small slds-theme_success slds-m-top_small">
+                                        <div class="slds-media">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:success" size="x-small" variant="inverse"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <p class="slds-text-body_small slds-text-color_inverse-weak">
+                                                    Successfully cloned {cloneSummary.userPermissionsCloned} user permission flags
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-text-body_regular slds-m-top_small">
+                                        <p>Successfully cloned user permission flags including:</p>
+                                        <ul class="slds-list_dotted slds-m-top_x-small slds-m-left_medium">
+                                            <li>Marketing User (UserPermissionsMarketingUser)</li>
+                                            <li>Offline User (UserPermissionsOfflineUser)</li>
+                                            <li>Knowledge User (UserPermissionsKnowledgeUser)</li>
+                                            <li>Call Center User (UserPermissionsCallCenterAutoLogin)</li>
+                                            <li>Flow User (UserPermissionsFlowUser)</li>
+                                            <li>And other permission flags</li>
+                                        </ul>
+                                        <p class="slds-m-top_x-small">
+                                            <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            <span class="slds-text-body_small">These permissions are in addition to those granted by the user's profile.</span>
+                                        </p>
+                                    </div>
+                                </template>
+                                
+                                <!-- No permissions cloned state -->
+                                <template if:false={cloneSummary.hasUserPermissions}>
+                                    <div class="slds-box slds-box_xx-small slds-theme_info slds-m-top_small">
+                                        <div class="slds-media">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:info" size="x-small" variant="inverse"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <p class="slds-text-body_small slds-text-color_inverse-weak">
+                                                    No user permission flags were cloned
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-text-body_regular slds-m-top_small">
+                                        <p>
+                                            <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            No user permission flags were cloned. This could be because:
+                                        </p>
+                                        <ul class="slds-list_dotted slds-m-top_x-small slds-m-left_medium">
+                                            <li>The source user has no specific permission flags enabled</li>
+                                            <li>The permissions are controlled by the user's profile instead of individual flags</li>
+                                            <li>Your organization doesn't use these specific permission flags</li>
+                                            <li>You don't have permission to modify these fields</li>
+                                        </ul>
+                                        <p class="slds-m-top_x-small slds-text-body_small">
+                                            User permission flags include settings like Marketing User, Knowledge User, and other boolean permission fields on the User object that start with "UserPermissions".
+                                        </p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="slds-modal__footer custom-modal-footer">
+                        <div class="slds-grid slds-grid_align-spread">
+                            <div class="slds-col">
+                                <lightning-button-icon icon-name="utility:download" variant="border-filled" 
+                                    alternative-text="Download Summary" title="Download Summary" 
+                                    class="slds-m-right_x-small">
+                                </lightning-button-icon>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <lightning-button label="View User Record" variant="neutral" 
+                                    onclick={navigateToUser} class="slds-m-right_x-small">
+                                </lightning-button>
+                                <lightning-button label="Close" variant="brand" 
+                                    onclick={resetForm}>
+                                </lightning-button>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Enhanced Confirmation Modal -->
+        <template if:true={isModalOpen}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open custom-modal"
+                style="z-index: 9999;">
+                <div class="slds-modal__container" style="max-width: 90vw; width: 1200px; max-height: 90vh;">
+                    <header class="slds-modal__header custom-modal-header">
+                        <h2 class="slds-modal__title slds-hyphenate">
+                            <lightning-icon icon-name="utility:user" size="small"
+                                class="slds-m-right_small"></lightning-icon>
+                            User Clone Confirmation
+                        </h2>
+                        <lightning-button-icon icon-name="utility:close" onclick={closeModal} alternative-text="Close"
+                            title="Close" class="slds-modal__close">
+                        </lightning-button-icon>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_none" style="overflow-y: auto; max-height: 70vh;">
+                        <template if:true={sourceUserDetails}>
+                            <div class="slds-p-around_medium">
+
+                                <!-- Basic Information Section -->
+                                <div class="slds-card slds-m-bottom_medium">
+                                    <div class="slds-card__header">
+                                        <header class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:identity"
+                                                    size="small"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    <button
+                                                        class="slds-button slds-button_reset slds-text-heading_small"
+                                                        data-section="basicInfo" onclick={toggleSection}>
+                                                        <template if:true={isBasicInfoSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevrondown"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        <template if:false={isBasicInfoSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevronright"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        Basic Information
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <template if:true={isBasicInfoSectionExpanded}>
+                                        <div class="slds-card__body slds-card__body_inner">
+                                            <div class="slds-grid slds-wrap slds-gutters_small">
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Full
+                                                            Name</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.basicInfo.name}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Email</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.basicInfo.email}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Username</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.basicInfo.username}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Alias</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.basicInfo.alias}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Status</label>
+                                                        <div class="slds-form-element__control">
+                                                            <template if:true={sourceUserDetails.basicInfo.isActive}>
+                                                                <lightning-badge label="Active" variant="success">
+                                                                </lightning-badge>
+                                                            </template>
+                                                            <template if:false={sourceUserDetails.basicInfo.isActive}>
+                                                                <lightning-badge label="Inactive" variant="error">
+                                                                </lightning-badge>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Last
+                                                            Login</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{formattedLastLoginDate}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <template if:true={sourceUserDetails.basicInfo.title}>
+                                                    <div class="slds-col slds-size_1-of-3">
+                                                        <div class="slds-form-element">
+                                                            <label
+                                                                class="slds-form-element__label slds-text-body_small">Title</label>
+                                                            <div class="slds-form-element__control">
+                                                                <span
+                                                                    class="slds-text-body_regular">{sourceUserDetails.basicInfo.title}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template if:true={sourceUserDetails.basicInfo.department}>
+                                                    <div class="slds-col slds-size_1-of-3">
+                                                        <div class="slds-form-element">
+                                                            <label
+                                                                class="slds-form-element__label slds-text-body_small">Department</label>
+                                                            <div class="slds-form-element__control">
+                                                                <span
+                                                                    class="slds-text-body_regular">{sourceUserDetails.basicInfo.department}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template if:true={sourceUserDetails.basicInfo.phone}>
+                                                    <div class="slds-col slds-size_1-of-3">
+                                                        <div class="slds-form-element">
+                                                            <label
+                                                                class="slds-form-element__label slds-text-body_small">Phone</label>
+                                                            <div class="slds-form-element__control">
+                                                                <span
+                                                                    class="slds-text-body_regular">{sourceUserDetails.basicInfo.phone}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Security & Access Section -->
+                                <div class="slds-card slds-m-bottom_medium">
+                                    <div class="slds-card__header">
+                                        <header class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:shield"
+                                                    size="small"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    <button
+                                                        class="slds-button slds-button_reset slds-text-heading_small"
+                                                        data-section="securityInfo" onclick={toggleSection}>
+                                                        <template if:true={isSecurityInfoSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevrondown"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        <template if:false={isSecurityInfoSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevronright"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        Security & Access
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <template if:true={isSecurityInfoSectionExpanded}>
+                                        <div class="slds-card__body slds-card__body_inner">
+                                            <div class="slds-grid slds-wrap slds-gutters_small">
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Profile</label>
+                                                        <div class="slds-form-element__control">
+                                                            <lightning-badge
+                                                                label={sourceUserDetails.securityInfo.profileName}
+                                                                variant="inverse"></lightning-badge>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Role</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.securityInfo.userRole}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <template if:true={sourceUserDetails.securityInfo.managerName}>
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <div class="slds-form-element">
+                                                            <label
+                                                                class="slds-form-element__label slds-text-body_small">Manager</label>
+                                                            <div class="slds-form-element__control">
+                                                                <span
+                                                                    class="slds-text-body_regular">{sourceUserDetails.securityInfo.managerName}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+
+                                            <!-- User Permissions Grid -->
+                                            <div class="slds-p-top_medium">
+                                                <h3 class="slds-text-heading_x-small slds-p-bottom_small">User
+                                                    Permissions</h3>
+                                                <div class="slds-grid slds-wrap slds-gutters_x-small">
+                                                    <div class="slds-col slds-size_1-of-4">
+                                                        <template
+                                                            if:true={sourceUserDetails.securityInfo.isMarketingUser}>
+                                                            <lightning-badge label="Marketing User" variant="success">
+                                                            </lightning-badge>
+                                                        </template>
+                                                        <template
+                                                            if:false={sourceUserDetails.securityInfo.isMarketingUser}>
+                                                            <lightning-badge label="Marketing User" variant="inverse">
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-4">
+                                                        <template
+                                                            if:true={sourceUserDetails.securityInfo.isOfflineUser}>
+                                                            <lightning-badge label="Offline User" variant="success">
+                                                            </lightning-badge>
+                                                        </template>
+                                                        <template
+                                                            if:false={sourceUserDetails.securityInfo.isOfflineUser}>
+                                                            <lightning-badge label="Offline User" variant="inverse">
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-4">
+                                                        <template
+                                                            if:true={sourceUserDetails.securityInfo.isCallCenterUser}>
+                                                            <lightning-badge label="Call Center" variant="success">
+                                                            </lightning-badge>
+                                                        </template>
+                                                        <template
+                                                            if:false={sourceUserDetails.securityInfo.isCallCenterUser}>
+                                                            <lightning-badge label="Call Center" variant="inverse">
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-4">
+                                                        <template
+                                                            if:true={sourceUserDetails.securityInfo.isSFContentUser}>
+                                                            <lightning-badge label="Content User" variant="success">
+                                                            </lightning-badge>
+                                                        </template>
+                                                        <template
+                                                            if:false={sourceUserDetails.securityInfo.isSFContentUser}>
+                                                            <lightning-badge label="Content User" variant="inverse">
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-4">
+                                                        <template
+                                                            if:true={sourceUserDetails.securityInfo.isInteractionUser}>
+                                                            <lightning-badge label="Interaction User" variant="success">
+                                                            </lightning-badge>
+                                                        </template>
+                                                        <template
+                                                            if:false={sourceUserDetails.securityInfo.isInteractionUser}>
+                                                            <lightning-badge label="Interaction User" variant="inverse">
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-4">
+                                                        <template
+                                                            if:true={sourceUserDetails.securityInfo.isSupportUser}>
+                                                            <lightning-badge label="Support User" variant="success">
+                                                            </lightning-badge>
+                                                        </template>
+                                                        <template
+                                                            if:false={sourceUserDetails.securityInfo.isSupportUser}>
+                                                            <lightning-badge label="Support User" variant="inverse">
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </div>
+
+                                                    <div class="slds-col slds-size_1-of-4">
+                                                        <template
+                                                            if:true={sourceUserDetails.securityInfo.isKnowledgeUser}>
+                                                            <lightning-badge label="Knowledge User" variant="success">
+                                                            </lightning-badge>
+                                                        </template>
+                                                        <template
+                                                            if:false={sourceUserDetails.securityInfo.isKnowledgeUser}>
+                                                            <lightning-badge label="Knowledge User" variant="inverse">
+                                                            </lightning-badge>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Permission Sets Section -->
+                                <div class="slds-card slds-m-bottom_medium">
+                                    <div class="slds-card__header">
+                                        <header class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:permission_sets"
+                                                    size="small"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    <button
+                                                        class="slds-button slds-button_reset slds-text-heading_small"
+                                                        data-section="permissionSets" onclick={toggleSection}>
+                                                        <template if:true={isPermissionSetsSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevrondown"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        <template if:false={isPermissionSetsSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevronright"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        Permission Sets ({sourceUserDetails.permissionSets.length})
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <template if:true={isPermissionSetsSectionExpanded}>
+                                        <div class="slds-card__body slds-card__body_inner">
+                                            <template if:true={hasPermissionSets}>
+                                                <div class="slds-grid slds-wrap slds-gutters_x-small">
+                                                    <template for:each={sourceUserDetails.permissionSets}
+                                                        for:item="permSet">
+                                                        <div key={permSet.name}
+                                                            class="slds-col slds-size_1-of-3 slds-p-bottom_x-small">
+                                                            <div class="slds-box slds-box_x-small slds-theme_shade">
+                                                                <div class="slds-text-body_small slds-text-color_weak">
+                                                                    {permSet.type}</div>
+                                                                <div class="slds-text-body_regular slds-truncate"
+                                                                    title={permSet.label}>{permSet.label}</div>
+                                                                <div class="slds-text-body_small slds-text-color_weak">
+                                                                    {permSet.name}</div>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <template if:false={hasPermissionSets}>
+                                                <div class="slds-text-align_center slds-p-vertical_medium">
+                                                    <lightning-icon icon-name="utility:info" size="small"
+                                                        class="slds-m-right_small"></lightning-icon>
+                                                    <span class="slds-text-color_weak">No permission sets
+                                                        assigned</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Public Groups Section -->
+                                <div class="slds-card slds-m-bottom_medium">
+                                    <div class="slds-card__header">
+                                        <header class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:groups"
+                                                    size="small"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    <button
+                                                        class="slds-button slds-button_reset slds-text-heading_small"
+                                                        data-section="publicGroups" onclick={toggleSection}>
+                                                        <template if:true={isPublicGroupsSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevrondown"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        <template if:false={isPublicGroupsSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevronright"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        Public Groups ({sourceUserDetails.publicGroups.length})
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <template if:true={isPublicGroupsSectionExpanded}>
+                                        <div class="slds-card__body slds-card__body_inner">
+                                            <template if:true={hasPublicGroups}>
+                                                <div class="slds-grid slds-wrap slds-gutters_x-small">
+                                                    <template for:each={sourceUserDetails.publicGroups}
+                                                        for:item="group">
+                                                        <div key={group.name}
+                                                            class="slds-col slds-size_1-of-3 slds-p-bottom_x-small">
+                                                            <div
+                                                                class="slds-box slds-box_x-small slds-theme_alt-inverse">
+                                                                <div class="slds-text-body_small slds-text-color_weak">
+                                                                    {group.type}</div>
+                                                                <div class="slds-text-body_regular slds-truncate"
+                                                                    title={group.name}>{group.name}</div>
+                                                                <template if:true={group.developerName}>
+                                                                    <div
+                                                                        class="slds-text-body_small slds-text-color_weak">
+                                                                        {group.developerName}</div>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <template if:false={hasPublicGroups}>
+                                                <div class="slds-text-align_center slds-p-vertical_medium">
+                                                    <lightning-icon icon-name="utility:info" size="small"
+                                                        class="slds-m-right_small"></lightning-icon>
+                                                    <span class="slds-text-color_weak">No public groups assigned</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Locale & Preferences Section -->
+                                <div class="slds-card slds-m-bottom_medium">
+                                    <div class="slds-card__header">
+                                        <header class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:world" size="small"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    <button
+                                                        class="slds-button slds-button_reset slds-text-heading_small"
+                                                        data-section="localeInfo" onclick={toggleSection}>
+                                                        <template if:true={isLocaleInfoSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevrondown"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        <template if:false={isLocaleInfoSectionExpanded}>
+                                                            <lightning-icon icon-name="utility:chevronright"
+                                                                size="x-small" class="slds-m-right_x-small">
+                                                            </lightning-icon>
+                                                        </template>
+                                                        Locale & Preferences
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <template if:true={isLocaleInfoSectionExpanded}>
+                                        <div class="slds-card__body slds-card__body_inner">
+                                            <div class="slds-grid slds-wrap slds-gutters_small">
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Locale</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.localeInfo.localeSidKey}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Language</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.localeInfo.languageLocaleKey}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Time
+                                                            Zone</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.localeInfo.timeZoneSidKey}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Email
+                                                            Encoding</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.localeInfo.emailEncodingKey}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <template if:true={sourceUserDetails.localeInfo.communityNickname}>
+                                                    <div class="slds-col slds-size_1-of-3">
+                                                        <div class="slds-form-element">
+                                                            <label
+                                                                class="slds-form-element__label slds-text-body_small">Community
+                                                                Nickname</label>
+                                                            <div class="slds-form-element__control">
+                                                                <span
+                                                                    class="slds-text-body_regular">{sourceUserDetails.localeInfo.communityNickname}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <div class="slds-col slds-size_1-of-3">
+                                                    <div class="slds-form-element">
+                                                        <label
+                                                            class="slds-form-element__label slds-text-body_small">Digest
+                                                            Frequency</label>
+                                                        <div class="slds-form-element__control">
+                                                            <span
+                                                                class="slds-text-body_regular">{sourceUserDetails.localeInfo.digestFrequency}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                            </div>
+                        </template>
+                    </div>
+
+                    <footer class="slds-modal__footer custom-modal-footer slds-theme_shade">
+                        <div class="slds-grid slds-grid_align-spread">
+                            <div class="slds-col">
+                                <template if:true={isFreeze}>
+                                    <lightning-badge label="Freeze & Clone Mode" variant="warning">
+                                    </lightning-badge>
+                                </template>
+                                <template if:false={isFreeze}>
+                                    <lightning-badge label="Clone Mode" variant="success">
+                                    </lightning-badge>
+                                </template>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <lightning-button label="Cancel" onclick={closeModal}
+                                    class="slds-m-right_medium custom-button-secondary">
+                                </lightning-button>
+                                <template if:true={isFreeze}>
+                                    <lightning-button label="Freeze & Clone User" variant="brand"
+                                        onclick={handleCloneUser} icon-name="utility:clone"
+                                        class="custom-button-primary">
+                                    </lightning-button>
+                                </template>
+                                <template if:false={isFreeze}>
+                                    <lightning-button label="Clone User" variant="brand" onclick={handleCloneUser}
+                                        icon-name="utility:clone" class="custom-button-primary">
+                                    </lightning-button>
+                                </template>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- History Modal -->
+        <template if:true={showHistory}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                         <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeHistoryModal}>
+                             <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                             <span class="slds-assistive-text">Close</span>
+                         </button>
+                         <h2 id="history-modal-heading" class="slds-modal__title slds-hyphenate">User Clone History</h2>
+                     </header>
+                     <div class="slds-modal__content slds-p-around_medium" id="history-modal-content">
+                        <template if:true={isLoadingHistory}>
+                            <div class="slds-align_absolute-center slds-p-around_large">
+                                <lightning-spinner alternative-text="Loading history..."  style="z-index: 10000;" size="medium"></lightning-spinner>
+                            </div>
+                        </template>
+                        
+                        <template if:true={historyError}>
+                            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                                <span class="slds-assistive-text">Error</span>
+                                <h2>Error loading history: {historyError}</h2>
+                            </div>
+                        </template>
+                        
+                        <template if:false={isLoadingHistory}>
+                            <template if:true={hasHistoryData}>
+                                <div class="slds-scrollable_y" style="height: 400px;">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Source User">Source User</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Cloned User">Cloned User</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Clone Date">Clone Date</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Actions">Actions</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={cloneHistory} for:item="historyItem">
+                                                <tr key={historyItem.id} class="slds-hint-parent">
+                                                    <td data-label="Source User">
+                                                        <div class="slds-truncate" title={historyItem.sourceUserName}>
+                                                            {historyItem.sourceUserName}
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Cloned User">
+                                                        <div class="slds-truncate" title={historyItem.clonedUserName}>
+                                                            {historyItem.clonedUserName}
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Clone Date">
+                                                        <div class="slds-truncate">
+                                                            <lightning-formatted-date-time value={historyItem.clonedDate} 
+                                                                year="numeric" month="short" day="2-digit" 
+                                                                hour="2-digit" minute="2-digit">
+                                                            </lightning-formatted-date-time>
+                                                        </div>
+                                                    </td>
+                                                    <td data-label="Actions">
+                                                        <lightning-button-menu alternative-text="Show menu" 
+                                                            menu-alignment="right" icon-size="x-small">
+                                                            <lightning-menu-item value={historyItem.clonedUserId} 
+                                                                label="View Cloned User" 
+                                                                onclick={navigateToClonedUser}>
+                                                            </lightning-menu-item>
+                                                        </lightning-button-menu>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                            
+                            <template if:false={hasHistoryData}>
+                                <div class="slds-align_absolute-center slds-p-around_large">
+                                    <div class="slds-text-heading_medium slds-text-color_weak">
+                                        No clone history found.
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeHistoryModal}>Close</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- License Compatibility Confirmation Modal -->
+    <template if:true={showLicenseCompatibilityModal}>
+        <div class="slds-backdrop slds-backdrop_open" style="z-index: 10000;"></div>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="license-modal-heading" aria-modal="true" aria-describedby="license-modal-content" style="z-index: 10001;">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="license-modal-heading" class="slds-modal__title slds-hyphenate">License Compatibility Issue</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="license-modal-content">
+                        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                            <span class="slds-assistive-text">Warning</span>
+                            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Warning">
+                                <lightning-icon icon-name="utility:warning" alternative-text="Warning" size="small"></lightning-icon>
+                            </span>
+                            <h2>Profile License Incompatibility Detected</h2>
+                        </div>
+                        
+                        <div class="slds-p-top_medium">
+                            <p class="slds-text-body_regular slds-p-bottom_small">
+                                The source user's profile <strong>"{licenseCompatibilityData.sourceProfileName}"</strong> is not compatible with the target user's license.
+                            </p>
+                            <p class="slds-text-body_regular slds-p-bottom_small">
+                                The target user will keep their current profile <strong>"{licenseCompatibilityData.targetProfileName}"</strong>.
+                            </p>
+                            <p class="slds-text-body_regular slds-p-bottom_medium">
+                                Would you like to proceed with cloning other permissions (user permissions, roles, permission sets, etc.) without changing the profile?
+                            </p>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={handleLicenseCompatibilityCancel}>Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={handleLicenseCompatibilityProceed}>Proceed Without Profile</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Analytics Dashboard 
+           Analytics Dashboard 
+            <div class="slds-p-top_large analytics-container">
+                <c-user-clone-analytics></c-user-clone-analytics>
+            </div>
+            -->
+
+    </lightning-card>
+    
+    <!-- Phase 1 Modals: Enhanced Compare View Modal -->
+    <template if:true={showCompareModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="compare-modal-heading" aria-modal="true" aria-describedby="compare-modal-content">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeCompareModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="compare-modal-heading" class="slds-modal__title slds-hyphenate">Compare Users</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="compare-modal-content">
+                    <!-- User Selection Section -->
+                    <div class="compare-header slds-m-bottom_large">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <!-- Source User Selection -->
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="compare-source-user">
+                                        <lightning-icon icon-name="utility:user" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                        Source User
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-combobox
+                                            name="compareSourceUser"
+                                            label="Select Source User"
+                                            value={compareSourceUserId}
+                                            placeholder="Choose a source user..."
+                                            options={userOptions}
+                                            onchange={handleCompareSourceUserChange}
+                                            variant="label-hidden"
+                                            class="enhanced-combobox">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Target User Selection -->
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label" for="compare-target-user">
+                                        <lightning-icon icon-name="utility:user" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                        Target User
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-combobox
+                                            name="compareTargetUser"
+                                            label="Select Target User"
+                                            value={compareTargetUserId}
+                                            placeholder="Choose a target user..."
+                                            options={userOptions}
+                                            onchange={handleCompareTargetUserChange}
+                                            variant="label-hidden"
+                                            class="enhanced-combobox">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Compare Button -->
+                        <div class="slds-m-top_medium slds-text-align_center">
+                            <lightning-button
+                                variant="brand"
+                                label="Compare Users"
+                                onclick={performComparison}
+                                disabled={isLoadingCompare}
+                                class="compare-action-button">
+                            </lightning-button>
+                        </div>
+                        
+                        <!-- Summary Chips -->
+                        <template if:true={compareResult}>
+                            <div class="summary-chips slds-m-top_large" role="region" aria-label="Comparison Summary">
+                                <div class="slds-grid slds-wrap slds-gutters_small">
+                                    <div class="slds-col">
+                                        <div class="summary-chip summary-chip_added">
+                                            <lightning-icon icon-name="utility:add" size="x-small" class="chip-icon"></lightning-icon>
+                                            <span class="chip-count">{addedCount}</span>
+                                            <span class="chip-label">Will Add</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <div class="summary-chip summary-chip_removed">
+                                            <lightning-icon icon-name="utility:dash" size="x-small" class="chip-icon"></lightning-icon>
+                                            <span class="chip-count">{removedCount}</span>
+                                            <span class="chip-label">Will Remove</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <div class="summary-chip summary-chip_changed">
+                                            <lightning-icon icon-name="utility:swap" size="x-small" class="chip-icon"></lightning-icon>
+                                            <span class="chip-count">{changedCount}</span>
+                                            <span class="chip-label">Will Change</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <div class="summary-chip summary-chip_unchanged">
+                                            <lightning-icon icon-name="utility:check" size="x-small" class="chip-icon"></lightning-icon>
+                                            <span class="chip-count">{unchangedCount}</span>
+                                            <span class="chip-label">Unchanged</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <div class="summary-chip summary-chip_total">
+                                            <lightning-icon icon-name="utility:layers" size="x-small" class="chip-icon"></lightning-icon>
+                                            <span class="chip-count">{totalCount}</span>
+                                            <span class="chip-label">Total</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <!-- Loading Spinner -->
+                    <template if:true={isLoadingCompare}>
+                        <div class="loading-state slds-text-align_center slds-p-vertical_large">
+                            <lightning-spinner alternative-text="Comparing users..." size="medium"></lightning-spinner>
+                            <p class="slds-m-top_small slds-text-body_regular">Analyzing permissions and differences...</p>
+                        </div>
+                    </template>
+                    
+                    <!-- Comparison Results -->
+                    <template if:true={compareResult}>
+                        <div class="comparison-results">
+                            <!-- Overview Section -->
+                            <div class="slds-box slds-theme_info slds-m-bottom_medium">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                                    <div class="slds-col slds-grow">
+                                        <h2 class="slds-text-heading_medium slds-m-bottom_small">
+                                            <lightning-icon icon-name="utility:preview" size="small" class="slds-m-right_small"></lightning-icon>
+                                            User Cloning Preview
+                                        </h2>
+                                        <div class="slds-grid slds-wrap slds-gutters_medium">
+                                            <div class="slds-col slds-size_2-of-3">
+                                                <p class="slds-text-body_regular slds-m-bottom_small">
+                                                    This preview shows all permission differences between the <strong>source user</strong> and <strong>target user</strong>. 
+                                                    When you proceed with cloning, the target user's permissions will be updated to match the source user exactly.
+                                                </p>
+                                                <div class="slds-grid slds-wrap slds-gutters_small slds-m-top_small">
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <div class="slds-media slds-media_small">
+                                                            <div class="slds-media__figure">
+                                                                <lightning-icon icon-name="utility:user" size="x-small" variant="brand"></lightning-icon>
+                                                            </div>
+                                                            <div class="slds-media__body">
+                                                                <p class="slds-text-body_small">
+                                                                    <strong>Source:</strong> {selectedUserName}<br/>
+                                                                    <span class="slds-text-color_weak">Permissions to copy from</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <div class="slds-media slds-media_small">
+                                                            <div class="slds-media__figure">
+                                                                <lightning-icon icon-name="utility:user" size="x-small" variant="warning"></lightning-icon>
+                                                            </div>
+                                                            <div class="slds-media__body">
+                                                                <p class="slds-text-body_small">
+                                                                    <strong>Target:</strong> {selectedTargetUserName}<br/>
+                                                                    <span class="slds-text-color_weak">Permissions to update</span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-3">
+                                                <div class="slds-box slds-theme_warning slds-text-align_center">
+                                                    <lightning-icon icon-name="utility:warning" size="small" class="slds-m-bottom_x-small"></lightning-icon>
+                                                    <h4 class="slds-text-heading_small slds-m-bottom_x-small">Important</h4>
+                                                    <p class="slds-text-body_small">
+                                                        This action will modify the target user's permissions. 
+                                                        Review all changes carefully before proceeding.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Tabs for Different Permission Types -->
+                            <div class="slds-tabs_default" role="tablist">
+                                <ul class="slds-tabs_default__nav" role="tablist">
+                                    <li class="slds-tabs_default__item" role="presentation">
+                                        <a class="slds-tabs_default__link" href="#" role="tab" tabindex="0" aria-selected={isPermissionSetsTabActive} aria-controls="permission-sets-tab" id="permission-sets-tab-id" onclick={handlePermissionSetsTab}>
+                                            <lightning-icon icon-name="utility:permission_sets" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            Permission Sets
+                                            <template if:true={permissionSetsCount}>
+                                                <span class="tab-count">({permissionSetsCount})</span>
+                                            </template>
+                                        </a>
+                                    </li>
+                                    <li class="slds-tabs_default__item" role="presentation">
+                                        <a class="slds-tabs_default__link" href="#" role="tab" tabindex="-1" aria-selected={isPermissionSetGroupsTabActive} aria-controls="permission-set-groups-tab" id="permission-set-groups-tab-id" onclick={handlePermissionSetGroupsTab}>
+                                            <lightning-icon icon-name="utility:groups" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            Permission Set Groups
+                                            <template if:true={permissionSetGroupsCount}>
+                                                <span class="tab-count">({permissionSetGroupsCount})</span>
+                                            </template>
+                                        </a>
+                                    </li>
+                                    <li class="slds-tabs_default__item" role="presentation">
+                                        <a class="slds-tabs_default__link" href="#" role="tab" tabindex="-1" aria-selected={isUserPermissionsTabActive} aria-controls="user-permissions-tab" id="user-permissions-tab-id" onclick={handleUserPermissionsTab}>
+                                            <lightning-icon icon-name="utility:user" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            User Permissions
+                                            <template if:true={userPermissionsCount}>
+                                                <span class="tab-count">({userPermissionsCount})</span>
+                                            </template>
+                                        </a>
+                                    </li>
+                                    <li class="slds-tabs_default__item" role="presentation">
+                                        <a class="slds-tabs_default__link" href="#" role="tab" tabindex="-1" aria-selected={isProfileRoleTabActive} aria-controls="profile-role-tab" id="profile-role-tab-id" onclick={handleProfileRoleTab}>
+                                            <lightning-icon icon-name="utility:profile" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                            Profile & Role
+                                            <template if:true={profileRoleCount}>
+                                                <span class="tab-count">({profileRoleCount})</span>
+                                            </template>
+                                        </a>
+                                    </li>
+                                </ul>
+                                
+                                <!-- Controls Row -->
+                                <div class="controls-row slds-p-around_small slds-border_bottom">
+                                    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                        <div class="slds-col">
+                                            <div class="slds-grid slds-grid_align-start slds-grid_vertical-align-center slds-gutters_small">
+                                                <!-- Search -->
+                                                <div class="slds-col">
+                                                    <lightning-input
+                                            type="search"
+                                            label="Search results"
+                                            variant="label-hidden"
+                                            placeholder="Search within results..."
+                                            value={compareSearchTerm}
+                                            onchange={handleSearchChange}
+                                            class="search-input">
+                                        </lightning-input>
+                                                </div>
+                                                <!-- Sort -->
+                                                <div class="slds-col">
+                                                    <lightning-combobox
+                                                        name="sortBy"
+                                                        label="Sort by"
+                                                        variant="label-hidden"
+                                                        value={sortBy}
+                                                        placeholder="Sort by..."
+                                                        options={sortOptions}
+                                                        onchange={handleSortChange}
+                                                        class="sort-combobox">
+                                                    </lightning-combobox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-no-flex">
+                                            <div class="slds-grid slds-grid_align-end slds-grid_vertical-align-center slds-gutters_small">
+                                                <!-- Differences Only Toggle -->
+                                                <div class="slds-col">
+                                                    <lightning-input
+                                                        type="toggle"
+                                                        label="Show differences only"
+                                                        checked={showDifferencesOnly}
+                                                        onchange={handleDifferencesOnlyToggle}
+                                                        class="differences-toggle">
+                                                    </lightning-input>
+                                                </div>
+                                                <!-- Expand/Collapse All -->
+                                                <div class="slds-col">
+                                                    <lightning-button
+                                                        variant="neutral"
+                                                        label={expandCollapseLabel}
+                                                        onclick={handleExpandCollapseAll}
+                                                        icon-name={expandCollapseIcon}
+                                                        class="expand-collapse-button">
+                                                    </lightning-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Tab Content -->
+                                <div class="slds-tabs_default__content" role="tabpanel" aria-labelledby="permission-sets-tab-id" id="permission-sets-tab">
+                                    <template if:true={isPermissionSetsTabActive}>
+                                        <!-- Permission Sets Help Section -->
+                                        <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                                                <div class="slds-col slds-grow">
+                                                    <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                        <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                                        Understanding Permission Set Changes
+                                                    </h3>
+                                                    <div class="slds-grid slds-wrap slds-gutters_small">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:add" size="x-small" variant="success"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>ADDED:</strong> Permission sets that will be assigned to the target user (currently only on source user)</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:dash" size="x-small" variant="error"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>REMOVED:</strong> Permission sets that will be unassigned from the target user (currently only on target user)</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:check" size="x-small" variant="inverse"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>UNCHANGED:</strong> Permission sets already assigned to both users (no action needed)</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <c-compare-results-list 
+                                            items={filteredPermissionSets}
+                                            item-type="Permission Set"
+                                            search-term={compareSearchTerm}
+                                            show-differences-only={showDifferencesOnly}
+                                            expanded={expandAllResults}
+                                            onitemaction={handleItemAction}>
+                                        </c-compare-results-list>
+                                    </template>
+                                </div>
+                                
+                                <div class="slds-tabs_default__content" role="tabpanel" aria-labelledby="permission-set-groups-tab-id" id="permission-set-groups-tab">
+                                    <template if:true={isPermissionSetGroupsTabActive}>
+                                        <!-- Permission Set Groups Help Section -->
+                                        <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                                                <div class="slds-col slds-grow">
+                                                    <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                        <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                                        Understanding Permission Set Group Changes
+                                                    </h3>
+                                                    <div class="slds-grid slds-wrap slds-gutters_small">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:add" size="x-small" variant="success"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>ADDED:</strong> Permission set groups that will be assigned to the target user</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:dash" size="x-small" variant="error"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>REMOVED:</strong> Permission set groups that will be unassigned from the target user</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:check" size="x-small" variant="inverse"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>UNCHANGED:</strong> Permission set groups already assigned to both users</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <c-compare-results-list 
+                                            items={filteredPermissionSetGroups}
+                                            item-type="Permission Set Group"
+                                            search-term={compareSearchTerm}
+                                            show-differences-only={showDifferencesOnly}
+                                            expanded={expandAllResults}
+                                            onitemaction={handleItemAction}>
+                                        </c-compare-results-list>
+                                    </template>
+                                </div>
+                                
+                                <div class="slds-tabs_default__content" role="tabpanel" aria-labelledby="user-permissions-tab-id" id="user-permissions-tab">
+                                    <template if:true={isUserPermissionsTabActive}>
+                                        <!-- User Permissions Help Section -->
+                                        <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                                                <div class="slds-col slds-grow">
+                                                    <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                        <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                                        Understanding User Permission Changes
+                                                    </h3>
+                                                    <p class="slds-text-body_small slds-m-bottom_x-small">
+                                                        These are individual user permissions that differ between the source and target users. 
+                                                        The target user's permissions will be updated to match the source user's settings.
+                                                    </p>
+                                                    <div class="slds-grid slds-wrap slds-gutters_small">
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:change" size="x-small" variant="warning"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>CHANGED:</strong> Permission values that will be updated on the target user</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:check" size="x-small" variant="inverse"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>UNCHANGED:</strong> Permissions that are already identical between users</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <c-compare-results-list 
+                                            items={filteredUserPermissions}
+                                            item-type="User Permission"
+                                            search-term={compareSearchTerm}
+                                            show-differences-only={showDifferencesOnly}
+                                            expanded={expandAllResults}
+                                            onitemaction={handleItemAction}>
+                                        </c-compare-results-list>
+                                    </template>
+                                </div>
+                                
+                                <div class="slds-tabs_default__content" role="tabpanel" aria-labelledby="profile-role-tab-id" id="profile-role-tab">
+                                    <template if:true={isProfileRoleTabActive}>
+                                        <!-- Profile & Role Help Section -->
+                                        <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                                                <div class="slds-col slds-grow">
+                                                    <h3 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                        <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                                        Understanding Profile & Role Changes
+                                                    </h3>
+                                                    <p class="slds-text-body_small slds-m-bottom_x-small">
+                                                        Profile and Role assignments that differ between users. The target user's profile and role will be updated to match the source user.
+                                                    </p>
+                                                    <div class="slds-grid slds-wrap slds-gutters_small">
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:change" size="x-small" variant="warning"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>CHANGED:</strong> Profile or Role that will be updated on the target user</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <div class="slds-media slds-media_small">
+                                                                <div class="slds-media__figure">
+                                                                    <lightning-icon icon-name="utility:check" size="x-small" variant="inverse"></lightning-icon>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <p class="slds-text-body_small"><strong>UNCHANGED:</strong> Profile and Role are already identical between users</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <c-compare-results-list 
+                                            items={filteredProfileRole}
+                                            item-type="Profile & Role"
+                                            search-term={compareSearchTerm}
+                                            show-differences-only={showDifferencesOnly}
+                                            expanded={expandAllResults}
+                                            onitemaction={handleItemAction}>
+                                        </c-compare-results-list>
+                                    </template>
+                                </div>
+                            </div>
+                            
+                            <!-- Empty State -->
+                            <template if:true={showEmptyState}>
+                                <div class="empty-state slds-text-align_center slds-p-vertical_large">
+                                    <lightning-icon icon-name="utility:info" size="large" variant="inverse" class="empty-state-icon"></lightning-icon>
+                                    <h3 class="slds-text-heading_medium slds-m-top_medium">No Differences Found</h3>
+                                    <p class="slds-text-body_regular slds-m-top_small slds-text-color_weak">
+                                        The selected users have identical permissions and settings.
+                                    </p>
+                                </div>
+                            </template>
+                            
+                            <!-- No Results State -->
+                            <template if:true={showNoResultsState}>
+                                <div class="no-results-state slds-text-align_center slds-p-vertical_large">
+                                    <lightning-icon icon-name="utility:search" size="large" variant="inverse" class="no-results-icon"></lightning-icon>
+                                    <h3 class="slds-text-heading_medium slds-m-top_medium">No Results Match Your Filters</h3>
+                                    <p class="slds-text-body_regular slds-m-top_small slds-text-color_weak">
+                                        Try adjusting your search terms or filters to see more results.
+                                    </p>
+                                    <lightning-button
+                                        variant="neutral"
+                                        label="Clear Filters"
+                                        onclick={handleClearFilters}
+                                        class="slds-m-top_medium">
+                                    </lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <div class="slds-grid slds-grid_align-spread">
+                        <div class="slds-col">
+                            <lightning-button variant="neutral" label="Close" onclick={closeCompareModal}></lightning-button>
+                        </div>
+                        <div class="slds-col slds-no-flex">
+                            <template if:true={compareResult}>
+                                <lightning-button 
+                                    variant="outline-brand" 
+                                    label="Export Results" 
+                                    onclick={handleExportResults}
+                                    icon-name="utility:download"
+                                    class="slds-m-right_small">
+                                </lightning-button>
+                                <lightning-button 
+                                    variant="brand" 
+                                    label="Clone Selected" 
+                                    onclick={handleCloneSelected}
+                                    disabled={noItemsSelected}
+                                    icon-name="utility:copy">
+                                </lightning-button>
+                            </template>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    
+    <!-- License Compatibility Assistant Modal -->
+    <template if:true={showLicenseAssistantModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="license-assistant-modal-heading" aria-modal="true">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeLicenseAssistantModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="license-assistant-modal-heading" class="slds-modal__title slds-hyphenate">License Compatibility Assistant</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={isLoadingCompatibleProfiles}>
+                        <div class="slds-text-align_center">
+                            <lightning-spinner alternative-text="Loading compatible profiles..." size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+                    
+                    <template if:false={isLoadingCompatibleProfiles}>
+                        <!-- Show content when compatible profiles are found -->
+                        <template if:true={hasCompatibleProfiles}>
+                            <div class="slds-m-bottom_medium">
+                                <p class="slds-text-body_regular">
+                                    The following profiles are compatible with the target user's license:
+                                </p>
+                            </div>
+                            
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label">Select Compatible Profile</label>
+                                <div class="slds-form-element__control">
+                                    <template for:each={compatibleProfiles} for:item="profile">
+                                        <div key={profile.profileId} class="slds-radio slds-m-bottom_small">
+                                            <input type="radio" id={profile.profileId} value={profile.profileId} name="compatibleProfile" onchange={handleCompatibleProfileSelection} />
+                                            <label class="slds-radio__label" for={profile.profileId}>
+                                                <span class="slds-radio_faux"></span>
+                                                <span class="slds-form-element__label">
+                                                    <strong>{profile.profileName}</strong>
+                                                    <template if:true={profile.isRecommended}>
+                                                        <lightning-badge label="Recommended" variant="success" class="slds-m-left_x-small"></lightning-badge>
+                                                    </template>
+                                                    <br/>
+                                                    <span class="slds-text-body_small slds-text-color_weak">{profile.reason}</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <!-- Show empty state when no compatible profiles are found -->
+                        <template if:false={hasCompatibleProfiles}>
+                            <div class="slds-illustration slds-illustration_small">
+                                <div class="slds-m-bottom_medium slds-text-align_center">
+                                    <lightning-icon icon-name="utility:warning" size="large" variant="warning"></lightning-icon>
+                                </div>
+                                <div class="slds-text-align_center">
+                                    <h3 class="slds-text-heading_medium slds-m-bottom_small">No Compatible Profiles Found</h3>
+                                    <p class="slds-text-body_regular slds-m-bottom_medium">
+                                        The source user's profile requires a different license type than the target user has. 
+                                        Profile cloning cannot be performed due to license incompatibility.
+                                    </p>
+                                    <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                                        <h4 class="slds-text-heading_small slds-m-bottom_x-small">What this means:</h4>
+                                        <ul class="slds-list_dotted slds-text-body_small">
+                                            <li>The source user has a different license type (e.g., Salesforce) than the target user (e.g., Chatter Only)</li>
+                                            <li>Profiles are tied to specific license types and cannot be mixed</li>
+                                            <li>You can still clone permission sets and other permissions that are compatible</li>
+                                        </ul>
+                                    </div>
+                                    <p class="slds-text-body_small slds-text-color_weak">
+                                        Consider upgrading the target user's license or selecting a different source user with a compatible license.
+                                    </p>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeLicenseAssistantModal}>Cancel</button>
+                    <template if:true={hasCompatibleProfiles}>
+                        <button class="slds-button slds-button_brand" onclick={applyCompatibleProfile} disabled={isLoadingCompatibleProfiles}>Apply Profile</button>
+                    </template>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+    
+    <!-- Dry-Run Preview Modal -->
+    <template if:true={isDryRunPreviewOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="dry-run-modal-heading" aria-modal="true">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeDryRunPreview}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="dry-run-modal-heading" class="slds-modal__title slds-hyphenate">Dry-Run Preview</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={isLoadingDryRun}>
+                        <div class="slds-text-align_center">
+                            <lightning-spinner alternative-text="Generating preview..." size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+                    
+                    <template if:false={isLoadingDryRun}>
+                        <div class="slds-m-bottom_medium">
+                            <p class="slds-text-body_regular">
+                                Preview of changes that will be made when cloning permissions:
+                            </p>
+                        </div>
+                        
+                        <template if:true={hasDryRunChanges}>
+                        <div class="slds-card">
+                            <div class="slds-card__header">
+                                <header class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="utility:preview" size="small"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h2 class="slds-card__header-title slds-text-heading_small">Planned Changes</h2>
+                                    </div>
+                                    <div class="slds-media__figure slds-media__figure_reverse">
+                                        <div class="slds-button-group" role="group">
+                                            <button class="slds-button slds-button_neutral slds-button_small" onclick={toggleSelectiveCloning}>
+                                                 <lightning-icon icon-name="utility:edit" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                                                 {selectiveCloneButtonLabel}
+                                             </button>
+                                            <template if:true={isSelectiveCloning}>
+                                                <button class="slds-button slds-button_outline-brand slds-button_small" onclick={selectAllPermissions}>
+                                                    Select All
+                                                </button>
+                                                <button class="slds-button slds-button_outline-brand slds-button_small" onclick={deselectAllPermissions}>
+                                                    Deselect All
+                                                </button>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="slds-card__body slds-card__body_inner">
+                                
+                                <!-- Selective Cloning Info Banner -->
+                                <template if:true={isSelectiveCloning}>
+                                    <div class="slds-box slds-box_xx-small slds-theme_info slds-m-bottom_medium">
+                                        <div class="slds-media slds-media_center">
+                                            <div class="slds-media__figure">
+                                                <lightning-icon icon-name="utility:info" size="x-small"></lightning-icon>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <p class="slds-text-body_small">
+                                                    <strong>Selective Mode:</strong> Choose which permissions to copy by checking the boxes below. 
+                                                    Selected: <strong>{selectedPermissionsCount}</strong> items
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                    <!-- Profile Changes -->
+                                <template if:true={dryRunResult.profileChange}>
+                                    <div class="slds-box slds-box_xx-small slds-theme_warning slds-m-bottom_small">
+                                        <div class="slds-media slds-media_center">
+                                            <template if:true={isSelectiveCloning}>
+                                                <div class="slds-media__figure">
+                                                    <div class="slds-form-element">
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-checkbox">
+                                                                <input type="checkbox" 
+                                                                       id="profile-change-checkbox" 
+                                                                       data-type="profileChange"
+                                                                       checked={selectedPermissions.profileChange}
+                                                                       onchange={handleSelectivePermissionChange} />
+                                                                <label class="slds-checkbox__label" for="profile-change-checkbox">
+                                                                    <span class="slds-checkbox_faux"></span>
+                                                                    <span class="slds-assistive-text">Select profile change</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <div class="slds-media__body">
+                                                <p><strong>Profile Change:</strong> {dryRunResult.profileChange.fromProfileName} → {dryRunResult.profileChange.toProfileName}</p>
+                                                <template if:false={dryRunResult.profileChange.licenseCompatible}>
+                                                    <p class="slds-text-color_error">⚠️ License incompatibility detected</p>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                
+                                <!-- Role Changes -->
+                                <template if:true={dryRunResult.roleChange}>
+                                    <div class="slds-box slds-box_xx-small slds-theme_info slds-m-bottom_small">
+                                        <div class="slds-media slds-media_center">
+                                            <template if:true={isSelectiveCloning}>
+                                                <div class="slds-media__figure">
+                                                    <div class="slds-form-element">
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-checkbox">
+                                                                <input type="checkbox" 
+                                                                       id="role-change-checkbox" 
+                                                                       data-type="roleChange"
+                                                                       checked={selectedPermissions.roleChange}
+                                                                       onchange={handleSelectivePermissionChange} />
+                                                                <label class="slds-checkbox__label" for="role-change-checkbox">
+                                                                    <span class="slds-checkbox_faux"></span>
+                                                                    <span class="slds-assistive-text">Select role change</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <div class="slds-media__body">
+                                                <p><strong>Role Change:</strong> {dryRunResult.roleChange.fromRoleName} → {dryRunResult.roleChange.toRoleName}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                    
+                                    <!-- Permission Set Additions -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_success">Permission Sets to Add:</p>
+                                        <template if:true={dryRunResult.addedPermissionSets}>
+                                            <template for:each={dryRunResult.addedPermissionSets} for:item="ps">
+                                                <div key={ps.id} class="slds-box slds-box_xx-small slds-theme_success slds-m-bottom_x-small">
+                                                    <div class="slds-media slds-media_center">
+                                                        <template if:true={isSelectiveCloning}>
+                                                            <div class="slds-media__figure">
+                                                                <div class="slds-form-element">
+                                                                    <div class="slds-form-element__control">
+                                                                        <div class="slds-checkbox">
+                                                                            <input type="checkbox" 
+                                                                                   id={ps.id}
+                                                                                   data-type="permissionSet"
+                                                                                   data-id={ps.id}
+                                                                                   onchange={handleSelectivePermissionChange} />
+                                                                            <label class="slds-checkbox__label" for={ps.id}>
+                                                                                <span class="slds-checkbox_faux"></span>
+                                                                                <span class="slds-assistive-text">Select {ps.label}</span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <div class="slds-media__body">
+                                                            <p>+ {ps.label}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={dryRunResult.addedPermissionSets}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Permission Set Removals -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_error">Permission Sets to Remove:</p>
+                                        <template if:true={dryRunResult.removedPermissionSets}>
+                                            <template for:each={dryRunResult.removedPermissionSets} for:item="ps">
+                                                <div key={ps.id} class="slds-box slds-box_xx-small slds-theme_error slds-m-bottom_x-small">
+                                                    <p>- {ps.label}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={dryRunResult.removedPermissionSets}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Permission Set Group Additions -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_success">Permission Set Groups to Add:</p>
+                                        <template if:true={dryRunResult.addedPermissionSetGroups}>
+                                            <template for:each={dryRunResult.addedPermissionSetGroups} for:item="psg">
+                                                <div key={psg.id} class="slds-box slds-box_xx-small slds-theme_success slds-m-bottom_x-small">
+                                                    <div class="slds-media slds-media_center">
+                                                        <template if:true={isSelectiveCloning}>
+                                                            <div class="slds-media__figure">
+                                                                <div class="slds-form-element">
+                                                                    <div class="slds-form-element__control">
+                                                                        <div class="slds-checkbox">
+                                                                            <input type="checkbox" 
+                                                                                   id={psg.id}
+                                                                                   data-type="permissionSetGroup"
+                                                                                   data-id={psg.id}
+                                                                                   onchange={handleSelectivePermissionChange} />
+                                                                            <label class="slds-checkbox__label" for={psg.id}>
+                                                                                <span class="slds-checkbox_faux"></span>
+                                                                                <span class="slds-assistive-text">Select {psg.label}</span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <div class="slds-media__body">
+                                                            <p>+ {psg.label}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={dryRunResult.addedPermissionSetGroups}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Permission Set Group Removals -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_error">Permission Set Groups to Remove:</p>
+                                        <template if:true={dryRunResult.removedPermissionSetGroups}>
+                                            <template for:each={dryRunResult.removedPermissionSetGroups} for:item="psg">
+                                                <div key={psg.id} class="slds-box slds-box_xx-small slds-theme_error slds-m-bottom_x-small">
+                                                    <p>- {psg.label}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={dryRunResult.removedPermissionSetGroups}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Public Group Additions -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_success">Public Groups to Add:</p>
+                                        <template if:true={hasAddedPublicGroups}>
+                                            <template for:each={dryRunResult.addedPublicGroups} for:item="group">
+                                                <div key={group.id} class="slds-box slds-box_xx-small slds-theme_success slds-m-bottom_x-small">
+                                                    <p>+ {group.name}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={hasAddedPublicGroups}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Public Group Removals -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_error">Public Groups to Remove:</p>
+                                        <template if:true={hasRemovedPublicGroups}>
+                                            <template for:each={dryRunResult.removedPublicGroups} for:item="group">
+                                                <div key={group.id} class="slds-box slds-box_xx-small slds-theme_error slds-m-bottom_x-small">
+                                                    <p>- {group.name}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={hasRemovedPublicGroups}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Queue Additions -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_success">Queues to Add:</p>
+                                        <template if:true={hasAddedQueues}>
+                                            <template for:each={dryRunResult.addedQueues} for:item="queue">
+                                                <div key={queue.id} class="slds-box slds-box_xx-small slds-theme_success slds-m-bottom_x-small">
+                                                    <p>+ {queue.name}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={hasAddedQueues}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Queue Removals -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_error">Queues to Remove:</p>
+                                        <template if:true={hasRemovedQueues}>
+                                            <template for:each={dryRunResult.removedQueues} for:item="queue">
+                                                <div key={queue.id} class="slds-box slds-box_xx-small slds-theme_error slds-m-bottom_x-small">
+                                                    <p>- {queue.name}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={hasRemovedQueues}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- User Permission Changes -->
+                                    <div class="slds-m-bottom_small">
+                                        <p class="slds-text-heading_small slds-text-color_warning">User Permission Changes:</p>
+                                        <template if:true={dryRunResult.userPermissionChanges}>
+                                            <template for:each={dryRunResult.userPermissionChanges} for:item="permission">
+                                                <div key={permission.fieldName} class="slds-box slds-box_xx-small slds-theme_warning slds-m-bottom_x-small">
+                                                    <p><strong>{permission.label}:</strong> {permission.fromValue} → {permission.toValue}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                        <template if:false={dryRunResult.userPermissionChanges}>
+                                            <div class="slds-box slds-box_xx-small slds-theme_shade slds-m-bottom_x-small">
+                                                <p class="slds-text-color_weak">None</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <template if:false={hasDryRunChanges}>
+                            <div class="slds-box slds-box_small slds-theme_info">
+                                <p class="slds-text-align_center">No changes detected. The target user already has the same permissions as the source user.</p>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeDryRunPreview}>Cancel</button>
+                    <template if:true={hasDryRunChanges}>
+                        <template if:true={isSelectiveCloning}>
+                            <!-- Selective Cloning Options -->
+                            <div class="slds-form-element slds-m-right_medium">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-checkbox">
+                                        <input type="checkbox" 
+                                               id="remove-unselected-checkbox" 
+                                               data-type="removeUnselected"
+                                               checked={selectedPermissions.removeUnselectedPermissions}
+                                               onchange={handleSelectivePermissionChange} />
+                                        <label class="slds-checkbox__label" for="remove-unselected-checkbox">
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label">Remove unselected permissions</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="slds-button slds-button_brand" 
+                                      onclick={proceedWithSelectiveCloning}
+                                      disabled={noPermissionsSelected}>
+                                  Clone Selected ({selectedPermissionsCount})
+                              </button>
+                        </template>
+                        <template if:false={isSelectiveCloning}>
+                            <!-- Standard Cloning Options -->
+                            <template if:true={hasRemovals}>
+                                <button class="slds-button slds-button_outline-brand" onclick={proceedWithoutRemovals}>Proceed Without Removals</button>
+                            </template>
+                            <button class="slds-button slds-button_brand" onclick={proceedWithCloning}>Clone Completely</button>
+                        </template>
+                    </template>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

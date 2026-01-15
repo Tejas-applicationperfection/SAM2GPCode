@@ -1,0 +1,497 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 10-14-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<apex:page controller="UserProfileAcces"  sidebar="false" showHeader="true" docType="HTML-5.0" standardStylesheets="false" lightningStyleSheets="true">
+ <apex:outputPanel rendered="{!hasAccess}">
+    <head>
+        <title>User Profile Access</title>
+        <meta charset="utf-8" />
+        <!-- <link href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" rel="stylesheet"/> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQuery, 'jQuery/bootstrap/bootstrap.min.js')}"/>
+        <apex:slds />
+    </head>
+    <style type="text/css">
+
+        .slds-scope p{
+        
+        padding: 2px;
+        
+        }
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:20px;
+            position: fixed;
+            font-size: 100%;
+            /* These are the 3 css properties you will need to change so the popup 
+            displays in the center of the screen. First set the width. Then set 
+            margin-left to negative half of what the width is. You can add 
+            the height property for a fixed size pop up if you want.*/
+            width: 600px;
+            margin-left: -250px;
+            top:100px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+        body button:hover,body .btn:hover,body .btnCancel:hover,body .menuButton .menuButtonButton:hover { background-position:right 0px; background-color: #f3f4f6; box-shadow: -1px 2px 5px rgba(81,41,10,0.15),0px 1px 1px rgba(81,41,10,0.15);  transform: translateY(0.125rem);   }
+        
+         body button:focus,body .btn:focus,body .btnCancel:focus,body .menuButton .menuButtonButton:focus {
+        box-shadow: rgba(72, 35, 7, .46) 0 0 0 4px, -6px 8px 10px rgba(81,41,10,0.1), 0px 2px 2px rgba(81,41,10,0.2);
+        }
+
+    </style>
+    <style>
+    .label-text {
+        display: inline-block;
+        white-space: nowrap;
+        
+    }
+        body input[type="radio"][disabled]:checked:after, body input[type="checkbox"][disabled]:checked:after, .slds-vf-scope input[type="radio"][disabled]:checked:after, .slds-vf-scope input[type="checkbox"][disabled]:checked:after {
+        border-color:blue;
+        }
+</style>
+
+    
+    
+<script>
+      window.addEventListener('load', function() {
+        
+        sysloadDropdown();
+    });
+    function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("fieldSearch");
+    console.log('Input:', input);
+    filter = input.value.toUpperCase();
+    console.log('Filter:', filter);
+    table = document.getElementById("fieldsTableBody");
+    console.log('Table:', table);
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            console.log('Text Value:', txtValue);
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                console.log('Text in if:', txtValue.toUpperCase());
+                console.log('Filter:', filter);
+                tr[i].style.display = "";
+            } else {
+                console.log('Text none');
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+function clearSearch() {
+        var input = document.getElementById("fieldSearch");
+        input.value = '';
+        searchTable(); // Trigger the search function to update the table display
+    }
+    
+    
+    
+    function expandForm() {
+        var outputPanel = document.querySelector(".selectO");
+        
+        var outputPanel3 = document.querySelector(".butss");
+        var outputPanel2 = document.querySelector(".butss2");
+         var outputPanel4 = document.querySelector(".selectOT");
+        
+        var displayProperty = window.getComputedStyle(outputPanel).display;
+        var displayProperty2 = window.getComputedStyle(outputPanel2).display;
+        var displayProperty3 = window.getComputedStyle(outputPanel3).display;
+         var displayProperty4 = window.getComputedStyle(outputPanel4).display;
+        
+        console.log({outputPanel,outputPanel3,displayProperty});
+                     
+         if (outputPanel &&  outputPanel2 && outputPanel3 && outputPanel4) {
+             outputPanel.style.display = displayProperty === 'none' ? 'unset' : "none"; 
+             outputPanel2.style.display = displayProperty2 === 'none' ? 'flex' : "none"; 
+             outputPanel3.style.display = displayProperty3 === 'none' ? 'flex' : "none";
+             outputPanel4.style.display = displayProperty4 === 'none' ? 'unset' : "none";
+         }
+                
+      }
+    // add the CSS class to the labels
+    var labels = document.querySelectorAll('.label-text');
+    for (var i = 0; i < labels.length; i++) {
+        labels[i].classList.add('label-text');
+    }
+</script>
+    <body style="margin:10px;">
+    
+    <apex:form id="theForm">
+    <div class="slds-scope">
+    <!--    <div class="slds-page-header">-->
+        
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                <div class="slds-p-horizontal_small slds-size_1-of-1">
+                    <div class="slds-scope">
+                    <div class="slds-form-element">
+                       <table class="slds-table slds-table_bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <!-- Logo Column -->
+                                    <th style="text-align: left; background-color: transparent; width: 15%;">
+                                        <div class="slds-truncate" title="Application Perfection">
+                                            <apex:image id="theLogoImage" value="{!$Resource.logoApplicationPerfection}" width="200" height="20"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Description Column -->
+                                    <th style="background-color: transparent; text-align: left;">
+                                        <div class="slds-truncate">
+                                            <h2>
+                                                Review and edit multiple Profile and Permission Set Permissions Rights.  
+                                            </h2>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Button Group Column -->
+                                    <th style="background-color: transparent; width: 35%;">
+                                        <div style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px;">
+                                            <apex:commandLink value="Help/Training" action="{!openHelpTraining}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="FAQ's" action="{!openFAQ}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Request a feature/support" action="{!openContactUSLink}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                            <apex:commandLink value="Release Notes" action="{!openReleaseNotes}"  immediate="true" target="_blank" style="text-decoration:none; border: none;width: 180px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button--brand slds-not-selected"/>
+                                        </div>
+                                    </th>
+                                    
+                                    <!-- Security Logo -->
+                                    <th style="text-align: right; width: 10%; background-color: transparent;">
+                                        <div class="slds-truncate" title="Security & Access Manager">
+                                            <apex:image id="theImage" value="{!$Resource.logo}" width="150" height="20"/>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+
+        <!--</div>-->
+        <apex:outputPanel id="errorSection">
+            <apex:pageMessages />
+        </apex:outputPanel>
+        
+        
+            <div class="slds-p-horizontal_small slds-size_2-of-10 butss" style="margin-top: 36px;font-weight: bold;">
+                Type of permission:
+            </div>
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap butss" >
+            <div class="slds-p-horizontal_small slds-size_3-of-10 selectO" style="width: 50%">
+                <apex:selectList value="{!selectedPerm}" size="1" styleClass="slds-select selectO">
+                    <apex:selectOptions value="{!PermissionType}"/>
+                    <apex:actionSupport event="onchange" rerender="theForm, profilesTable" action="{!changePermType}" status="tableStatus"/>
+                </apex:selectList>
+            </div>
+        </div>
+        <div class="slds-p-horizontal_small slds-size_2-of-10 butss" style="margin-top: 36px;font-weight: bold;">
+            <strong>All PermissionSetGroups</strong>
+        </div>
+        <div class="demo-only demo-only--sizing slds-grid slds-wrap" style=" padding-top:10px;">
+            <div class="slds-p-horizontal_small slds-size_3-of-10" style="width: 50%">
+                <apex:selectList value="{!AllPSetGrp}" size="1" styleClass="slds-select">
+                    <apex:selectOptions value="{!PermissionGrpType}"/>
+                    <apex:actionSupport event="onchange" rerender="theForm, selectionTable" action="{!changePsetGrp}" status="tableStatus"/>
+                </apex:selectList>
+            </div>
+        </div>
+        
+                    
+        
+        <apex:outputPanel id="selectOptions" styleClass="selectOT">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap selectOT">
+                <div class="slds-size_1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 selectOT">
+                    <c:MultiselectPicklist leftLabel="Available Profiles/PermissionSets"
+                                           leftOption="{!remainingProfileList}"
+                                           leftOption1=""
+                                           rightLabel="Selected Profiles/PermissionSets"
+                                           rightOption="{!selectedProfileList}"
+                                           size="8"
+                                           width="250px"/>
+                    <!-- Main div of object template  -->
+                                    <div id="conditionalDiv">
+                                        <div id="subDiv" style="display: block;    padding: 10px;">
+                                            <!-- Button to Save Selection -->
+                                            <apex:commandButton value="Save Selection"  status="tableStatus" onclick="SysPerm_storeOptInLocalStor(); return false;" />
+                                            
+                                            <!-- Help Icon with Tooltip -->
+                                            <span class="help-icon" onmouseover="showTooltip(event)" onmouseout="hideTooltip(event)">
+                                                &#9432; <!-- Unicode character for information symbol -->
+                                            </span>
+                                            
+                                            <!-- Tooltip Container -->
+                                            <div class="tooltip" id="helpTooltip" style="display: none;"> <!-- Add style to hide tooltip by default -->
+                                                <p>Clicking 'Save Selection' will save your current selections to the storage for future use.</p>
+                                                <p><strong>How to Save Your Selection:</strong></p> 
+                                                <ul>
+                                                    <li><strong>Step 1:</strong> Choose profiles from the list.</li>
+                                                    <li><strong>Step 2:</strong> Add the selected profiles to the right box.</li>
+                                                    <li><strong>Step 3:</strong> Click the <em>'Save Selection'</em> button. You're all set!</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="subDiv2">
+                                            <!-- Dropdown to Select a Template-->
+                                            <select id="SystemplateDropdown" onchange="SysloadTemplateOptions(this.value);">
+                                                <option value="">Select a template</option>
+                                            </select> 
+                                            
+                                            <!-- Additional Buttons -->
+                                            <apex:commandButton value="Refresh" onclick="syncSpOptions()" />
+                                            <apex:commandButton value="Delete" onclick="sysDeleteSelectOptions()" />
+                                            
+                                            <!-- Hidden OutputText for Storing Data -->
+                                            <apex:outputText value="{!$Component.hiddenSelectedProfiles}" id="hiddenInputIdText" />
+                                        </div>
+                                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2 slds-grid slds-wrap slds-p-around_small slds-grid_vertical-align-end" style= "margin-top: 90px;">
+                    <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                        <apex:commandButton styleClass="slds-button slds-button--brand slds-not-selected butss2" 
+                                            action="{!Go}" 
+                                            value="Go" 
+                                            rerender="profilesTable,errorSection,selectOptions" 
+                                            status="tableStatus" 
+                                            style="text-decoration:none;width:244px;height: 40px; border: none; justify-content: center; appearance: button; background-color: #8694f4; background-image: linear-gradient(to bottom, #fff, #eceae787); border: 1px solid #d4d2d2; border-radius: 0.5rem; box-sizing: border-box; color: #444444; cursor: pointer; display: flex; font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;; font-weight: 700; line-height: 13px; outline: 2px solid transparent; padding: 0.6rem 1.5rem; text-align: center; text-transform: none; transition: all .1s cubic-bezier(.4, 0, .2, 1); -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; touch-action: manipulation; box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);"/>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-align_absolute-center slds-m-bottom_small">
+                        <apex:commandButton styleClass="slds-button slds-button_success slds-not-selected buts2" 
+                                            action="{!yesPopUp}" 
+                                            value="Select Permissions to Export to Excel" 
+                                            style="text-decoration:none;width:244px;height: 40px; border: none; justify-content: center; appearance: button; background-color: #8694f4; background-image: linear-gradient(to bottom, #fff, #eceae787); border: 1px solid #d4d2d2; border-radius: 0.5rem; box-sizing: border-box; color: #444444; cursor: pointer; display: flex; font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;; font-weight: 700; line-height: 13px; outline: 2px solid transparent; padding: 0.6rem 1.5rem; text-align: center; text-transform: none; transition: all .1s cubic-bezier(.4, 0, .2, 1); -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; touch-action: manipulation; box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);"/>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+          <!--              </div>
+            <div class="slds-p-horizontal_small slds-size_1-of-2">
+                <div class="slds-col" id="buttons" style="text-align: left; padding-left: 3rem; ">
+                    <br/><br/>
+                    <apex:commandButton styleClass="slds-button slds-button--brand slds-not-selected" action="{!Go}" value="Go" rerender="profilesTable,errorSection, selectOptions" status="tableStatus" style="text-decoration:none; border: none;width: 160px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);"/>
+                    <apex:commandButton styleClass="slds-button slds-button_success slds-button--brand slds-not-selected" action="{!Save}" value="Save" rerender="profilesTable,errorSection" status="tableStatus" style="width: 180px;"/>-->
+                    <br/><br/>
+                    <!--<apex:commandButton styleClass="slds-button slds-button_success slds-not-selected" action="{!ExportToExcel}" value="Export to Excel" style="width: 180px;"/>
+                    <apex:commandButton styleClass="slds-button slds-button_success slds-not-selected" action="{!yesPopUp}" value="Select Profile for Export to Excel" style="text-decoration:none;bottom: 31px; border: none;width: 160px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: flex;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);"/>
+                </div> -->
+                
+            
+           
+                
+        <br/><br/>
+        <apex:actionStatus id="tableStatus" layout="block">
+            <apex:facet name="start">
+                <p >
+                    <div class="slds-spinner_container slds-is-fixed">
+                        <div role="status" class="slds-spinner slds-spinner_large slds-spinner_brand">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </p>
+            </apex:facet>
+            <apex:facet name="stop"></apex:facet>
+        </apex:actionStatus> 
+           
+        <a href="javascript:void(0);" onclick="expandForm();" class="expand-link" style="text-decoration:none">
+                <i class="la la-expand expand-icon"></i> Filters(Hide/Show)
+            </a>
+                    
+    <div style="display: flex; align-items: center;">
+    <div style="margin-right: 1in;">
+        <apex:inputCheckbox value="{!isField1}" label="Description">
+            <p style="margin: 5px; display: inline-block; margin-left: 13px;">Show/Hide Uneditable Fields</p>
+            <apex:actionSupport event="onchange" action="{!UnEditToggel}" />
+        </apex:inputCheckbox> 
+    </div>
+  <!--  <div>
+        <apex:inputCheckbox value="{!showFields}" label="Description">
+            <p style="margin: 5px; display: inline-block; margin-left: 13px;">Show/hide Enabled permissions</p>
+            <apex:actionSupport event="onchange" action="{!updateFields}" />
+        </apex:inputCheckbox> 
+    </div>-->
+</div>
+   <!-- SEARCH FILTER CODE -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;" class="butss2">
+            <div style="display: flex; align-items: center;margin-left: 16px;">
+                <label for="fieldSearch" style="margin-right: 8px;"><strong>Search Fields :</strong></label>
+                <input type="text" id="fieldSearch" oninput="searchTable()" placeholder="Enter field name..." style="width: 50%; padding: 2px; border-radius: 10px;padding-left: 10px;" />
+                <!--<button type="button" onclick="clearSearch()" styleClass="b83" style=" width: 120px;height: 40px;justify-content: center; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer;display: inline-block;font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);">
+                    Clear
+                </button>-->
+            </div>
+        </div>
+
+        
+        <apex:outputPanel id="profilesTable">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                <div class="slds-p-horizontal_small slds-size_1-of-1">
+                    <apex:variable value="{!IF(selectedProfileIdList.size > 4, 20, 40)}" var="widField"/>
+                    <div class="slds-scrollable_x" style="height: 100%; width: 100%;">
+                        <div class="slds-table--header-fixed_container" style="height:950px;">
+                            <div class="slds-scrollable_y" style="height:100%;">
+                                <table class="slds-table slds-table_bordered slds-table_striped slds-table--header-fixed slds-table_fixed-layout">
+                                    <thead style="background: lightgrey;">
+                                        <tr class="slds-text-title_caps">
+                                            <th scope="col" style="width: {!widField}%; background-color: transparent;" >
+                                                <div class="slds-truncate slds-cell-fixed slds-p-left_large" title="Profile Name" style="width: {!widField}%;padding-left: 15px;">
+                                                    Profile Field Name<br/>&nbsp;
+                                                </div>
+                                            </th>
+                                            <apex:variable value="{!IF(selectedProfileIdList.size > 0, (100 - widField)/selectedProfileIdList.size, 70)}" var="index"/>
+                                            <apex:repeat value="{!selectedProfileIdList}" var="pr">
+                                                <th scope="col" style="width: {!widField}% background-color: transparent;">
+                                                    <div class="slds-align_absolute-center" style="width: {!index}%;" >
+                                                        <div class="slds-truncate slds-cell-fixed" title="Profile Name" style="width: {!index}%; text-align: center">
+                                                            <span style="white-space: normal;">
+                                                                <apex:outputlink value="/{!HTMLENCODE(pr)}"  target="_blank">
+                                                                    <apex:outputText value="{!HTMLENCODE(profileMap[pr]['Name'])}" escape="true"/>
+                                                                </apex:outputlink>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                            </apex:repeat>
+                                        </tr>
+                                         <tr style="margin-top:10px;" >
+                                            <th scope="col" style="width: {!widField}%;padding-left: 15px;"> Type: </th>
+                                            <apex:repeat value="{!selectedProfileIdList}" var="pr">
+                                                    <th scope="col" class="slds-text-align_center" style="width: {!widField}%"> 
+                                                       <apex:outputText value="{!IF(CONTAINS(pr,'00e'),'Profile','Permission Set')}" escape="true"/>
+                                                    </th>
+                                            </apex:repeat>
+                                        </tr>
+                                         
+                                    </thead>
+                                    <tbody id="fieldsTableBody">
+                                       
+                                         <apex:outputPanel rendered="{!isField1}" id="Proff">
+                                        <apex:repeat value="{!fieldNameUneditableList}" var="fieldName">
+                                            <tr>
+                                                <td  title="{!fieldNameLabelMap[fieldName][0]}" style="padding-left: 1rem; width: {!widField}%;background-color: #afade200;">
+                                                    <apex:outputText value="{!fieldNameLabelMap[fieldName][0]}" escape="true"/>
+                                                </td>
+                                                <apex:repeat value="{!selectedProfileIdList}" var="profileId">
+                                                    <td   data-label="Profile Name" style="width: {!index}%;background-color: #afade200;">
+                                                        <div class="slds-truncate slds-text-align_center" title="Profile Name">
+                                                            <apex:outputText value="{!profileMap2[profileId][fieldName]}" rendered="{!fieldNameLabelMap[fieldName][1] != 'boolean'}"/>
+                                                            <apex:inputCheckbox value="{!profileMap2[profileId][fieldName]}" rendered="{!fieldNameLabelMap[fieldName][1] == 'boolean'}" disabled="TRUE"/>
+                                                             
+                                                        </div>
+                                                    </td>
+                                                </apex:repeat>
+                                            </tr>
+                                        </apex:repeat>
+                                        </apex:outputPanel>
+                                        <apex:repeat value="{!fieldNameList2}" var="fieldName" >
+                                            <tr >
+                                                <td title="{!fieldNameLabelMap[fieldName][0]}" style="padding-left: 1rem; width: {!widField}%">
+                                                    <apex:outputText value="{!fieldNameLabelMap[fieldName][0]}" escape="true"/>
+                                                </td>
+                                                <apex:repeat value="{!selectedProfileIdList}" var="profileId">
+                                                    <td data-label="Profile Name" style="width: {!index}%;">
+                                                        <div class="slds-truncate slds-text-align_center" title="Profile Name">
+                                                            <apex:outputText value="{!profileMap[profileId][fieldName]}" rendered="{!fieldNameLabelMap[fieldName][1] != 'boolean'}"/>
+                                                            <apex:inputCheckbox value="{!profileMap[profileId][fieldName]}" onchange="checkboxChanged(this)" rendered="{!fieldNameLabelMap[fieldName][1] == 'boolean'}" disabled="TRUE"/> 
+                                                     <!--  <apex:inputCheckbox value="{!profileMapForUpdate[profileId][fieldName]}" styleClass="checkboxClass" /> -->
+                                                        </div>
+                                                    </td>
+                                                </apex:repeat>
+                                            </tr>
+                                        </apex:repeat>
+                                    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel id="tstpopup">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                <c:MultiselectPicklist leftLabel="Available Profiles/PermissionSets"
+                    leftOption="{!profList}"
+                    leftOption1=""
+                    rightLabel="Selected Profiles/PermissionSets"
+                    rightOption="{!selectedProfileExcel}"
+                    size="8"
+                    width="180px"/>
+                
+            
+                
+                <apex:actionStatus id="popupStatus" layout="block">
+                    <apex:facet name="start">
+                        <p >
+                            <div class="slds-spinner_container slds-is-fixed">
+                                <div role="status" class="slds-spinner slds-spinner_large slds-spinner_brand">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </p>
+                    </apex:facet>
+                    <apex:facet name="stop"></apex:facet>
+                </apex:actionStatus>
+                <apex:outputPanel id="erorrMessage">
+                    <apex:pageMessages />
+                </apex:outputPanel>
+                <div style="text-align: center">
+                    <br/>
+                    <apex:commandButton value="Export to Excel" action="{!SelectProfilesForExportToExcel}" rerender="tstpopup, erorrMessage, {!If(!displayPopup, 'exportToExcel', '')}" status="popupStatus"  style=" width: 245px;height: 50px; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer; font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);" styleClass="slds-button slds-button_success"/>
+                    <apex:commandButton value="Cancel" action="{!closePopup}" rerender="tstpopup, theForm" status="popupStatus"  style=" width: 160px;height: 50px; appearance: button; background-color: #8694f4;background-image: linear-gradient(to bottom, #fff, #eceae787);border: 1px solid #d4d2d2;border-radius: 0.5rem;box-sizing: border-box;color: #444444;column-gap: 1rem;cursor: pointer; font-family: ui-sans-serif,system-ui,-apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,sans-serif,&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;,&quot;Noto Color Emoji&quot;;font-size: 100%;flex: 1;font-weight: 700;line-height: 13px;margin: 3px;outline: 2px solid transparent;padding: 0.6rem 1.5rem;text-align: center;text-transform: none;transition: all .1s cubic-bezier(.4, 0, .2, 1);-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;touch-action: manipulation;box-shadow: -6px 8px 10px rgb(81 41 10 / 11%), 0 2px 2px rgb(81 41 10 / 10%);"  styleClass="slds-button slds-button_destructive"/>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel id="exportToExcel" rendered="{!selectedProfileExcel.size > 0}">
+                <script>
+                    callBackFunctionExportToExcel();
+                </script>
+            </apex:outputPanel>
+            <apex:actionFunction action="{!ExportToExcel}" name="callBackFunctionExportToExcel"/>
+        </apex:outputPanel>
+    </div>
+    </apex:form>
+</body>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!NOT(hasAccess)}">
+    <div style="text-align: center; margin-top: 100px;">
+        <h1 style="text-align:center; font-family:verdana; color:red;">
+            Sorry, you do not have access to System Permission .
+        </h1>
+        <p style="text-align:center; font-family:verdana;">
+            It looks like your current subscription does not include access to System Permission. To gain access, please purchase the feature by contacting our support team or visiting our [website](<a href="https://applicationperfection.com/contact/">ApplicationPerfection.com</a>). If you believe you should have access, please reach out to support for assistance.
+        </p>
+    </div>
+</apex:outputPanel>
+    <p style="text-align: center; font-size: 10px; font-weight: bold;">Security &amp; Access Manager Functionality Copyright © 2017, Application Perfection Ltd.</p> 
+    <p style="text-align: center; font-size: 10px; font-weight: bold;">All rights reserved.</p>
+    
+</apex:page>
