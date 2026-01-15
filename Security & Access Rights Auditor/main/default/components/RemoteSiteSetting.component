@@ -23,12 +23,5 @@
  !-->
 <!-- This page is not used anywhere in the org , earlier we were using this class for remotesite settings.thats why we haev commented this code..also cant delete this file because of the managed class-->
 <apex:component controller="RemoteSiteSettingController">
-    <!--
-    <apex:outputPanel layout="none" rendered="{!isRssPresent}">
-         when Remote Site Setting is present, show contents 
-        <apex:componentBody />
-    </apex:outputPanel>
-  -->
-    
-      
+    <apex:componentBody />
 </apex:component>

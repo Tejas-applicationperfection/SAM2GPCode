@@ -10,7 +10,7 @@
       "versionName": "ver 2.0",
       "versionNumber": "2.0.0.NEXT",
       "default": true,
-      "ancestorVersion": "1.1.2.1"
+      "ancestorVersion": "1.1.0"
     }
   ],
   "name": "SAM2GP",
